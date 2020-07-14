@@ -1,0 +1,31 @@
+{
+    "projects": [
+        {
+            "title": "title 1",
+            "category": "Web App",
+            "description" : "description 1",
+            "languages": "List languages here",
+            "liveLink": "link1.com",
+            "gitLink": "gitlink.com",
+            "image1" : "img src here" 
+        },
+        {
+            "title": "title 2",
+            "category": "Coding Challenge",
+            "description" : "description 2",
+            "languages": "List languages here",
+            "liveLink": "link2.com",
+            "gitLink": "gitlink2.com",
+            "image1" : "img src here" 
+        },
+        {
+            "title": "title 3",
+            "category": "Mobile App",
+            "description" : "description 3",
+            "languages": "List languages here",
+            "liveLink": "link3.com",
+            "gitLink": "gitlink3.com",
+            "image1" : "img src here" 
+        }
+    ]
+}

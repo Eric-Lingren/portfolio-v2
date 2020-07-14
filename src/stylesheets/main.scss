@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+//  7 to 1 pattern 
+
+// 1. Configuration and helpers
+@import
+  './abstracts/variables.scss',
+//   'abstracts/functions',
+  './abstracts/mixins';
+
+// 2. Vendors
+
+// 3. Base stuff
+@import
+  './base/base.scss',
+  './base/fonts.scss';
+//   'base/typography',
+//   'base/helpers';
+
+// // 4. Layout-related sections
+// @import
+//   'layout/header',
+//   'layout/footer';
+
+// 5. Components
+@import
+  './components/links.scss',
+  './components/game.scss',
+  './components/home.scss';
+
+// 6. Page-specific styles
+@import
+  './pages/navbar.scss';
+
+// 7. Themes
