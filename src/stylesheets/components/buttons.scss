@@ -1,0 +1,70 @@
+.home-button {
+    height: 50px;
+    width: 100px;
+}
+
+.eightbit-btn {
+    background: $button-background;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    font-size: 30px;
+    padding: 20px;
+    font-family: $press-start-font-family, cursive;
+    text-decoration: none; 
+    color: white;
+    box-shadow: inset (-$shadow-width) (-$shadow-width) 0px 0px $shadow-color;
+    &:hover,
+    &:focus {
+        background: $sec-button-background;
+        box-shadow: inset (-$shadow-width*1.5) (-$shadow-width*1.5) 0px 0px $shadow-color;
+    }
+    &:active {
+        box-shadow: inset $shadow-width $shadow-width 0px 0px $shadow-color;
+    }
+    &:before,
+    &:after {
+    content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: content-box;
+    }
+    &:before {
+        top: -$outline-width;
+        left: 0;
+        border-top: $outline-width white solid;
+        border-bottom: $outline-width white solid;
+    }
+    &:after {
+        left: -$outline-width;
+        top: 0;
+        border-left: $outline-width white solid;
+        border-right: $outline-width white solid;
+    }
+    &--reset {
+        background: $reset-button-background;
+        box-shadow: inset (-$shadow-width) (-$shadow-width) 0px 0px $reset-shadow-color;
+        &:hover,
+        &:focus {
+            background: $reset-sec-button-background;
+            box-shadow: inset (-$shadow-width*1.5) (-$shadow-width*1.5) 0px 0px $reset-shadow-color;
+        }
+        &:active {
+            box-shadow: inset $shadow-width $shadow-width 0px 0px $reset-shadow-color;
+        }
+    }
+    &--proceed {
+        background: $alt-button-background;
+        box-shadow: inset (-$shadow-width) (-$shadow-width) 0px 0px $alt-shadow-color;
+        &:hover,
+        &:focus {
+            background: $alt-sec-button-background;
+            box-shadow: inset (-$shadow-width*1.5) (-$shadow-width*1.5) 0px 0px $alt-shadow-color;
+        }
+        &:active {
+            box-shadow: inset $shadow-width $shadow-width 0px 0px $alt-shadow-color;
+        }
+    }
+}

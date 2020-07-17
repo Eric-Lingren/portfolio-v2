@@ -10,6 +10,7 @@ class GameProvider extends Component {
             didSkip: null,
             firstMount: 0,
             customAlert: '',
+            currentIntroLine : 1
         }
     }
 
@@ -27,6 +28,10 @@ class GameProvider extends Component {
         this.setState({ customAlert : message })
     }
 
+    setCurrentIntroLine = (nextLine) => {
+        this.setState({currentIntroLine : nextLine})
+    }
+
 
     render(){
         return (
@@ -36,6 +41,7 @@ class GameProvider extends Component {
                     setIsPlaying: this.setIsPlaying,
                     setDidSkip: this.setDidSkip,
                     setCustomAlert: this.setCustomAlert,
+                    setCurrentIntroLine: this.setCurrentIntroLine
                     
                 }}>
                 { this.props.children }

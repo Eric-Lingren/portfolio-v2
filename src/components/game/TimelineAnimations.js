@@ -1,23 +1,23 @@
 import { TimelineMax, SteppedEase } from 'gsap'
 
-export function introTimeline(){
-    const masterTimeline = new TimelineMax()
-    masterTimeline.add(line3Timeline)
-        .add(endTypewriter1, 2.5)
-        .add(line2Timeline, 2.5)
-        .add(endTypewriter2, 6)
-        .add(line3Timeline, 6)
-        .from("#progress", masterTimeline.duration(), {scaleX:0, transformOrigin:"left center"}, 0)
+// export function introTimeline(){
+//     const masterTimeline = new TimelineMax()
+//     masterTimeline.add(line1Timeline)
+//         .add(endTypewriter1, 2.5)
+//         .add(line2Timeline, 2.5)
+//         .add(endTypewriter2, 6)
+//         .add(line3Timeline, 0) //6
+//         .from("#progress", masterTimeline.duration(), {scaleX:0, transformOrigin:"left center"}, 0)
 
-}
+// }
 
-function line1Timeline(){
+export function line1Timeline(){
     let tl = new TimelineMax( { paused: true } )
         // letter animation
-        tl.fromTo(".animate-typewriter-cursor", 5, {
+        tl.fromTo(".animate-typewriter-cursor", 4, {
             width: "0",
         }, {
-            width: "60%",
+            width: "40%",
             ease:  SteppedEase.config(37)
         }, 0);
         
@@ -34,22 +34,10 @@ function line1Timeline(){
         // setTimeout( () => {tl.kill()}, 3000)
 }
 
-function endTypewriter1(){
-    let tl = new TimelineMax( { paused: true } )
-    tl.fromTo(".animate-typewriter-cursor", 4, {
-        opacity: "0",
-    }, {
-        width: "60%",
-        ease:  SteppedEase.config(37)
-    }, 0);
-}
-
-
-
-function line2Timeline(){
+export function line2Timeline(){
     let tl = new TimelineMax( { paused: true } )
         // letter animation
-        tl.fromTo(".animate-typewriter-cursor2", 4, {
+        tl.fromTo(".animate-typewriter-cursor", 4, {
             width: "0",
             opacity: 1
         }, {
@@ -58,9 +46,8 @@ function line2Timeline(){
             yoyo: true
         }, 0);
         
-
         // text cursor animation
-        tl.fromTo(".animate-typewriter-cursor2", .75, {
+        tl.fromTo(".animate-typewriter-cursor", .75, {
         "border-right-color": "rgba(255,255,255,0.75)"
         }, {
         "border-right-color": "rgba(255,255,255,0)",
@@ -69,33 +56,25 @@ function line2Timeline(){
         }, 0);
         
         tl.play()
-        // setTimeout( () => {tl.kill()}, 3000)
 }
 
-function endTypewriter2(){
-    let tl = new TimelineMax( { paused: true } )
-    tl.fromTo(".animate-typewriter-cursor2", 4, {
-        opacity: "0",
-    }, {
-        width: "60%",
-        ease:  SteppedEase.config(37)
-    }, 0);
-}
 
-function line3Timeline(){
+export function line3Timeline(){
     let tl = new TimelineMax( { paused: true } )
         // letter animation
-        tl.fromTo(".animate-typewriter-cursor3", 4, {
+        tl.fromTo(".animate-typewriter-cursor", 1, {
             width: "0",
             opacity: 1
         }, {
-            width: "60%",
-            ease:  SteppedEase.config(37)
+            width: "20%",
+            ease:  SteppedEase.config(15),
+            yoyo: true,
+            repeat: -1,
+            repeatDelay: .75,
         }, 0);
         
-
         // text cursor animation
-        tl.fromTo(".animate-typewriter-cursor3", .75, {
+        tl.fromTo(".animate-typewriter-cursor", .75, {
         "border-right-color": "rgba(255,255,255,0.75)"
         }, {
         "border-right-color": "rgba(255,255,255,0)",
@@ -106,12 +85,27 @@ function line3Timeline(){
         tl.play()
 }
 
-function endTypewriter3(){
+
+export function line7Timeline(){
     let tl = new TimelineMax( { paused: true } )
-    tl.fromTo(".animate-typewriter-cursor3", 4, {
-        opacity: "0",
-    }, {
-        width: "60%",
+        // letter animation
+        tl.fromTo(".animate-typewriter-cursor", 3, {
+            width: "0",
+            opacity: 1
+        }, {
+            width: "40%",
+            ease:  SteppedEase.config(25),
+        }, 0);
+        
+        // text cursor animation
+        tl.fromTo(".animate-typewriter-cursor", .75, {
+        "border-right-color": "rgba(255,255,255,0.75)"
+        }, {
+        "border-right-color": "rgba(255,255,255,0)",
+        repeat: -1,
         ease:  SteppedEase.config(37)
-    }, 0);
+        }, 0);
+        
+        tl.play()
 }
+

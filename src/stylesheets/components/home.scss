@@ -1,5 +1,18 @@
-.key{
-    height: 2.5em;
-    width: auto;
-    margin-bottom: -40px;
+.home-wrapper {
+    position:relative;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100vh;
 }
+
+.home-canvas {
+    position: absolute;
+    left: 50%;
+    margin-left: -25vw;
+    // margin-top: 50px;
+    display: block;
+    width: 100%;
+    z-index: 10;
+}
+
+
