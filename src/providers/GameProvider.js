@@ -7,10 +7,13 @@ class GameProvider extends Component {
         super()
         this.state = {
             isPlaying: false,
+            isInGameMode: true,
             didSkip: null,
             firstMount: 0,
             customAlert: '',
-            currentIntroLine : 1
+            currentIntroLine : 8,
+            score: 0,
+            lives: 3,
         }
     }
 
@@ -32,6 +35,10 @@ class GameProvider extends Component {
         this.setState({currentIntroLine : nextLine})
     }
 
+    setToggleIsInGameMode = () => {
+        this.setState({ isInGameMode: !this.state.isInGameMode })
+    }
+
 
     render(){
         return (
@@ -41,7 +48,8 @@ class GameProvider extends Component {
                     setIsPlaying: this.setIsPlaying,
                     setDidSkip: this.setDidSkip,
                     setCustomAlert: this.setCustomAlert,
-                    setCurrentIntroLine: this.setCurrentIntroLine
+                    setCurrentIntroLine: this.setCurrentIntroLine,
+                    setToggleIsInGameMode: this.setToggleIsInGameMode
                     
                 }}>
                 { this.props.children }

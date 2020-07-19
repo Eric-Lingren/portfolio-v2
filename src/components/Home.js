@@ -1,52 +1,44 @@
-import React, { useEffect, useRef, useCallback } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { TweenLite, TweenMax, Linear, Cubic } from 'gsap'
+import { TweenLite, TweenMax, Linear } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
 import useSound from 'use-sound';
 import mouseoverSound from  '../assets/audio1.wav'
-// import bKey from '../assets/B-icon.png'
-// import sKey from '../assets/S-icon.png'
-// import { homeLogoAnimation } from '../helpers/animation-helpers/HomeAnimations'
-
-
 
 const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
+
     let history = useHistory()
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
     const standardExpereienceButton = useRef()
     const [play] = useSound(mouseoverSound)
 
-    // const mouseoverSound = new Audio('../assets/audio1.wav')
-    // mouseoverSound.play() 
-    // const playSoundEffect = () => {
-    //     useSound(mouseoverSound)
-    // }
-
     useEffect(() => {
-        // mouseoverSound.play() 
-        // Animates Full Green Button
         TweenLite.to(fullExpereienceButton.current, .75, {
             backgroundColor:"#55942b", 
             boxShadow: '0px 0px 10px 8px #fff',
             ease: Linear.easeNone,
+            opacity: 1,
             yoyo: true,
             repeat: -1,
+            delay: 3
         })
         // Animates Yellow Standard Button
         TweenLite.to(standardExpereienceButton.current, .75, {
             backgroundColor:"#E59400", 
             boxShadow: '0px 0px 10px 8px #fff',
             ease: Linear.easeNone,
+            opacity: 1,
             yoyo: true,
             repeat: -1,
+            delay: 3,
         })
     })
 
     // Animated Pixelate-Out of Logo
     useEffect(()=> {
-        const scale = { value: 25 }
+        const scale = { value: 25, opacity: 0 }
         const canvas = canvasRef.current
         const ctx = canvas.getContext("2d")
         ctx.imageSmoothingEnabled = false
@@ -61,10 +53,10 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                 ease: Linear.easeNone,
                 onUpdate: update,
                 repeat: 0,
-                autoAlpha: 1,
-                delay: 2
+                opacity: 1,
+                delay: .5
             });
-            TweenMax.to(canvas, 3, { autoAlpha: 0, delay: 3 })
+            TweenMax.to(canvas, 3, { opacity: 0, delay: 2, zIndex: 0 })
             update()
         }
 

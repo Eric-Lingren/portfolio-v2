@@ -1,11 +1,9 @@
-.header-wrapper {
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    height: 100%;
-    padding-top: 10px;
+.game-labels {
+    font-family: $press-start-font-family, 'Courier New', Courier, monospace;
+    margin-top: 0;
 }
+
 .header-logo {
-    width: 25vw;
+    height: 10vw;
+    width: 50vh;
 }

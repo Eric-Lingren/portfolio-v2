@@ -1,0 +1,20 @@
+.game-canvas-container{
+    display: flex;
+    flex-direction: column;
+    border: 2px solid cornflowerblue;
+    height: 80vh;
+}
+
+.game-enemy-container {
+    background-color: grey;
+}
+
+.game-shooter-container{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 20px;
+    width: 98%;
+    // border: 3px solid #8AC007;
+    // background-color: crimson;
+}

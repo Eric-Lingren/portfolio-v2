@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react'
 import { withGame } from '../../../providers/GameProvider'
-import { line7Timeline } from '../TimelineAnimations'
+import { line7Timeline } from '../game-animations/TimelineAnimations'
 
-const Line11 = ({ setCurrentIntroLine }) => {
+const Line11 = ({ setToggleIsInGameMode }) => {
 
     useEffect(() => {
         line7Timeline()
-        // setTimeout(() => {
-        //     setCurrentIntroLine(4)
-        // }, 3000)
+        window.addEventListener('keydown', setToggleIsInGameMode)
+    })
+
+    useEffect(() => {
+        return () => window.removeEventListener('keydown', setToggleIsInGameMode)
     })
 
     return(

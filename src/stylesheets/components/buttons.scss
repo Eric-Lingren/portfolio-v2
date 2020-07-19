@@ -1,7 +1,7 @@
-.home-button {
-    height: 50px;
-    width: 100px;
-}
+// .home-button {
+//     height: 50px;
+//     width: 100px;
+// }
 
 .eightbit-btn {
     background: $button-background;
@@ -11,6 +11,8 @@
     text-align: center;
     font-size: 30px;
     padding: 20px;
+    width: 40%;
+    opacity: .25;
     font-family: $press-start-font-family, cursive;
     text-decoration: none; 
     color: white;

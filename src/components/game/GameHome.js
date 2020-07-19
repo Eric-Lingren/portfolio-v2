@@ -1,13 +1,16 @@
 import React from 'react'
-import GameIntro from './gameIntro/GameIntro'
+import { withGame } from '../../providers/GameProvider'
+import GameIntro from './game-intro/GameIntro'
+import GameCanvas from './game-canvas/GameCanvas'
 
-const GameHome = () => {
+const GameHome = ({isInGameMode}) => {
 
     return(
         <div>
-            <GameIntro />
+            { !isInGameMode && <GameIntro /> }
+            { isInGameMode && <GameCanvas /> }
         </div>
     )
 }
 
-export default GameHome
+export default withGame(GameHome)

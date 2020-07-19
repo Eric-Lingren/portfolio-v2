@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { withGame } from '../../../providers/GameProvider'
-import { line7Timeline } from '../TimelineAnimations'
+import { line7Timeline } from '../game-animations/TimelineAnimations'
 
 const Line9 = ({ setCurrentIntroLine }) => {
 

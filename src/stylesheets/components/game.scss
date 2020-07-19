@@ -11,9 +11,11 @@
 .game-intro-container{
   margin-top: 100px;
 }
+
 .test{
   width: 50px;
 }
+
 .intro-text-line{
   position: relative;
   top: 100%;  
@@ -34,3 +36,20 @@
   width:0;
 }
 
+.shooter-icon {
+  width: 60px;
+  height: 40px;
+  padding: 3px;
+}
+
+.display-shooter{
+  display: visible;
+}
+
+.hide-shooter{
+  display: none;
+}
+
+.bullet {
+  display: none;
+}
