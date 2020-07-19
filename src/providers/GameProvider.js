@@ -7,13 +7,13 @@ class GameProvider extends Component {
         super()
         this.state = {
             isPlaying: false,
-            isInGameMode: true,
+            isInGameMode: false,
             didSkip: null,
             firstMount: 0,
             customAlert: '',
-            currentIntroLine : 8,
+            currentIntroLine : 1,
             score: 0,
-            lives: 3,
+            lives: 3
         }
     }
 

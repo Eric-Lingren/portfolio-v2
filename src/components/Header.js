@@ -23,7 +23,12 @@ const Header = ({ isInGameMode, score, lives }) => {
     return(
         <div className='header-wrapper'>
             <div className='score-container'>
-                { isInGameMode && <h2 className='game-labels'> Score: {score} </h2> }
+            { isInGameMode && 
+                <>
+                    <h2 className='game-labels'> Score: </h2> 
+                    <h2 className='game-labels'> {score} </h2>
+                </>
+            }
             </div>
             <div className='header-logo-container'>
                 <Link to='/'>
@@ -35,11 +40,7 @@ const Header = ({ isInGameMode, score, lives }) => {
                 <>
                     <h2 className='game-labels'> Lives: </h2> 
                     <div className='lives-icons-container'>
-                    { lives > 0 ? 
-                        mappedLives
-                    :
-                        <h2 className='game-labels'> {lives} </h2> 
-                    }
+                    { lives > 0 ? mappedLives : <h2 className='game-labels'> {lives} </h2> }
                     </div>
                 </>
             }

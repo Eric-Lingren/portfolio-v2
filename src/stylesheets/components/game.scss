@@ -3,17 +3,13 @@
     font-size: 3em;
     font-weight: bold;
 }
+
 .game-alert{
     color: red;
 }
 
-
 .game-intro-container{
   margin-top: 100px;
-}
-
-.test{
-  width: 50px;
 }
 
 .intro-text-line{
@@ -42,11 +38,7 @@
   padding: 3px;
 }
 
-.display-shooter{
-  display: visible;
-}
-
-.hide-shooter{
+.shooter-hidden {
   display: none;
 }
 

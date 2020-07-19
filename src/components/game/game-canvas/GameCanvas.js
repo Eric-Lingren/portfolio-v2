@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import shooterImage from '../../../assets/shooter.png'
 import bulletImage from '../../../assets/bullet.png'
-
+import themeSong from '../../../assets/theme-song.mpeg'
+import shootSound from  '../../../assets/shoot.wav'
 
 const GameCanvas = () => {
     let isShooting = false
-    let id;
     let bulletInterval;
     const gameCanvasRef = useRef()
     const shooterRef = useRef()
     const bulletRef = useRef()
+    const themeSongAudio = new Audio(themeSong)
+    const shootAudio = new Audio(shootSound)
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyboardInput)
+        themeSongAudio.play()
         const canvas = gameCanvasRef.current
         const ctx = canvas.getContext("2d")
         canvas.style.width='99vw'
@@ -31,6 +34,14 @@ const GameCanvas = () => {
         shooterIcon.onload = () => {
             ctx.drawImage(shooterIcon, initialX, initialY, 100, 65)
         }
+    })
+
+    useEffect(()=> {
+        return () =>  window.removeEventListener('keydown', handleKeyboardInput)
+    })
+    
+    useEffect(()=> {
+        return () =>  themeSongAudio.pause()
     })
 
     const handleKeyboardInput = (e) => {
@@ -80,35 +91,28 @@ const GameCanvas = () => {
     }
 
     const shoot = () => {
-        console.log('shoot ran')
-        isShooting = true
-        const bullet = bulletRef.current
-        const shooterIcon = shooterRef.current
-        const shooterPositionX = Math.floor(shooterIcon.attributes[0].value)
-        const shooterPositionY = Math.floor(shooterIcon.attributes[1].value)
-        const bulletXPosition = shooterPositionX+45
-        const bulletYPosition = shooterPositionY-40
-        setBulletCoordinates(bulletXPosition, bulletYPosition)
-        // id = setInterval(drawBullet, 10)
-        startBulletInterval()
+        if(!isShooting){
+            isShooting = true
+            shootAudio.play()
+            const shooterIcon = shooterRef.current
+            const shooterPositionX = Math.floor(shooterIcon.attributes[0].value)
+            const shooterPositionY = Math.floor(shooterIcon.attributes[1].value)
+            const bulletXPosition = shooterPositionX+45
+            const bulletYPosition = shooterPositionY-40
+            setBulletCoordinates(bulletXPosition, bulletYPosition)
+            startBulletInterval()
+        }
     }
     
     const startBulletInterval = () => {
         bulletInterval = setInterval(drawBullet, 10)
     }
 
-    let count = 0
-
     const drawBullet = () => {
+        if(!isShooting) clearInterval(bulletInterval)
         const canvas = gameCanvasRef.current
         const ctx = canvas.getContext("2d")
         const bullet = bulletRef.current
-        count++
-
-        if(!isShooting){
-            clearInterval(bulletInterval)
-        }
-        
         let xPosition = bullet.attributes[0].value
         let yPosition = Math.floor( parseInt(bullet.attributes[1].value) - 10 )
         ctx.clearRect(0,0, 1287,657)
@@ -118,12 +122,11 @@ const GameCanvas = () => {
 
         if(yPosition < -18 ){
             isShooting = false
-            count = 0
+            setBulletCoordinates(0, -30)
         }
     }
 
     const setBulletCoordinates = (x, y) => {
-        // console.log(y)
         const bullet = bulletRef.current
         bullet.attributes[0].value = x
         bullet.attributes[1].value = y
@@ -137,7 +140,7 @@ const GameCanvas = () => {
                 positionx={0}
                 positiony={0}
                 ref={shooterRef}
-                className='shooter-icon hide-shooter' 
+                className='shooter-icon shooter-hidden' 
                 alt='lives-icon' 
                 src={shooterImage} />
             <img 

@@ -8,11 +8,11 @@ const Line2 = ({ setCurrentIntroLine }) => {
         line2Timeline()
         setTimeout(() => {
             setCurrentIntroLine(3)
-        }, 4500)
+        }, 4500) 
     })
 
     return(
-        <p className='intro-text-line animate-typewriter-cursor'> You have been selected to find a: </p>
+        <p className='intro-text-line animate-typewriter-cursor'> You have been selected to find a </p>
     )
 }
 
