@@ -1,6 +1,54 @@
 {
     "projects": [
         {
+            "title": "Project Euler",
+            "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
+            "languages": ["JavaScript", "HTML", "CSS"],
+            "liveLink": "http://ericsprojecteuler.surge.sh/",
+            "gitLink": "https://github.com/Eric-Lingren/project_euler",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88473186-47bc4500-ced8-11ea-8d91-832fce3fa197.png",
+                "https://user-images.githubusercontent.com/44101756/88473189-50ad1680-ced8-11ea-8695-eb54a4b0eb12.png"
+            ],
+            "tags" : []
+        },
+        {
+            "title": "Coding Challenges",
+            "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
+            "languages": ["React", "JavaScript", "CSS", "PrismJS"],
+            "liveLink": "https://erics-coding-challenges.netlify.app/",
+            "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
+                "https://user-images.githubusercontent.com/44101756/88473255-f6608580-ced8-11ea-96df-ad06c495a307.png"
+            ],
+            "tags" : []
+        },
+        {
+            "title": "Over The Wire",
+            "thumbnailDescription" : "A gameified site that focuses on learning Linux, networking and security concepts.",
+            "languages": ["Linux", "React", "JavaScript", "CSS"],
+            "liveLink": "https://over-the-wire.netlify.app/",
+            "gitLink": "https://github.com/Eric-Lingren/over_the_wire",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88473309-7edf2600-ced9-11ea-9ccb-50a35c4a7567.png",
+                "https://user-images.githubusercontent.com/44101756/88473310-80a8e980-ced9-11ea-99f0-4a9a7e3dd531.png"
+            ],
+            "tags" : []
+        },
+        {
+            "title": "Custom NPM Packages",
+            "thumbnailDescription" : "This is the full list of all the NPM packages I have built.",
+            "languages": ["Node.js", "NPM", "JavaScript"],
+            "liveLink": "https://www.npmjs.com/package/@fxhacker/get_date",
+            "gitLink": "https://github.com/Eric-Lingren/npm_projects",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88473134-b8af2d00-ced7-11ea-9af8-4a817d5a4d45.png",
+                "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
+            ],
+            "tags" : []
+        },
+        {
             "title": "Employee CRUD",
             "thumbnailDescription" : "A full stack CRUD site for simple HR employee management.",
             "languages": ["React", "MongoDB", "Mongoose", "ReactStrap", "Express", "CSS"],
@@ -106,54 +154,6 @@
             "images" : [
                 "https://user-images.githubusercontent.com/44101756/88473069-1db65300-ced7-11ea-9666-57a279f4f0e9.png",
                 "https://user-images.githubusercontent.com/44101756/88473070-1f801680-ced7-11ea-80d4-ad1e740dc53a.png"
-            ],
-            "tags" : []
-        },
-        {
-            "title": "Custom NPM Packages",
-            "thumbnailDescription" : "This is the full list of all the NPM packages I have built.",
-            "languages": ["Node.js", "NPM", "JavaScript"],
-            "liveLink": "https://www.npmjs.com/package/@fxhacker/get_date",
-            "gitLink": "https://github.com/Eric-Lingren/npm_projects",
-            "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473134-b8af2d00-ced7-11ea-9af8-4a817d5a4d45.png",
-                "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
-            ],
-            "tags" : []
-        },
-        {
-            "title": "Project Euler",
-            "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
-            "languages": ["JavaScript", "HTML", "CSS"],
-            "liveLink": "http://ericsprojecteuler.surge.sh/",
-            "gitLink": "https://github.com/Eric-Lingren/project_euler",
-            "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473186-47bc4500-ced8-11ea-8d91-832fce3fa197.png",
-                "https://user-images.githubusercontent.com/44101756/88473189-50ad1680-ced8-11ea-8695-eb54a4b0eb12.png"
-            ],
-            "tags" : []
-        },
-        {
-            "title": "Coding Challenges",
-            "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
-            "languages": ["React", "JavaScript", "CSS", "PrismJS"],
-            "liveLink": "https://erics-coding-challenges.netlify.app/",
-            "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
-            "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
-                "https://user-images.githubusercontent.com/44101756/88473255-f6608580-ced8-11ea-96df-ad06c495a307.png"
-            ],
-            "tags" : []
-        },
-        {
-            "title": "Over The Wire",
-            "thumbnailDescription" : "A gameified site that focuses on learning Linux, networking and security concepts.",
-            "languages": ["Linux", "React", "JavaScript", "CSS"],
-            "liveLink": "https://over-the-wire.netlify.app/",
-            "gitLink": "https://github.com/Eric-Lingren/over_the_wire",
-            "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473309-7edf2600-ced9-11ea-9ccb-50a35c4a7567.png",
-                "https://user-images.githubusercontent.com/44101756/88473310-80a8e980-ced9-11ea-99f0-4a9a7e3dd531.png"
             ],
             "tags" : []
         }
