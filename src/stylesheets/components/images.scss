@@ -1,0 +1,19 @@
+.profile-picture {
+    height: 200px;
+} 
+
+.about-contact-icon {
+    &-github{
+        cursor: pointer;
+        height: 75px;
+    }
+    &-linkedin{
+        cursor: pointer;
+        height: 63px;
+        margin-right: 25px;
+    }
+    &-email{
+        cursor: pointer;
+        height: 63px;
+    }
+}

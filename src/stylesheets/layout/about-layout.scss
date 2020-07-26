@@ -1,0 +1,23 @@
+.about-container {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.about-content-container {
+    display: flex;
+    width: 90%;
+    margin-top: 10vh;
+}
+
+.text-container {
+    margin-left: 5vw;
+}
+
+.contact-icon-wrapper {
+    display: flex;
+    width: 90%;
+    margin-left: 5vw;
+    align-items: center;
+}

@@ -1,7 +1,7 @@
 import React from 'react'
 import workData from './workData.json'
 import WorkCard from './WorkCard'
-import '../../stylesheets/layout/work-layout.scss'
+import '../../../stylesheets/layout/work-layout.scss'
 
 const Work = () => {
 

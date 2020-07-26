@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 import { TweenLite, TweenMax, Linear } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
-import useSound from 'use-sound';
 import mouseoverSound from  '../assets/audio1.wav'
 
 const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
@@ -12,7 +11,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
     const standardExpereienceButton = useRef()
-    const [play] = useSound(mouseoverSound)
+    const mouseoverAudio = new Audio(mouseoverSound)
 
     useEffect(() => {
         TweenLite.to(fullExpereienceButton.current, .75, {
@@ -74,7 +73,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
 
     const handleInitilizeSite = (e) => {
         const { value } = e.target
-        if(value === 'full'){
+        if(value === 'game'){
             setIsPlaying(true, history)
             setCustomAlert('')
         }
@@ -94,18 +93,18 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                 <button 
                     className='eightbit-btn' 
                     ref={fullExpereienceButton}
-                    value='full'
+                    value='game'
                     onClick={handleInitilizeSite}
-                    onMouseEnter={play}
+                    onMouseEnter={() => mouseoverAudio.play()}
                 > 
-                    Full Expereince 
+                    Gamified Site 
                 </button>
                 <button 
                     className='eightbit-btn eightbit-btn--proceed'
                     ref={standardExpereienceButton}
                     value='standard'
                     onClick={handleInitilizeSite}
-                    onMouseEnter={play}
+                    onMouseEnter={() => mouseoverAudio.play()}
                 > 
                     Standard Site 
                 </button>

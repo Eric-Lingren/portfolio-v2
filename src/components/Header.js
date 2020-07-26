@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { withGame } from '../providers/GameProvider'
 import portfolioLogo from '../assets/portfolio-logo-name.png'
-import shooterIcon from '../assets/shooter.png'
+import playerIcon from '../assets/player.png'
 
-const Header = ({ isInGameMode, score, lives }) => {
-    // const livesIcons = []
+const Header = ({ isInGameMode, gameScore,  lives }) => {
     const [livesIcons, setLivesIcons] = useState([])
+    const [score, setScore] = useState(0)
 
     useEffect(() => {
         let livesList = []
@@ -16,8 +16,16 @@ const Header = ({ isInGameMode, score, lives }) => {
         setLivesIcons(livesList) 
     }, [ lives ] )
 
+    // const setScoreCallback = () => {
+
+    // }
+    // console.log(gameScore)
+    // useEffect(()=> {
+    //     console.log('gameScore Changed')
+    // }, [gameScore])
+
     const mappedLives = livesIcons.map( icon => {
-        return <img key={icon} className='shooter-icon' alt='lives-icon' src={shooterIcon} />
+        return <img key={icon} className='player-icon' alt='lives-icon' src={playerIcon} />
     })
 
     return(

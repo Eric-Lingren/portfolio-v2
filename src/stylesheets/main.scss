@@ -19,6 +19,8 @@
 
 // 4. Layout-related sections
 @import
+  './layout/standard-site-layout.scss',
+  './layout/about-layout.scss',
   './layout/home-layout.scss',
   './layout/header-layout.scss',
   './layout/game-layout.scss';
@@ -27,13 +29,15 @@
 
 // 5. Components
 @import
-  './components/links.scss',
-  './components/game.scss',
   './components//buttons.scss',
-  './components/home.scss';
+  './components/game.scss',
+  './components/home.scss',
+  './components/images.scss',
+  './components/links.scss';
 
 // 6. Page-specific styles
 @import
+  './pages/about.scss',
   './pages/navbar.scss',
   './pages/header.scss';
 
