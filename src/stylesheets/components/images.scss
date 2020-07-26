@@ -17,3 +17,28 @@
         height: 63px;
     }
 }
+
+.card-front-image {
+    height: 300px;
+    width: 300px;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .profile-picture {
+        height: 150px;
+        width: 150px;
+        margin-bottom: 20px;
+    } 
+    .about-contact-icon {
+        &-github{
+            height: 60px;
+        }
+        &-linkedin{
+            height: 50px;
+        }
+        &-email{
+            height: 50px;
+        }
+    }
+}

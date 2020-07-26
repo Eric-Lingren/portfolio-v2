@@ -9,11 +9,11 @@ const About = () => {
     return(
         <div className='about-container'>
             <div className='about-content-container'>
-                <img className='profile-picture' src={profileRound} alt='profile-picture' />
+                <img className='profile-picture' src={profileRound} alt='profile' />
                 <div>
                     <div className='text-container'>
-                        <p className='about-text'> I am an avid traveler and have been to more than 
-                            <a className='countries-link' target='_blank' href='https://www.google.com/maps/d/u/0/edit?mid=1YB7JYG2UK7EyiVxPEPE4YjJtZQ_y2cjL&ll=4.7542124741991785%2C0&z=2'>
+                        <p className='about-text'> I am an avid traveler and have been to more than {' '}
+                            <a className='countries-link' target='_blank' rel="noopener noreferrer" href='https://www.google.com/maps/d/u/0/edit?mid=1YB7JYG2UK7EyiVxPEPE4YjJtZQ_y2cjL&ll=4.7542124741991785%2C0&z=2'>
                                 30 countries
                             </a>. 
                         </p>
@@ -21,14 +21,14 @@ const About = () => {
                         <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential and solving challenging problems. </p>
                     </div>
                     <div className='contact-icon-wrapper'>
-                        <a target='_blank' href='https://www.github.com/Eric-Lingren'>
-                            <img className='about-contact-icon-github' src={githubIcon} alt='github-picture' />
+                        <a target='_blank' rel="noopener noreferrer" href='https://www.github.com/Eric-Lingren'>
+                            <img className='about-contact-icon-github' src={githubIcon} alt='github' />
                         </a>
-                        <a target='_blank' href='https://www.linkedin.com/in/ericlingren/'>
-                            <img className='about-contact-icon-linkedin' src={linkedinIcon} alt='linkedin-picture' />
+                        <a target='_blank' rel="noopener noreferrer" href='https://www.linkedin.com/in/ericlingren/'>
+                            <img className='about-contact-icon-linkedin' src={linkedinIcon} alt='linkedin' />
                         </a>
                         <a href='mailto:ericlingren@gmail.com'>
-                            <img className='about-contact-icon-email' src={emailIcon} alt='email-picture' />
+                            <img className='about-contact-icon-email' src={emailIcon} alt='email' />
                         </a>
                     </div>
                 </div>

@@ -23,7 +23,8 @@
   './layout/about-layout.scss',
   './layout/home-layout.scss',
   './layout/header-layout.scss',
-  './layout/game-layout.scss';
+  './layout/game-layout.scss',
+  './layout/work-layout.scss';
 //   'layout/header',
 //   'layout/footer';
 
@@ -33,12 +34,14 @@
   './components/game.scss',
   './components/home.scss',
   './components/images.scss',
+  './components/inputs.scss',
   './components/links.scss';
 
 // 6. Page-specific styles
 @import
   './pages/about.scss',
+  './pages/header.scss',
   './pages/navbar.scss',
-  './pages/header.scss';
+  './pages/work.scss';
 
 // 7. Themes

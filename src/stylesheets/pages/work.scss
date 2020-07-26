@@ -1,0 +1,37 @@
+.work-card-tile-container {
+    border: 5px solid #2C6ADB;
+    border-radius: 10px;
+    height: 300px;
+    width: 300px;
+    box-shadow: 8px 6px 10px rgba(44, 106, 219, 0.5);
+    margin-bottom: 5vw;
+}
+
+
+.work-card-tile-front {
+	display: block;
+	overflow: hidden;
+}
+
+.work-card-tile-back {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.work-card-title {
+    font-family: $press-start-font-family;
+    font-size: 20px;
+    text-align: center;
+}
+
+.work-card-description {
+	font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+	padding: 0 20px 0 20px;
+	text-align: center;
+}
+
+
+

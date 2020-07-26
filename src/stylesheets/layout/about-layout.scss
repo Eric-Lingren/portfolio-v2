@@ -21,3 +21,17 @@
     margin-left: 5vw;
     align-items: center;
 }
+
+@media only screen and (max-width: 425px) {
+    .about-content-container {
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        margin-top: 3vh;
+    }
+    .contact-icon-wrapper {
+        margin-left: 0vw;
+        justify-content: center;
+    }
+}

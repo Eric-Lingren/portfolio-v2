@@ -13,9 +13,22 @@
     }
 }
 
-.footer {
-    &-link{
-        font-size: 40px;
-        padding: 30px;
+
+@media only screen and (max-width: 768px) {
+    .navbar {
+        &-link{
+            font-size: 18px;
+        }
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    .navbar {
+        &-wrapper{
+            margin-top: 5px;
+        }
+        &-link{
+            font-size: 12px;
+        }
     }
 }

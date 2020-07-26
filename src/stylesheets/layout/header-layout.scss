@@ -34,3 +34,10 @@
     grid-column-start: 3;
     display: flex;
 }
+
+
+@media only screen and (max-width: 425px) {
+    .header-wrapper {
+        grid-template-columns: 10px auto 10px;
+    }
+}

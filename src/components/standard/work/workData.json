@@ -1,31 +1,52 @@
 {
     "projects": [
         {
-            "title": "title 1",
-            "category": "Web App",
-            "description" : "description 1",
-            "languages": "List languages here",
-            "liveLink": "link1.com",
-            "gitLink": "gitlink.com",
-            "image1" : "img src here" 
+            "title": "Employee CRUD",
+            "description" : "A full stack CRUD site for simple HR employee management.",
+            "languages": ["React", "MongoDB", "Mongoose", "ReactStrap", "Express", "CSS"],
+            "liveLink": "http://crud-employees.herokuapp.com/",
+            "gitLink": "https://github.com/Eric-Lingren/crud_employees",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88472163-42a5c880-cecd-11ea-8054-d9415a0ce7a9.png",
+                "https://user-images.githubusercontent.com/44101756/88472164-46394f80-cecd-11ea-84da-10e856802589.png"
+            ] ,
+            "tags" : []
         },
         {
-            "title": "title 2",
-            "category": "Coding Challenge",
-            "description" : "description 2",
-            "languages": "List languages here",
-            "liveLink": "link2.com",
-            "gitLink": "gitlink2.com",
-            "image1" : "img src here" 
+            "title": "Count Champ",
+            "description" : "A React Native app that teaches players the nuances of card counting.",
+            "languages": ["React Native", "Android Studio", "SQLite", "Expo"],
+            "liveLink": "",
+            "gitLink": "https://github.com/Eric-Lingren/react_native/tree/master/count_champ",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88472210-b051f480-cecd-11ea-962e-a9bc62ebdcb9.png",
+                "https://user-images.githubusercontent.com/44101756/88472212-b3e57b80-cecd-11ea-92a0-b6b3520d68cc.png"
+            ],
+            "tags" : []
         },
         {
-            "title": "title 3",
-            "category": "Mobile App",
-            "description" : "description 3",
-            "languages": "List languages here",
-            "liveLink": "link3.com",
-            "gitLink": "gitlink3.com",
-            "image1" : "img src here" 
+            "title": "Card Counters Blackjack",
+            "description" : "Not your average Blackjack game. It is designed to teach players how to count cards and maintains comprehensive game analytics.",
+            "languages": ["React", "ES6", "CSS"],
+            "liveLink": "https://blackjack-for-cardcounters.netlify.app/#/",
+            "gitLink": "https://github.com/Eric-Lingren/blackjack_project",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88471932-a6c78d00-cecb-11ea-8800-59d8ecf12fa6.png",
+                "https://user-images.githubusercontent.com/44101756/88471925-9dd6bb80-cecb-11ea-9014-a01a80f899bb.png"
+            ],
+            "tags" : []
+        },
+        {
+            "title": "Infinity Investments",
+            "description" : "A full stack site which maps over large sets of historical trade data provided from a forex broker.",
+            "languages": ["React", "Express", "MongoDB", "GreenSock", "D3", "JavaScript ES6"],
+            "liveLink": "http://infinity-investments.herokuapp.com/",
+            "gitLink": "https://github.com/Eric-Lingren/infinity_investments",
+            "images" : [
+                "https://user-images.githubusercontent.com/44101756/88472361-18550a80-cecf-11ea-88f2-c72e1860c20b.png",
+                "https://user-images.githubusercontent.com/44101756/88472362-1b4ffb00-cecf-11ea-9b36-8f971626b7b7.png"
+            ],
+            "tags" : []
         }
     ]
 }

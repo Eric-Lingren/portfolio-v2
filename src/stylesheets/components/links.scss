@@ -1,3 +1,17 @@
 .link {
     @include link-styles
 }
+
+.work-card-more-details {
+    font-family: $press-start-font-family;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #7DA8F7;
+    padding: 0 5px 5px 5px;
+    margin-bottom: 10px;
+}
+
+.work-card-more-details:hover {
+    border-bottom: 1px solid #7DA8F7;
+}
