@@ -3,7 +3,7 @@ import ReactCardFlip from 'react-card-flip'
 import WorkCardFront from './WorkCardFront'
 import WorkCardBack from './WorkCardBack'
 
-const WorkCard = ({ id, title, description, images, languages, liveLink, gitLink,  }) => {
+const WorkCard = ({ id, title, thumbnailDescription, images, languages, liveLink, gitLink,  }) => {
 
     const [ isFlipped, setIsFlipped ] = useState(false)
 
@@ -26,7 +26,7 @@ const WorkCard = ({ id, title, description, images, languages, liveLink, gitLink
                 <WorkCardBack 
                     mouseOutCard={mouseOutCard} 
                     title={title}
-                    description={description}
+                    thumbnailDescription={thumbnailDescription}
                     id={id}
                 />
             </ReactCardFlip>

@@ -5,12 +5,13 @@ import WorkCard from './WorkCard'
 const WorkList = () => {
 
     const mappedWork = workData.projects.map((project, index) => {
+        
         return(
             <WorkCard 
                 key={index}
                 id={index}
                 title={project.title}
-                description={project.description}
+                thumbnailDescription={project.thumbnailDescription}
                 images={project.images}
             />
         )
