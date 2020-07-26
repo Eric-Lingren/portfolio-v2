@@ -23,6 +23,29 @@
     width: 300px;
 }
 
+.skill-badge-image {
+    width: auto;
+    height: 100px;
+    margin: 25px 25px 25px 25px;
+}
+
+.skill-badge-image-long {
+    width: auto;
+    height: 100px;
+    margin: 25px 15px 25px 15px;
+}
+
+
+@media only screen and (max-width: 1024px) {
+    .skill-badge-image-long {
+        width: auto;
+        height: 70px;
+    }
+    .skill-badge-image {
+        width: auto;
+        height: 70px;
+    }
+}
 
 @media only screen and (max-width: 768px) {
     .profile-picture {
@@ -40,5 +63,12 @@
         &-email{
             height: 50px;
         }
+    }
+    .skill-badge-image-long {
+        height: 50px;
+        margin: 10px 10px 10px 10px;
+    }
+    .skill-badge-image {
+        margin: 10px 0 10px 0;
     }
 }
