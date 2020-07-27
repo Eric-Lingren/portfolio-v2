@@ -123,15 +123,19 @@
         {
             "title": "Fun With Canvas",
             "thumbnailDescription" : "Several projects built using constructor functions and canvas to show fun DOM interactions.",
+            "detailsDescription" : "This site contains several projects with a variety of different things I have built using constructor functions in Javascript ES5 and canvas to show the fun interactions you are able to have with the DOM.",
+            "objective": "This was my first time working with HTML canvas and my goal with this project was to better understand its inner workings and to become more familiar with constructors and classes.",
+            "challenges": "I was very weak in my understanding of objects in JavaScript before I began this project and learning how to scale those for use with constructors was quite difficult for me.", 
+            "learned": "Canvas, constructors, and object reusability.",
             "languages": ["JavaScript ES5", "CSS"],
             "liveLink": "http://funwithcanvas.surge.sh/index.html",
             "gitLink": "https://github.com/Eric-Lingren/my_projects/tree/master/canvas_practice",
             "images" : [
                 "https://user-images.githubusercontent.com/44101756/88472959-ea26f900-ced5-11ea-9777-c14848d2d072.png",
                 "https://user-images.githubusercontent.com/44101756/88472959-ea26f900-ced5-11ea-9777-c14848d2d072.png",
-                "(https://user-images.githubusercontent.com/44101756/88472963-ed21e980-ced5-11ea-9ea6-73bc1e8634f5.PNG"
+                "https://user-images.githubusercontent.com/44101756/88472963-ed21e980-ced5-11ea-9ea6-73bc1e8634f5.PNG"
             ],
-            "tags" : []
+            "tags" : ["Front End"]
         },
         {
             "title": "Colossal Adventure",

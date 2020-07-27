@@ -5,8 +5,8 @@
 // 1. Configuration and helpers
 @import
   './abstracts/variables.scss',
-//   'abstracts/functions',
   './abstracts/mixins';
+  //   'abstracts/functions',
 
 // 2. Vendors
 
@@ -14,8 +14,6 @@
 @import
   './base/base.scss',
   './base/fonts.scss';
-//   'base/typography',
-//   'base/helpers';
 
 // 4. Layout-related sections
 @import
@@ -25,9 +23,8 @@
   './layout/game-layout.scss',
   './layout/skills-layout.scss',
   './layout/standard-site-layout.scss',
-  './layout/work-layout.scss';
-//   'layout/header',
-//   'layout/footer';
+  './layout/work-layout.scss',
+  './layout/work-details-layout.scss';
 
 // 5. Components
 @import
@@ -43,6 +40,7 @@
   './pages/about.scss',
   './pages/header.scss',
   './pages/navbar.scss',
-  './pages/work.scss';
+  './pages/work.scss',
+  './pages/work-details.scss';
 
 // 7. Themes

@@ -1,3 +1,8 @@
+.header-logo {
+    height: 7vw;
+    width: 30vh;
+}
+
 .profile-picture {
     height: 200px;
 } 
@@ -35,8 +40,16 @@
     margin: 25px 15px 25px 15px;
 }
 
+.carousel-image {
+    width: 400px;
+    height: 400px;
+}
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1200px) {
+    .header-logo {
+        height: 10vw;
+        width: 35vh;
+    }
     .skill-badge-image-long {
         width: auto;
         height: 70px;
@@ -48,6 +61,10 @@
 }
 
 @media only screen and (max-width: 768px) {
+    .header-logo {
+        height: 12vw;
+        width: 30vh;
+    }
     .profile-picture {
         height: 150px;
         width: 150px;
@@ -72,3 +89,4 @@
         margin: 10px 0 10px 0;
     }
 }
+

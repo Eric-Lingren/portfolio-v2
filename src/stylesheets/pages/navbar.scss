@@ -1,8 +1,12 @@
 .navbar {
     &-wrapper{
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: black;
         display: flex;
         justify-content: space-between;
-        margin: 20px;
+        padding: 20px;
     }
     &-link{
         color: white;
