@@ -12,7 +12,7 @@ const WorkList = () => {
                 id={index}
                 title={project.title}
                 thumbnailDescription={project.thumbnailDescription}
-                images={project.images}
+                thumbnailImage={project.thumbnailImage}
             />
         )
     })

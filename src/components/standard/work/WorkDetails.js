@@ -20,7 +20,7 @@ const WorkDetails = ({ match }) => {
     const githubLinkAvailable = work.gitLink.length > 0
     const githubLinkClass = githubLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
 
-    work.images.shift()
+    // work.images.shift()
     const mappedCarouselImages = work.images.map( (image, i) => {
         return <img src={image} key={i} className='carousel-image'/>
     })

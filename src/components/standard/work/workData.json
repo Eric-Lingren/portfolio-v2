@@ -3,23 +3,34 @@
         {
             "title": "Project Euler",
             "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
+            "detailsDescription" : "An ongoing site that I am using to work through the Project Euler challenges that are found at projecteuler.net. All the logic is in the JS file and you can show the result of each question I have completed.",
+            "objective": "Improve coding skills via complex challenges and algorithms.",
+            "challenges": "Needing to optimize for efficiency and speed.", 
+            "learned": "How to utilize console time to account for efficiency.",
             "languages": ["JavaScript", "HTML", "CSS"],
             "liveLink": "http://ericsprojecteuler.surge.sh/",
             "gitLink": "https://github.com/Eric-Lingren/project_euler",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473186-47bc4500-ced8-11ea-8d91-832fce3fa197.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473186-47bc4500-ced8-11ea-8d91-832fce3fa197.png",
-                "https://user-images.githubusercontent.com/44101756/88473189-50ad1680-ced8-11ea-8695-eb54a4b0eb12.png"
+                "https://user-images.githubusercontent.com/44101756/88604669-2b81ea80-d035-11ea-8da2-98b60ac2beb9.png",
+                "https://user-images.githubusercontent.com/44101756/88605939-9254d300-d038-11ea-971b-91d92de38b8e.png",
+                "https://user-images.githubusercontent.com/44101756/88605943-941e9680-d038-11ea-9963-0189cd42bf98.png",
+                "https://user-images.githubusercontent.com/44101756/88606602-515dbe00-d03a-11ea-8092-65cd6f7ad89c.png"
             ],
-            "tags" : []
+            "tags" : ["Challenges"]
         },
         {
             "title": "Coding Challenges",
             "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React", "JavaScript", "CSS", "PrismJS"],
             "liveLink": "https://erics-coding-challenges.netlify.app/",
             "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
                 "https://user-images.githubusercontent.com/44101756/88473255-f6608580-ced8-11ea-96df-ad06c495a307.png"
             ],
             "tags" : []
@@ -27,11 +38,15 @@
         {
             "title": "Over The Wire",
             "thumbnailDescription" : "A gameified site that focuses on learning Linux, networking and security concepts.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["Linux", "React", "JavaScript", "CSS"],
             "liveLink": "https://over-the-wire.netlify.app/",
             "gitLink": "https://github.com/Eric-Lingren/over_the_wire",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473309-7edf2600-ced9-11ea-9ccb-50a35c4a7567.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473309-7edf2600-ced9-11ea-9ccb-50a35c4a7567.png",
                 "https://user-images.githubusercontent.com/44101756/88473310-80a8e980-ced9-11ea-99f0-4a9a7e3dd531.png"
             ],
             "tags" : []
@@ -39,11 +54,15 @@
         {
             "title": "Custom NPM Packages",
             "thumbnailDescription" : "This is the full list of all the NPM packages I have built.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["Node.js", "NPM", "JavaScript"],
             "liveLink": "https://www.npmjs.com/package/@fxhacker/get_date",
             "gitLink": "https://github.com/Eric-Lingren/npm_projects",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473134-b8af2d00-ced7-11ea-9af8-4a817d5a4d45.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473134-b8af2d00-ced7-11ea-9af8-4a817d5a4d45.png",
                 "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
             ],
             "tags" : []
@@ -51,11 +70,15 @@
         {
             "title": "Employee CRUD",
             "thumbnailDescription" : "A full stack CRUD site for simple HR employee management.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React", "MongoDB", "Mongoose", "ReactStrap", "Express", "CSS"],
             "liveLink": "http://crud-employees.herokuapp.com/",
             "gitLink": "https://github.com/Eric-Lingren/crud_employees",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472163-42a5c880-cecd-11ea-8054-d9415a0ce7a9.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472163-42a5c880-cecd-11ea-8054-d9415a0ce7a9.png",
                 "https://user-images.githubusercontent.com/44101756/88472164-46394f80-cecd-11ea-84da-10e856802589.png"
             ] ,
             "tags" : []
@@ -63,11 +86,15 @@
         {
             "title": "Count Champ",
             "thumbnailDescription" : "A React Native app that teaches players the nuances of card counting.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React Native", "Android Studio", "SQLite", "Expo"],
             "liveLink": "",
             "gitLink": "https://github.com/Eric-Lingren/react_native/tree/master/count_champ",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472210-b051f480-cecd-11ea-962e-a9bc62ebdcb9.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472210-b051f480-cecd-11ea-962e-a9bc62ebdcb9.png",
                 "https://user-images.githubusercontent.com/44101756/88472212-b3e57b80-cecd-11ea-92a0-b6b3520d68cc.png"
             ],
             "tags" : []
@@ -75,11 +102,15 @@
         {
             "title": "Card Counters Blackjack",
             "thumbnailDescription" : "Not your average Blackjack game. It is designed to teach players how to count cards and maintains comprehensive game analytics.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React", "ES6", "CSS"],
             "liveLink": "https://blackjack-for-cardcounters.netlify.app/#/",
             "gitLink": "https://github.com/Eric-Lingren/blackjack_project",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88471932-a6c78d00-cecb-11ea-8800-59d8ecf12fa6.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88471932-a6c78d00-cecb-11ea-8800-59d8ecf12fa6.png",
                 "https://user-images.githubusercontent.com/44101756/88471925-9dd6bb80-cecb-11ea-9014-a01a80f899bb.png"
             ],
             "tags" : []
@@ -87,11 +118,15 @@
         {
             "title": "Infinity Investments",
             "thumbnailDescription" : "A full stack site which maps over large sets of historical trade data provided from a forex broker.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React", "Express", "MongoDB", "GreenSock", "D3", "JavaScript ES6"],
             "liveLink": "http://infinity-investments.herokuapp.com/",
             "gitLink": "https://github.com/Eric-Lingren/infinity_investments",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472361-18550a80-cecf-11ea-88f2-c72e1860c20b.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472361-18550a80-cecf-11ea-88f2-c72e1860c20b.png",
                 "https://user-images.githubusercontent.com/44101756/88472362-1b4ffb00-cecf-11ea-9b36-8f971626b7b7.png"
             ],
             "tags" : []
@@ -99,11 +134,15 @@
         {
             "title": "Crypto Minerz",
             "thumbnailDescription" : "This full stack e-commerce site was collaboratively built with 2 friends during my bootcamp.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["ReactStrap", "JavaScript", "MongoDB", "Express", "Node.js", "CSS"],
             "liveLink": "http://cryptominerz.herokuapp.com/",
             "gitLink": "https://github.com/jmc90/vcommerce-v2",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472787-e2665500-ced3-11ea-9f0f-b1a5b71fa729.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472787-e2665500-ced3-11ea-9f0f-b1a5b71fa729.png",
                 "https://user-images.githubusercontent.com/44101756/88472790-e5614580-ced3-11ea-83fc-de7ebbcc3bfe.png"
             ],
             "tags" : []
@@ -111,11 +150,15 @@
         {
             "title": "Smart Garden",
             "thumbnailDescription" : "A full stack app which allows adding, removing and saving plants or gardens. It also makes smart plant recommendations based on companion planting.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["React", "MongoDB", "Express", "Mongoose", "Node.js", "JavaScript ES6", "CSS"],
             "liveLink": "https://smart-garden-planting.herokuapp.com/",
             "gitLink": "https://github.com/Eric-Lingren/smartgarden",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472883-f068a580-ced4-11ea-8d02-bfac66bd1cc0.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472883-f068a580-ced4-11ea-8d02-bfac66bd1cc0.png",
                 "https://user-images.githubusercontent.com/44101756/88472885-f199d280-ced4-11ea-9742-a5f00c352021.png"
             ],
             "tags" : []
@@ -130,8 +173,8 @@
             "languages": ["JavaScript ES5", "CSS"],
             "liveLink": "http://funwithcanvas.surge.sh/index.html",
             "gitLink": "https://github.com/Eric-Lingren/my_projects/tree/master/canvas_practice",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472959-ea26f900-ced5-11ea-9777-c14848d2d072.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88472959-ea26f900-ced5-11ea-9777-c14848d2d072.png",
                 "https://user-images.githubusercontent.com/44101756/88472959-ea26f900-ced5-11ea-9777-c14848d2d072.png",
                 "https://user-images.githubusercontent.com/44101756/88472963-ed21e980-ced5-11ea-9ea6-73bc1e8634f5.PNG"
             ],
@@ -140,11 +183,15 @@
         {
             "title": "Colossal Adventure",
             "thumbnailDescription" : "A text-based RPG that utilizes readline-sync to accept user input and provide interaction directly within the console.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["JavaScript ES5", "Node.js"],
             "liveLink": "",
             "gitLink": "https://github.com/Eric-Lingren/colossal_adventure",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473024-9537b280-ced6-11ea-87bd-80855f6c4d78.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473024-9537b280-ced6-11ea-87bd-80855f6c4d78.png",
                 "https://user-images.githubusercontent.com/44101756/88473026-97017600-ced6-11ea-9239-cafe4e0b9b39.png"
             ],
             "tags" : []
@@ -152,11 +199,15 @@
         {
             "title": "CSS Zen Garden",
             "thumbnailDescription" : "A fully responsive front-end site created as a clone of the original based solely on a PSD.",
+            "detailsDescription" : "",
+            "objective": "",
+            "challenges": "", 
+            "learned": "",
             "languages": ["HTML5", "CSS3"],
             "liveLink": "http://zengarden.surge.sh/",
             "gitLink": "https://github.com/Eric-Lingren/zen_garden_project",
+            "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473069-1db65300-ced7-11ea-9666-57a279f4f0e9.png",
             "images" : [
-                "https://user-images.githubusercontent.com/44101756/88473069-1db65300-ced7-11ea-9666-57a279f4f0e9.png",
                 "https://user-images.githubusercontent.com/44101756/88473070-1f801680-ced7-11ea-80d4-ad1e740dc53a.png"
             ],
             "tags" : []

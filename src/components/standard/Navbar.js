@@ -1,10 +1,9 @@
 import React from 'react'
 // import { Link } from 'react-router-dom'
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link } from "react-scroll";
 
-const Navbar = (props) => {
+const Navbar = () => {
 
-    console.log(props)
     return(
         <div className='navbar-wrapper'>
             {/* <Link className='navbar-link' to='/about'> About </Link> */}

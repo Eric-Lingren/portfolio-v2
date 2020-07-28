@@ -2,6 +2,7 @@
     display : grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     justify-items: center;
+    margin-bottom: 75px;
 }
 
 @media only screen and (max-width: 425px) {
