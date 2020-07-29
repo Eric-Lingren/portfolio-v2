@@ -34,7 +34,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
             repeat: -1,
             delay: 3,
         })
-    })
+    }, [])
 
     // Animated Pixelate-Out of Logo
     useEffect(()=> {

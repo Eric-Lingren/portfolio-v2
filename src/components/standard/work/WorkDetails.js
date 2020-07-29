@@ -19,7 +19,7 @@ const WorkDetails = ({ match }) => {
     const githubLinkClass = githubLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
 
     const mappedCarouselImages = work.images.map( (image, i) => {
-        return <img src={image} key={i} className='carousel-image'/>
+        return <img src={image} key={i} alt='project' className='carousel-image'/>
     })
 
     const mappedLanguages = work.languages.map( (language, i) => {

@@ -47,15 +47,6 @@ class GameProvider extends Component {
         this.setState({isPlaying: playing})
     }
 
-    setScore = (score) => {
-        let gameScore = score
-        // console.log(gameScore)
-        // let currentScore = this.state.score
-        // let newScore = currentScore + points
-        // console.log(newScore)
-        // this.setState({ score: newScore })
-    }
-
 
     render(){
         return (
@@ -69,7 +60,6 @@ class GameProvider extends Component {
                     setCurrentIntroLine: this.setCurrentIntroLine,
                     setToggleIsInGameMode: this.setToggleIsInGameMode,
                     setIsLevelPlaying: this.setIsLevelPlaying,
-                    setScore: this.setScore
                     
                 }}>
                 { this.props.children }

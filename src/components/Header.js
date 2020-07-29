@@ -4,9 +4,9 @@ import { withGame } from '../providers/GameProvider'
 import portfolioLogo from '../assets/portfolio-logo-name.png'
 import playerIcon from '../assets/player.png'
 
-const Header = ({ isInGameMode, gameScore,  lives }) => {
+const Header = ({ isInGameMode, lives }) => {
+
     const [livesIcons, setLivesIcons] = useState([])
-    const [score, setScore] = useState(0)
 
     useEffect(() => {
         let livesList = []
@@ -16,17 +16,10 @@ const Header = ({ isInGameMode, gameScore,  lives }) => {
         setLivesIcons(livesList) 
     }, [ lives ] )
 
-    // const setScoreCallback = () => {
-
-    // }
-    // console.log(gameScore)
-    // useEffect(()=> {
-    //     console.log('gameScore Changed')
-    // }, [gameScore])
-
     const mappedLives = livesIcons.map( icon => {
         return <img key={icon} className='player-icon' alt='lives-icon' src={playerIcon} />
     })
+
 
     return(
         <div className='header-wrapper'>
@@ -34,7 +27,7 @@ const Header = ({ isInGameMode, gameScore,  lives }) => {
             { isInGameMode && 
                 <>
                     <h2 className='game-labels'> Score: </h2> 
-                    <h2 className='game-labels'> {score} </h2>
+                    <h2 className='game-labels'> 0 </h2>
                 </>
             }
             </div>
