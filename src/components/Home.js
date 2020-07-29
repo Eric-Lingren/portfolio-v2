@@ -123,7 +123,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                         value='game'
                         onMouseEnter={() => mouseoverAudio.play()}
                     > 
-                        Game Not Available on Mobile :(
+                        Game Not Available on Mobile
                     </button>
                 }
                 <button 

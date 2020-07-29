@@ -10,9 +10,14 @@ const WorkDetailsNavbar = () => {
                 to="/standard"
                 onClick={() => window.history.back()}
             > 
-                Back
+                {"<-"} Back
             </Link>
-            <Link className='navbar-link' to='/game'> Game Mode </Link>
+            {
+                window.innerWidth > 425 ?
+                <Link className='navbar-link' to='/game'> Game Mode </Link>
+                :
+                <span></span>
+            }
         </div>
     )
 }

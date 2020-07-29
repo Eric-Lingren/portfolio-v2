@@ -39,7 +39,7 @@ const Navbar = () => {
             > 
                 Skills 
             </ScrollLink>
-            <Link className='navbar-link' to='/game'> Game Mode </Link>
+            { window.innerWidth > 425 && <Link className='navbar-link' to='/game'> Game Mode </Link> }
         </div>
     )
 }
