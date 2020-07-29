@@ -18,7 +18,7 @@ const WorkCard = ({ id, title, thumbnailDescription, thumbnailImage, }) => {
     
     return(
         <div>
-            <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" flipSpeedFrontToBack={.75} flipSpeedBackToFront={.75}>
+            <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" flipSpeedFrontToBack={1.5} flipSpeedBackToFront={1.5}>
                 <WorkCardFront 
                     mouseOverCard={mouseOverCard} 
                     thumbnail={thumbnailImage}
