@@ -1,13 +1,10 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
 import { Link } from "react-scroll";
 
 const Navbar = () => {
 
     return(
         <div className='navbar-wrapper'>
-            {/* <Link className='navbar-link' to='/about'> About </Link> */}
-            {/* <Link className='navbar-link' to='/work'> Work </Link> */}
             <Link 
                 className='navbar-link' 
                 activeClass="active"
@@ -32,7 +29,6 @@ const Navbar = () => {
             </Link>
             <Link 
                 className='navbar-link' 
-                // to='/skills'
                 activeClass="active"
                 to="skills"
                 spy={true}

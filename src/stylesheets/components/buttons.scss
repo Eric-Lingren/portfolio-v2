@@ -1,8 +1,3 @@
-// .home-button {
-//     height: 50px;
-//     width: 100px;
-// }
-
 .eightbit-btn {
     background: $button-background;
     cursor: pointer;
@@ -11,6 +6,7 @@
     text-align: center;
     font-size: 30px;
     padding: 20px;
+    margin: 20px;
     width: 40%;
     opacity: .25;
     font-family: $press-start-font-family, cursive;
@@ -68,5 +64,13 @@
         &:active {
             box-shadow: inset $shadow-width $shadow-width 0px 0px $alt-shadow-color;
         }
+    }
+}
+
+
+@media only screen and (max-width: 425px) {
+    .eightbit-btn {
+        font-size: 16px;
+        width: 70%;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { TweenLite, TweenMax, Linear } from 'gsap'
 import { withGame } from '../providers/GameProvider'
@@ -6,7 +6,7 @@ import invaderLogo from '../assets/invader-logo2.png'
 import mouseoverSound from  '../assets/audio1.wav'
 
 const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
-
+    const [windowWidth, setWindowWidth] = useState(0)
     let history = useHistory()
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
@@ -14,6 +14,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     const mouseoverAudio = new Audio(mouseoverSound)
 
     useEffect(() => {
+        setWindowWidth(window.innerWidth)
         TweenLite.to(fullExpereienceButton.current, .75, {
             backgroundColor:"#55942b", 
             boxShadow: '0px 0px 10px 8px #fff',
@@ -41,8 +42,14 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
         const canvas = canvasRef.current
         const ctx = canvas.getContext("2d")
         ctx.imageSmoothingEnabled = false
-        canvas.style.width='50vw'
-        canvas.style.height='50vh'
+        let canvasWidth;
+        let canvasHeight;
+        windowWidth < 430 ? canvasWidth = '90vw' : canvasWidth = '50vw'
+        windowWidth < 430 ? canvasHeight = '90vw' : canvasHeight = '50vw'
+        windowWidth > 1400 ? canvasWidth = '50vw' : canvasWidth = '50vw'
+        windowWidth > 1400 ? canvasHeight = '35vw' : canvasHeight = '50vw'
+        canvas.style.width = canvasWidth
+        canvas.style.height = canvasHeight
         canvas.width  = canvas.offsetWidth
         canvas.height = canvas.offsetHeight
 
@@ -55,7 +62,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                 opacity: 1,
                 delay: .5
             });
-            TweenMax.to(canvas, 3, { opacity: 0, delay: 2, zIndex: 0 })
+            TweenMax.to(canvas, 3, { opacity: 0, delay: 1, zIndex: 0 })
             update()
         }
 
@@ -90,15 +97,27 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
             <canvas className='home-canvas' ref={canvasRef} />
 
             <div className='home-button-container'>
-                <button 
-                    className='eightbit-btn' 
-                    ref={fullExpereienceButton}
-                    value='game'
-                    onClick={handleInitilizeSite}
-                    onMouseEnter={() => mouseoverAudio.play()}
-                > 
-                    Gamified Site 
-                </button>
+                {
+                    windowWidth > 430 ? 
+                    <button 
+                        className='eightbit-btn' 
+                        ref={fullExpereienceButton}
+                        value='game'
+                        onClick={handleInitilizeSite}
+                        onMouseEnter={() => mouseoverAudio.play()}
+                    > 
+                        Gamified Site 
+                    </button>
+                : 
+                    <button 
+                        className='eightbit-btn mobile-button' 
+                        ref={fullExpereienceButton}
+                        value='game'
+                        onMouseEnter={() => mouseoverAudio.play()}
+                    > 
+                        Game Not Available on Mobile :(
+                    </button>
+                }
                 <button 
                     className='eightbit-btn eightbit-btn--proceed'
                     ref={standardExpereienceButton}
@@ -109,15 +128,6 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                     Standard Site 
                 </button>
             </div>
-            {/* <button 
-                    className='eightbit-btn' 
-                    ref={fullExpereienceButton}
-                    value='full'
-                    onClick={handleInitilizeSite}
-                    onMouseEnter={play}
-                > 
-                    Full Expereince 
-                </button> */}
         </div>
     )
 }

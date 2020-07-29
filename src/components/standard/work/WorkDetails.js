@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel'
 import Navbar from '../Navbar'
+import WorkDetailsNavbar from './WorkDetailsNav'
 import workData from './workData.json'
 
 const WorkDetails = ({ match }) => {
@@ -13,14 +14,11 @@ const WorkDetails = ({ match }) => {
     let id = parseInt(match.params.id)
     let work = workData.projects[id]
 
-    console.log(work)
-
     const liveLinkAvailable = work.liveLink.length > 0
     const liveLinkClass = liveLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
     const githubLinkAvailable = work.gitLink.length > 0
     const githubLinkClass = githubLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
 
-    // work.images.shift()
     const mappedCarouselImages = work.images.map( (image, i) => {
         return <img src={image} key={i} className='carousel-image'/>
     })
@@ -44,7 +42,7 @@ const WorkDetails = ({ match }) => {
     return(
         <div className='standard-site-wrapper'>
             <div className='standard-site-container'>
-                <Navbar />
+                <WorkDetailsNavbar />
                 <div className='work-details-layout'>
                     <h1 className='work-details-title'> {work.title} </h1>
                     <div className='carousel-container-layout'>

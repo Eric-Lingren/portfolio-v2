@@ -6,23 +6,17 @@ import Skills from './skills/Skills'
 
 const StandardHome = () => {
 
-    // const aboutRef = useRef(null)
-    // const workRef = useRef(null)
-    // const skillsRef = useRef(null)
-
     const scroll = (link) => {
         console.log(link)
     }
 
     return(
         <div className='standard-site-wrapper'>
-        <div className='standard-site-container'>
-            <Navbar 
-                // scroll={scroll}
-            />
-            <About />
-            <Work />
-            <Skills />
+            <div className='standard-site-container'>
+                <Navbar />
+                <About />
+                <Work />
+                <Skills />
             </div>
         </div>
     )
