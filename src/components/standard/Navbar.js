@@ -1,11 +1,12 @@
 import React from 'react'
-import { Link } from "react-scroll";
+import { Link as ScrollLink } from "react-scroll";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
 
     return(
         <div className='navbar-wrapper'>
-            <Link 
+            <ScrollLink 
                 className='navbar-link' 
                 activeClass="active"
                 to="about"
@@ -15,8 +16,8 @@ const Navbar = () => {
                 duration={700}
             > 
                 About 
-            </Link>
-            <Link 
+            </ScrollLink>
+            <ScrollLink 
                 className='navbar-link' 
                 activeClass="active"
                 to="work"
@@ -26,8 +27,8 @@ const Navbar = () => {
                 duration={700}
             > 
                 Work 
-            </Link>
-            <Link 
+            </ScrollLink>
+            <ScrollLink 
                 className='navbar-link' 
                 activeClass="active"
                 to="skills"
@@ -37,7 +38,7 @@ const Navbar = () => {
                 duration={700}
             > 
                 Skills 
-            </Link>
+            </ScrollLink>
             <Link className='navbar-link' to='/game'> Game Mode </Link>
         </div>
     )
