@@ -45,7 +45,30 @@
     height: 400px;
 }
 
-@media only screen and (max-width: 1200px) {
+
+@media only screen and (max-width: 2560px) {
+    .carousel-image {
+        height: 800px;
+    }
+}
+
+@media only screen and (min-width: 1440px) {
+    .header-logo {
+        height: 10vw;
+        width: 35vh;
+    }
+    .skill-badge-image-long {
+        width: auto;
+        height: 70px;
+    }
+    .skill-badge-image {
+        width: auto;
+        height: 70px;
+    }
+    
+}
+
+@media only screen and (min-width: 1200px) {
     .header-logo {
         height: 10vw;
         width: 35vh;
@@ -60,7 +83,7 @@
     }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 768px) {
     .header-logo {
         height: 12vw;
         width: 30vh;
@@ -87,6 +110,17 @@
     }
     .skill-badge-image {
         margin: 10px 0 10px 0;
+    }
+    .carousel-image {
+        height: 300px;
+    }
+}
+
+
+@media only screen and (max-width: 425px) {
+    .carousel-image {
+        width: 400px;
+        height: 225px;
     }
 }
 

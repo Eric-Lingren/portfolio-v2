@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel'
-import Navbar from '../Navbar'
 import WorkDetailsNavbar from './WorkDetailsNav'
 import workData from './workData.json'
 

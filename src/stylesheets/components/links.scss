@@ -48,3 +48,26 @@
     padding: 0 5px 5px 5px;
     margin-bottom: 11px;
 }
+
+
+@media only screen and (min-width: 768px) {
+
+    .work-details-link-available {
+        font-size: 14px;
+    }
+
+    .work-details-link-not-available {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+
+    .work-details-link-available {
+        font-size: 12px;
+    }
+
+    .work-details-link-not-available {
+        font-size: 12px;
+    }
+}

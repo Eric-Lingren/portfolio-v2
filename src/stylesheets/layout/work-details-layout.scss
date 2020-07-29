@@ -6,6 +6,7 @@
 .work-details-link-container {
     display: flex;
     justify-content: space-evenly;
+    margin-bottom: 30px;
 }
 
 .carousel-container-layout {
@@ -29,7 +30,38 @@
 
 .work-details-text-container {
     width: 90%;
-    padding: 25px 0 0px 0;
+    padding: 25px 0 100px 0;
     display: grid;
     grid-template-columns: 1fr 2fr;
+}
+
+@media only screen and (max-width: 2560px) {
+    .carousel-container {
+        width: 80%;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .work-details-text-container {
+        padding: 20px 0 20px 0;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .carousel-container {
+        width: 90%;
+    }
+    .work-details-text-container {
+        padding: 15px 0 15px 0;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    .carousel-container {
+        width: 90%;
+    }
+    .work-details-text-container {
+        display: flex;
+        flex-direction: column;
+    }
 }
