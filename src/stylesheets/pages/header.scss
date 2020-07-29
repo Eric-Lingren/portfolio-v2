@@ -2,10 +2,3 @@
     font-family: $press-start-font-family, 'Courier New', Courier, monospace;
     margin-top: 0;
 }
-
-@media only screen and (max-width: 425px) {
-    .header-logo {
-        height: 10vw;
-        width: 25vh;
-    }
-}

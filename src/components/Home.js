@@ -44,10 +44,18 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
         ctx.imageSmoothingEnabled = false
         let canvasWidth;
         let canvasHeight;
-        windowWidth < 430 ? canvasWidth = '90vw' : canvasWidth = '50vw'
-        windowWidth < 430 ? canvasHeight = '90vw' : canvasHeight = '50vw'
-        windowWidth > 1400 ? canvasWidth = '50vw' : canvasWidth = '50vw'
-        windowWidth > 1400 ? canvasHeight = '35vw' : canvasHeight = '50vw'
+
+        if( window.innerWidth < 430){
+            canvasWidth = '90vw'
+            canvasHeight = '90vw'
+        }else if(window.innerWidth < 430 && window.innerWidth < 1400 ){
+            canvasWidth = '50vw'
+            canvasHeight = '50vw'
+        }else{
+            canvasWidth = '50vw'
+            canvasHeight = '35vw'
+        }
+
         canvas.style.width = canvasWidth
         canvas.style.height = canvasHeight
         canvas.width  = canvas.offsetWidth
