@@ -1,10 +1,10 @@
 import React from 'react'
-import workData from './workData.json'
+import workData from './workData'
 import WorkCard from './WorkCard'
 
 const WorkList = ({selectedFilters}) => {
 
-    const mappedWork = workData.projects.map((project, index) => {
+    const mappedWork = workData.map((project, index) => {
         let card = project.tags.filter(tag => selectedFilters.includes(tag))
         if(card.length){
             return(

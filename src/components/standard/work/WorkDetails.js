@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel'
 import WorkDetailsNavbar from './WorkDetailsNav'
-import workData from './workData.json'
+import workData from './workData.js'
 
 const WorkDetails = ({ match }) => {
 
@@ -10,8 +10,9 @@ const WorkDetails = ({ match }) => {
         window.scrollTo(0, 0)
     }, [])
 
+
     let id = parseInt(match.params.id)
-    let work = workData.projects[id]
+    let work = workData[id]
 
     const liveLinkAvailable = work.liveLink.length > 0
     const liveLinkClass = liveLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'

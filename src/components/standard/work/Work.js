@@ -5,13 +5,12 @@ import WorkList from './WorkList'
 const initialFilters = ["Back End", "Front End", "Full Stack", "Database", "Security", "Linux","Challenges", "Teaching"]
 
 const Work = () => {
+    
     const [selectedFilters, setSelectedFilters] = useState(initialFilters)
 
     const filterWork = (e) => {
         const { name, checked } = e.target
-
         let filters = selectedFilters
-        
         if (checked){
             filters.push(name)
         } else{

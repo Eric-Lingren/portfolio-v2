@@ -26,9 +26,6 @@
 }
 
 .work-list-container {
-    // display: flex;
-    // justify-content: space-between;
-    // flex-wrap: wrap
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
     grid-gap: 1em;
@@ -38,14 +35,6 @@
     .work-filter-input-group {
         margin-left: 2vw;
     }
-}
-
-@media only screen and (max-width: 768px) {
-    // .work-list-container {
-    //     justify-content: center;
-    //     align-content: center;
-    //     align-items: center;
-    // }
 }
 
 @media only screen and (max-width: 425px) {
