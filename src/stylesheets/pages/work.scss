@@ -5,12 +5,13 @@
     width: 300px;
     box-shadow: 8px 6px 10px rgba(44, 106, 219, 0.5);
     margin-bottom: 5vw;
+    
+    // margin-left: 2em;
 }
-
 
 .work-card-tile-front {
 	display: block;
-	overflow: hidden;
+    overflow: hidden;
 }
 
 .work-card-tile-back {
@@ -34,4 +35,26 @@
 }
 
 
+@media only screen and (max-width: 1024px) {
+    .work-card-tile-container {
+        margin-left: 3em;
+    }
+}
 
+@media only screen and (max-width: 768px) {
+    .work-card-tile-container {
+        margin-left: 9em;
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .work-card-tile-container {
+        margin-left: 2em;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .work-card-tile-container {
+        margin-left: 1em;
+    }
+}

@@ -37,7 +37,7 @@
                 "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
                 "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
             ],
-            "tags" : []
+            "tags" : ["Challenges"]
         },
         {
             "title": "Over The Wire",
@@ -56,7 +56,7 @@
                 "https://user-images.githubusercontent.com/44101756/88749139-eb436a80-d10f-11ea-975d-cae99817a091.png",
                 "https://user-images.githubusercontent.com/44101756/88749142-ebdc0100-d10f-11ea-8bdf-4a4c0e71bd5c.png"
             ],
-            "tags" : []
+            "tags" : ["Linux", "Security"]
         },
         {
             "title": "Custom NPM Packages",
@@ -72,7 +72,7 @@
             "images" : [
                 "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
             ],
-            "tags" : []
+            "tags" : ["Back End"]
         },
         {
             "title": "Employee CRUD",
@@ -90,7 +90,7 @@
                 "https://user-images.githubusercontent.com/44101756/88749619-ea5f0880-d110-11ea-81d1-be5ac5f6637d.png",
                 "https://user-images.githubusercontent.com/44101756/88749628-edf28f80-d110-11ea-85e2-d5671e1858fc.png"
             ] ,
-            "tags" : []
+            "tags" : ["Full Stack"]
         },
         {
             "title": "Count Champ",
@@ -106,7 +106,7 @@
             "images" : [
                 "https://user-images.githubusercontent.com/44101756/88472212-b3e57b80-cecd-11ea-92a0-b6b3520d68cc.png"
             ],
-            "tags" : []
+            "tags" : ["Front End"]
         },
         {
             "title": "Card Counters Blackjack",
@@ -126,7 +126,7 @@
                 "https://user-images.githubusercontent.com/44101756/88749957-ac161900-d111-11ea-82e5-0d5319459121.png",
                 "https://user-images.githubusercontent.com/44101756/88749958-acaeaf80-d111-11ea-8356-e0b4cde9d168.png"
             ],
-            "tags" : []
+            "tags" : ["Front End"]
         },
         {
             "title": "Infinity Investments",

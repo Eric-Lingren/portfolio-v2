@@ -1,6 +1,6 @@
 .work-layout{
     display: flex;
-    flex-direction: column;   
+    flex-direction: column; 
 }
 
 .work-filter-layout {
@@ -26,9 +26,12 @@
 }
 
 .work-list-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap:wrap
+    // display: flex;
+    // justify-content: space-between;
+    // flex-wrap: wrap
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-gap: 1em;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -38,11 +41,11 @@
 }
 
 @media only screen and (max-width: 768px) {
-    .work-list-container {
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-    }
+    // .work-list-container {
+    //     justify-content: center;
+    //     align-content: center;
+    //     align-items: center;
+    // }
 }
 
 @media only screen and (max-width: 425px) {

@@ -11,7 +11,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
     const standardExpereienceButton = useRef()
-    const mouseoverAudio = new Audio(mouseoverSound)
+    // const mouseoverAudio = new Audio(mouseoverSound)
 
     useEffect(() => {
         setWindowWidth(window.innerWidth)
@@ -112,7 +112,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                         ref={fullExpereienceButton}
                         value='game'
                         onClick={handleInitilizeSite}
-                        onMouseEnter={() => mouseoverAudio.play()}
+                        // onMouseEnter={() => mouseoverAudio.play()}
                     > 
                         Gamified Site 
                     </button>
@@ -121,7 +121,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                         className='eightbit-btn mobile-button' 
                         ref={fullExpereienceButton}
                         value='game'
-                        onMouseEnter={() => mouseoverAudio.play()}
+                        // onMouseEnter={() => mouseoverAudio.play()}
                     > 
                         Game Not Available on Mobile
                     </button>
@@ -131,7 +131,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                     ref={standardExpereienceButton}
                     value='standard'
                     onClick={handleInitilizeSite}
-                    onMouseEnter={() => mouseoverAudio.play()}
+                    // onMouseEnter={() => mouseoverAudio.play()}
                 > 
                     Standard Site 
                 </button>

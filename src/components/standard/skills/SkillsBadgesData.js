@@ -1,4 +1,4 @@
-import adobeAudition from '../../../assets/skills-badges/adobe-audition.png'
+// import adobeAudition from '../../../assets/skills-badges/adobe-audition.png'
 import adobeIllustrator from '../../../assets/skills-badges/adobe-illustrator.png'
 import adobePhotoshop from '../../../assets/skills-badges/adobe-photoshop.png'
 import adobePremier from '../../../assets/skills-badges/adobe-premier.png'
@@ -18,6 +18,7 @@ import mongoose from '../../../assets/skills-badges/mongooseBadge.png'
 import mysql from '../../../assets/skills-badges/mysql.png'
 import nginx from '../../../assets/skills-badges/nginx.png'
 import nodejs from '../../../assets/skills-badges/nodejs.png'
+import python from '../../../assets/skills-badges/python.png'
 import reactNative from '../../../assets/skills-badges/react-native.png'
 import reactjs from '../../../assets/skills-badges/reactjs.png'
 import sass from '../../../assets/skills-badges/sass.png'
@@ -30,17 +31,18 @@ const SkillsBadgesArray =  [
     sass,
     cisco,
     mongoose,
-    gsap,
     html,
     css,
     js,
     reactjs,
     reactNative,
+    gsap,
     jest,
     chartJs,
     d3,
     mongodb,
     mysql,
+    python,
     nginx,
     vmware,
     wireshark,
@@ -49,7 +51,7 @@ const SkillsBadgesArray =  [
     adobePhotoshop,
     adobeIllustrator,
     adobePremier,
-    adobeAudition
+    // adobeAudition,
 ]
 
 

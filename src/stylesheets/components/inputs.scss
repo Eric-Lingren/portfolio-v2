@@ -81,6 +81,10 @@
         height: 20px;
         width: 20px;
     }
+    .work-input-container .checkmark:after {
+        left: 6px;
+        top: 2px;
+    }
 }
 
 @media only screen and (max-width: 768px) {
@@ -94,5 +98,16 @@
     .checkmark {
         height: 16px;
         width: 16px;
+        border-radius: 5px;
+    }
+    .work-input-container .checkmark:after {
+        left: 4px;
+        top: 0px;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    .work-input-label {
+        font-size: 14px;
     }
 }
