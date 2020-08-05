@@ -1,3 +1,5 @@
+import expiringUrlsWorkflow from '../../../assets/work/iocdf-expiring-urls/IOCDF-trial-license-system-portfolio-version.pdf'
+
 const projects = [
     {
         "title": "Project Euler",
@@ -17,15 +19,16 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88742209-df9b7800-d0fe-11ea-8369-547d668652b5.png",
             "https://user-images.githubusercontent.com/44101756/88745450-576da080-d107-11ea-8be8-3838071e6fe5.png"
         ],
-        "tags" : ["Challenges"]
+        "tags" : ["Challenges"],
+        "additionalAssets" : ["https://projecteuler.net/"]
     },
     {
         "title": "Coding Challenges",
         "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "This simple PrismJS based site is to display code snippets of some coding challenges I have done.  This is an ongoing project that I add to when I have time.",
+        "objective": "Practice and improve coding skills.",
+        "challenges": "Trying to use js methods that I am unfamiliar with but more optimal.", 
+        "learned": "Better method utilization and problem-solving.",
         "languages": ["React", "JavaScript", "CSS", "PrismJS"],
         "liveLink": "https://erics-coding-challenges.netlify.app/",
         "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
@@ -36,15 +39,16 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
             "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
         ],
-        "tags" : ["Challenges"]
+        "tags" : ["Challenges"],
+        "additionalAssets" : []
     },
     {
         "title": "Over The Wire",
-        "thumbnailDescription" : "A gameified site that focuses on learning Linux, networking and security concepts.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "thumbnailDescription" : "A gamified site that focuses on learning Linux, networking and security concepts.",
+        "detailsDescription" : "This project is a series of coding challenges that are found at overthewire.com.  This is a gamified site geared towards learning web and server security and improving Linux skills.",
+        "objective": "Learn what I don't know about security concepts for web and server development.",
+        "challenges": "Pretty much everything beyond the first few levels has been a challenge for me.", 
+        "learned": "My Linux skills have increased exponentially while working through these projects. The security aspects of server and web development has made this one of the most fun projects I have built.",
         "languages": ["Linux", "React", "JavaScript", "CSS"],
         "liveLink": "https://over-the-wire.netlify.app/",
         "gitLink": "https://github.com/Eric-Lingren/over_the_wire",
@@ -55,15 +59,16 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88749139-eb436a80-d10f-11ea-975d-cae99817a091.png",
             "https://user-images.githubusercontent.com/44101756/88749142-ebdc0100-d10f-11ea-8bdf-4a4c0e71bd5c.png"
         ],
-        "tags" : ["Linux", "Security"]
+        "tags" : ["Linux", "Security"],
+        "additionalAssets" : ["https://overthewire.org/wargames/"]
     },
     {
         "title": "Custom NPM Packages",
         "thumbnailDescription" : "This is the full list of all the NPM packages I have built.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "This is the list of all the NPM packages I have built.  One to removes all whitepace from a string, one performs enhanced date parsing methods.",
+        "objective": "To publish custom packages.",
+        "challenges": "Working within the NPM ecosystem.", 
+        "learned": "How to utilize NPM properly, better understandin of JS file imports and exports.",
         "languages": ["Node.js", "NPM", "JavaScript"],
         "liveLink": "https://www.npmjs.com/package/@fxhacker/get_date",
         "gitLink": "https://github.com/Eric-Lingren/npm_projects",
@@ -71,15 +76,33 @@ const projects = [
         "images" : [
             "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
         ],
-        "tags" : ["Back End"]
+        "tags" : ["Back End"],
+        "additionalAssets" : []
     },
     {
-        "title": "Employee CRUD",
-        "thumbnailDescription" : "A full stack CRUD site for simple HR employee management.",
+        "title": "Forex Robots",
+        "thumbnailDescription" : "",
         "detailsDescription" : "",
         "objective": "",
         "challenges": "", 
         "learned": "",
+        "languages": ["MT4, AWS"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Employee CRUD",
+        "thumbnailDescription" : "A full stack CRUD site for simple HR employee management.",
+        "detailsDescription" : "A full-stack CRUD site that is for simple HR employee management.  Gives the availability to add new employees, update employees, delete employees, and get all employees. The live site is hosted on the free tier of Heroku, so it may take 15 seconds to load.",
+        "objective": "Demonstrate and refresh my skills on a simple full stack project.",
+        "challenges": "None.  Just a refresher project.", 
+        "learned": "Getting better at ReactStrap",
         "languages": ["React", "MongoDB", "Mongoose", "ReactStrap", "Express", "CSS"],
         "liveLink": "http://crud-employees.herokuapp.com/",
         "gitLink": "https://github.com/Eric-Lingren/crud_employees",
@@ -89,7 +112,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88749619-ea5f0880-d110-11ea-81d1-be5ac5f6637d.png",
             "https://user-images.githubusercontent.com/44101756/88749628-edf28f80-d110-11ea-85e2-d5671e1858fc.png"
         ] ,
-        "tags" : ["Full Stack"]
+        "tags" : ["Full Stack"],
+        "additionalAssets" : []
     },
     {
         "title": "Count Champ",
@@ -105,7 +129,8 @@ const projects = [
         "images" : [
             "https://user-images.githubusercontent.com/44101756/88472212-b3e57b80-cecd-11ea-92a0-b6b3520d68cc.png"
         ],
-        "tags" : ["Front End"]
+        "tags" : ["Front End"],
+        "additionalAssets" : []
     },
     {
         "title": "Card Counters Blackjack",
@@ -125,7 +150,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88749957-ac161900-d111-11ea-82e5-0d5319459121.png",
             "https://user-images.githubusercontent.com/44101756/88749958-acaeaf80-d111-11ea-8356-e0b4cde9d168.png"
         ],
-        "tags" : ["Front End"]
+        "tags" : ["Front End"],
+        "additionalAssets" : []
     },
     {
         "title": "Infinity Investments",
@@ -143,7 +169,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88750459-d4eade00-d112-11ea-8d5d-327b04fcd197.png",
             "https://user-images.githubusercontent.com/44101756/88750339-89383480-d112-11ea-840f-74b790ed442a.png"
         ],
-        "tags" : ["Full Stack"]
+        "tags" : ["Full Stack"],
+        "additionalAssets" : []
     },
     {
         "title": "Crypto Minerz",
@@ -161,7 +188,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88751032-044e1a80-d114-11ea-8fe4-ebee39479d38.png",
             "https://user-images.githubusercontent.com/44101756/88751040-06b07480-d114-11ea-8f06-54eb32d3f661.png"
         ],
-        "tags" : ["Full Stack"]
+        "tags" : ["Full Stack"],
+        "additionalAssets" : []
     },
     {
         "title": "Smart Garden",
@@ -180,7 +208,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88751812-a589a080-d115-11ea-90dd-ea9bbae0e956.png",
             "https://user-images.githubusercontent.com/44101756/88751813-a6223700-d115-11ea-987c-63cd4b528ec1.png"
         ],
-        "tags" : ["Full Stack"]
+        "tags" : ["Full Stack"],
+        "additionalAssets" : []
     },
     {
         "title": "Fun With Canvas",
@@ -199,7 +228,8 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88752115-5859fe80-d116-11ea-91c0-8cf51da1bb10.png",
             "https://user-images.githubusercontent.com/44101756/88752119-58f29500-d116-11ea-8287-bc5e7f4bc609.png"
         ],
-        "tags" : ["Front End"]
+        "tags" : ["Front End"],
+        "additionalAssets" : []
     },
     // {
     //     "title": "Colossal Adventure",
@@ -215,7 +245,8 @@ const projects = [
     //     "images" : [
     //         "https://user-images.githubusercontent.com/44101756/88473026-97017600-ced6-11ea-9239-cafe4e0b9b39.png"
     //     ],
-    //     "tags" : []
+    //     "tags" : [],
+    //     "additionalAssets" : []
     // },
     {
         "title": "CSS Zen Garden",
@@ -231,7 +262,8 @@ const projects = [
         "images" : [
             "https://user-images.githubusercontent.com/44101756/88473070-1f801680-ced7-11ea-80d4-ad1e740dc53a.png"
         ],
-        "tags" : []
+        "tags" : [],
+        "additionalAssets" : []
     }
 ]
 

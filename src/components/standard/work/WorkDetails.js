@@ -31,6 +31,14 @@ const WorkDetails = ({ match }) => {
         }
     })
 
+    const mappedAdditionalLinks = work.additionalAssets.length && work.additionalAssets.map( (resource, i) => {
+        return(
+            <a href={resource} target='_blank' rel='noopener noreferrer' >
+                <span key={i} className='additional-resources-link'> Resource {i+1} </span>
+            </a>
+        )
+    })
+
     const mappedTags = work.tags.map( (tag, i) => {
         if( i < work.tags.length-1){
             return <span key={i} className=''> {tag}, </span>
@@ -76,7 +84,15 @@ const WorkDetails = ({ match }) => {
                             <div> {githubLinkAvailable > 0 ? 'Available Here' : 'Not Available'} </div>
                         </a>
                     </div>
-
+                    {
+                        work.additionalAssets.length > 0 &&
+                        <div className='additional-assets-container'> 
+                            <h3 className='additiona-assets-header'> Additional Resources: </h3>
+                            <div className='additional-assets-link-container'>
+                                {mappedAdditionalLinks} 
+                            </div>
+                        </div>
+                    }
                     <div className='work-details-text-wrapper'>
                         <div className='work-details-text-container'>
                             <h1 className='work-details-text-header description'> Description </h1>
