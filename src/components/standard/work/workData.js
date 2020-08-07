@@ -108,7 +108,7 @@ const projects = [
     {
         "title": "Stripe Integration",
         "thumbnailDescription" : "An End-to-End Credit Card Processing Integration",
-        "detailsDescription" : "This is a full stack credit card processing system that sends the data from the react front end elements to the Node.js back end for authentication and validation before sending the request securely to Stripe for processing.  This lives in a private repo, so the code cand be shared, but I can share some screenshots with details obscured away.",
+        "detailsDescription" : "This is a full stack credit card processing system that sends the data from the react front end elements to the Node.js back end for authentication and validation before sending the request securely to Stripe for processing.  This lives in a private repo, so the code can't be shared, but I can share some screenshots with details obscured away.",
         "objective": "To allow payment for different products.",
         "challenges": "Ensuring proper security and validation checks happened correctly.", 
         "learned": "Best practices for payment processors. ",
@@ -256,6 +256,26 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
         ],
         "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Inventory Manager",
+        "thumbnailDescription" : "A complex inventory management platform that tracks expirations and category relations",
+        "detailsDescription" : "This project is unfinished but was a fun one to build a fully open back end architecture for users to create their own data structures and relations for categorizing inventory data. You can see the other planned features after logging in. This site is hosted on the free tier of Heroku so it may take some time to spin up, but if you want to access it, here are demo credentials: demoadmin@email.com demo123$",
+        "objective": "To build a fully customizable inventory management platform for tracking items, groceries, etc.",
+        "challenges": "My front end UI and responsiveness is terrible. I always find myself struggling with this since its not a strength.", 
+        "learned": "Gained a better mastery of database architecture design.",
+        "languages": ["React", "Node", "MySql", "Express"],
+        "liveLink": "http://prep-inventory-manager.herokuapp.com/",
+        "gitLink": "https://github.com/Eric-Lingren/inventory-manager",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89673177-2594d080-d8a3-11ea-8bf4-359720470a34.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89673179-275e9400-d8a3-11ea-82c1-7fee0379127c.png",
+            "https://user-images.githubusercontent.com/44101756/89673181-288fc100-d8a3-11ea-8c4d-f63f81fb69ab.png",
+            "https://user-images.githubusercontent.com/44101756/89673190-29c0ee00-d8a3-11ea-8f17-a261563c134e.png",
+            "https://user-images.githubusercontent.com/44101756/89673195-2b8ab180-d8a3-11ea-8355-abbfc1a782a4.png"
+        ],
+        "tags" : ["Full Stack", "Database"],
         "additionalAssets" : []
     },
     {
@@ -448,5 +468,5 @@ export default projects
 
 //     ],
 //     "tags" : [""],
-//     "" : []
+//     "additionalAssets" : []
 // },
