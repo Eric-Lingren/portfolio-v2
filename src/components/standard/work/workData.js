@@ -1,7 +1,5 @@
 import expiringUrlsWorkflow from '../../../assets/work/iocdf-expiring-urls/IOCDF-trial-license-system-portfolio-version.pdf'
 import countChampFree from '../../../assets/work/count-champ/CountChampFree-signed.apk'
-import teachingFsw115 from '../../../assets/work/teaching-fsw-115/teaching-fsw-115.mp4'
-import teachingFsw120 from '../../../assets/work/teaching-fsw-120/teaching-fsw-120.mp4'
 
 const projects = [
     {
@@ -221,7 +219,7 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/89610611-36f4c300-d838-11ea-9782-6b35e0f120b9.png"
         ],
         "tags" : ["Back End", "Teaching"],
-        "additionalAssets" : [ teachingFsw115 ]
+        "additionalAssets" : [ "https://youtu.be/Ip6bFp66bR4" ]
     },
     {
         "title": "Teaching React Routing & Hooks",
@@ -241,7 +239,7 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/89610780-a79bdf80-d838-11ea-9b77-f591a3c74fb5.png"
         ],
         "tags" : ["Front End", "Teaching"],
-        "additionalAssets" : [ teachingFsw120 ]
+        "additionalAssets" : [ "https://youtu.be/goqoOdKhnoA" ]
     },
     {
         "title": "Custom NPM Packages",
