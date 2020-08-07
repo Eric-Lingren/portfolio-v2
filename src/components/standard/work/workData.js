@@ -1,4 +1,7 @@
 import expiringUrlsWorkflow from '../../../assets/work/iocdf-expiring-urls/IOCDF-trial-license-system-portfolio-version.pdf'
+import countChampFree from '../../../assets/work/count-champ/CountChampFree-signed.apk'
+import teachingFsw115 from '../../../assets/work/teaching-fsw-115/teaching-fsw-115.mp4'
+import teachingFsw120 from '../../../assets/work/teaching-fsw-120/teaching-fsw-120.mp4'
 
 const projects = [
     {
@@ -63,6 +66,184 @@ const projects = [
         "additionalAssets" : ["https://overthewire.org/wargames/"]
     },
     {
+        "title": "Forex Robots",
+        "thumbnailDescription" : "A collection of robot algorithms that trade the foreign currency markets.",
+        "detailsDescription" : "This is a collection of 10 different robot algos I have built over the years for the MT4 FOREX trading platform.  Since these are all proprietary, the repo is not publically available, but you can view the performance of some of them via the MyFxBook Platform links above.",
+        "objective": "Testing different automated revenue generation strategies.",
+        "challenges": "Everything about these was hard, especially the weird MT4 coding syntax they use, which is a C++ based derivative language.", 
+        "learned": "MT4 and how to manage the AWS servers that they run on.",
+        "languages": ["MT4, AWS"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89599803-c3de5300-d81d-11ea-98d8-3263120dc749.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89599540-18cd9980-d81d-11ea-9853-bf3fba2f95c2.png",
+            "https://user-images.githubusercontent.com/44101756/89599548-1d924d80-d81d-11ea-956a-1e53f934f8b0.png",
+            "https://user-images.githubusercontent.com/44101756/89599590-3ef33980-d81d-11ea-9900-776dee595ed2.png"
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : [
+            "https://www.myfxbook.com/portfolio/demo-5-profit-finch/2688114",
+            "https://www.myfxbook.com/portfolio/current-live-acct/3298221",
+            "https://www.myfxbook.com/portfolio/live/1913941"
+        ]
+    },
+    {
+        "title": "Auto-Expiring Demo URL's",
+        "thumbnailDescription" : "A back end system that creates and expires urls for issuing demo software licenses.",
+        "detailsDescription" : "This system allows a sales representative to request a product demo to be sent from a contact record within Salesforce. It then sends a request to a Node server, which creates a unique key hash, embeds it in the URL, and emails the custom link to the client in an email to demo the requested product. It lives within a proprietary codebase to the reop is private, but I can share a few pieces of how it works.",
+        "objective": "To create a way that my company could send lightweight versions of our products to prospective clients that would auto destroy after a seven-day window.",
+        "challenges": "Hashing the keys into the URL and having react-browser-router check them upon component mounting.", 
+        "learned": "A lot more about encryption and routing authentication",
+        "languages": ["Node, MySql, React", "Salesforce"],
+        "liveLink": "http://localhost:3000/digital-bursts/iocdf/b8db8717d2a33bd4b91438007b167266ed8f825451ca2c2efa259ab2c659a4d87e6f9a87aea7e6479bde9be45de7f460",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89600791-17ea3700-d820-11ea-9edc-fe3e35e565db.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89601036-c1312d00-d820-11ea-9026-680a20182456.png",
+            "https://user-images.githubusercontent.com/44101756/89600418-43b8ed00-d81f-11ea-8e77-80dde4ba77ca.png",
+            "https://user-images.githubusercontent.com/44101756/89600421-44ea1a00-d81f-11ea-8285-5da24b2c8a7f.png"
+        ],
+        "tags" : ["Back End, Database", "Security"],
+        "additionalAssets" : [ expiringUrlsWorkflow ]
+    },
+    {
+        "title": "Stripe Integration",
+        "thumbnailDescription" : "An End-to-End Credit Card Processing Integration",
+        "detailsDescription" : "This is a full stack credit card processing system that sends the data from the react front end elements to the Node.js back end for authentication and validation before sending the request securely to Stripe for processing.  This lives in a private repo, so the code cand be shared, but I can share some screenshots with details obscured away.",
+        "objective": "To allow payment for different products.",
+        "challenges": "Ensuring proper security and validation checks happened correctly.", 
+        "learned": "Best practices for payment processors. ",
+        "languages": ["React, Node.js"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89602233-81b81000-d823-11ea-9ad6-ec6f41d8b0e8.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89602629-6994c080-d824-11ea-9461-9b8df767e733.png",
+            "https://user-images.githubusercontent.com/44101756/89602646-731e2880-d824-11ea-9a44-7419ea851f20.png",
+            "https://user-images.githubusercontent.com/44101756/89602999-546c6180-d825-11ea-9cce-cb53ad94cd41.png",
+            "https://user-images.githubusercontent.com/44101756/89602913-166f3d80-d825-11ea-8e62-7f5b2610e96c.png"
+        ],
+        "tags" : ["Back End", "Front End", "Security"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "IOD Analytics Dashboard",
+        "thumbnailDescription" : "A data visualization aggregator to display user-product flows",
+        "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables to join and compile the data for the Chart.js and React front end to consume.",
+        "objective": "To display user journey stories across a particular product platform in a clear manner.",
+        "challenges": "Aggregating thousands of records across many tables in a performant manner for rendering.", 
+        "learned": "Complex nested SQL table joins.",
+        "languages": ["React, Chart.js, MySql, Node, Express"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89608129-78ce3b00-d831-11ea-9fcd-e6535752d478.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89608117-7370f080-d831-11ea-92df-b872a55a2c42.png",
+            "https://user-images.githubusercontent.com/44101756/89608125-7835a480-d831-11ea-915c-623c8ba82673.png",
+            "https://user-images.githubusercontent.com/44101756/89608126-7835a480-d831-11ea-9545-f7977269f7b5.png",
+            "https://user-images.githubusercontent.com/44101756/89608127-78ce3b00-d831-11ea-9b24-ae8b9470af68.png",
+            "https://user-images.githubusercontent.com/44101756/89608698-1118ef80-d833-11ea-9185-e2abf7b4785c.png"
+        ],
+        "tags" : ["Back End", "Front End", "Full Stack", "Database"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "API Server",
+        "thumbnailDescription" : "A Freelance Client Contract for a Custom an API Server",
+        "detailsDescription" : "This project was contract work for a client; therefore the URLs and repos are private, so I have included a few screenshots. This site has full Cross-Site Script and No-SQL injection protection.",
+        "objective": "The client requested a full CRUD 'cheap' server that could accept and respond to requests securely and have clean data in a MongoDB architecture.",
+        "challenges": "Getting DNS forwarding configured correctly with their provider's CNAME records.", 
+        "learned": "Being patient while working with contracted clients due to our hectic schedules.",
+        "languages": ["Node, Express, MongoDB, Mongoose"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89605249-51c03b00-d82a-11ea-938d-321209632454.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89605252-54229500-d82a-11ea-8bb1-d03f065ab729.png",
+            "https://user-images.githubusercontent.com/44101756/89605256-571d8580-d82a-11ea-8758-62b87a5ef021.png",
+            "https://user-images.githubusercontent.com/44101756/89605261-597fdf80-d82a-11ea-8857-09ad97d309de.png"
+        ],
+        "tags" : ["Back End", "Security"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Python Image Webscraper",
+        "thumbnailDescription" : "A Python Script to Crawl a Site and Download Images",
+        "detailsDescription" : "This is the first web scraper I built. It accepts an array of site URL's and runs through all the HTML on each page looking for div tags with data-thumbnail attributes to find image URL's and downloads them. ",
+        "objective": "Learn how to scrape and compile data from the web in an automated format.",
+        "challenges": "Getting pip installed on my machine for package downloads was a total pain! I had too many conflicting versions of Python installed.", 
+        "learned": "This project taught me the structure and methods of scraping Html code and how to utilize it, as well as how to properly set up a system for dependency use within the Python ecosystem.",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/python-playground/tree/master/image-web-scraper",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89606290-c98f6500-d82c-11ea-8d2e-38b583d11b89.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89606282-c7c5a180-d82c-11ea-8c55-2968c9980389.png",
+            "https://user-images.githubusercontent.com/44101756/89606285-c85e3800-d82c-11ea-820a-b34e673490d1.png"
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Python Arithmetic Arranger",
+        "thumbnailDescription" : "A free code camp project to learn data formatting & validation by arranging arrays into formatted strings",
+        "detailsDescription" : "For this project, I was provided an array of math problems in string format and was required to perform a series of data validation and error handling before formatting the outputs in the desired way.",
+        "objective": "Enhance my foundational Python scripting skills.",
+        "challenges": "Using the test files in a Python ecosystem proved to be quite hard for me.", 
+        "learned": "A better grasp of working withing a multi-file Python codebase.",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/free-code-camp/tree/master/scientific-computing-with-python/projects/arithmetic-formatter",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89607289-5b986d00-d82f-11ea-949a-361c017e0c89.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89607268-520f0500-d82f-11ea-8cae-c4a36b9974b1.png",
+            "https://user-images.githubusercontent.com/44101756/89607282-59cea980-d82f-11ea-9fbd-93919ab7a960.png",
+            "https://user-images.githubusercontent.com/44101756/89607284-5affd680-d82f-11ea-9030-9a83713ad010.png"
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Teaching Intro to API's",
+        "thumbnailDescription" : "Teaching a University class for their Full Stack Web Development API course",
+        "detailsDescription" : "In the resource above, you will find a recording of me teaching an introduction to API class for Bryan University. This is published with the school's permission to demonstrate my skills and competency, not to be shared as a learning tutorial. ",
+        "objective": "Help students understand API structure.",
+        "challenges": "Communicating complex topics in an easy to understand way.", 
+        "learned": "It's always better to have humor when you fail because it happens frequently. :)",
+        "languages": ["Javascript, HTTP"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89609463-2b53cd00-d835-11ea-96e0-eefc92790367.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89609323-bf716480-d834-11ea-9a5e-99ce67be6360.png",
+            "https://user-images.githubusercontent.com/44101756/89609326-c13b2800-d834-11ea-8ffa-7c4db409ea98.png",
+            "https://user-images.githubusercontent.com/44101756/89610611-36f4c300-d838-11ea-9782-6b35e0f120b9.png"
+        ],
+        "tags" : ["Back End", "Teaching"],
+        "additionalAssets" : [ teachingFsw115 ]
+    },
+    {
+        "title": "Teaching React Routing & Hooks",
+        "thumbnailDescription" : "Teaching a University class for their Full Stack Web Development React course",
+        "detailsDescription" : "In the resource above, you will find a recording of me teaching a React class for Bryan University covering front end routing and hooks. This is published with the school's permission to demonstrate my skills and competency, not to be shared as a learning tutorial. ",
+        "objective": "Help students understand medium-advanced react topics.",
+        "challenges": "Communicating complex topics in an easy to understand way", 
+        "learned": "I love helping people understand code.",
+        "languages": ["React"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89610283-55a68a00-d837-11ea-81cf-b3beb7787f3f.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89610289-593a1100-d837-11ea-88b2-3a380601365b.png",
+            "https://user-images.githubusercontent.com/44101756/89610292-5b9c6b00-d837-11ea-8dea-528cfba8765d.png",
+            "https://user-images.githubusercontent.com/44101756/89610776-a5398580-d838-11ea-9e57-2155f08544fd.png",
+            "https://user-images.githubusercontent.com/44101756/89610780-a79bdf80-d838-11ea-9b77-f591a3c74fb5.png"
+        ],
+        "tags" : ["Front End", "Teaching"],
+        "additionalAssets" : [ teachingFsw120 ]
+    },
+    {
         "title": "Custom NPM Packages",
         "thumbnailDescription" : "This is the full list of all the NPM packages I have built.",
         "detailsDescription" : "This is the list of all the NPM packages I have built.  One to removes all whitepace from a string, one performs enhanced date parsing methods.",
@@ -73,23 +254,6 @@ const projects = [
         "liveLink": "https://www.npmjs.com/package/@fxhacker/get_date",
         "gitLink": "https://github.com/Eric-Lingren/npm_projects",
         "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473134-b8af2d00-ced7-11ea-9af8-4a817d5a4d45.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
-        ],
-        "tags" : ["Back End"],
-        "additionalAssets" : []
-    },
-    {
-        "title": "Forex Robots",
-        "thumbnailDescription" : "",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
-        "languages": ["MT4, AWS"],
-        "liveLink": "",
-        "gitLink": "",
-        "thumbnailImage" : "",
         "images" : [
             "https://user-images.githubusercontent.com/44101756/88473135-bbaa1d80-ced7-11ea-8e6a-892c0b1e19ba.png"
         ],
@@ -116,12 +280,31 @@ const projects = [
         "additionalAssets" : []
     },
     {
+        "title": "Infinity Investments",
+        "thumbnailDescription" : "A full stack site which maps over large sets of historical trade data provided from a forex broker.",
+        "detailsDescription" : "A full stack business site which maps over large sets of historical trade data provided from my forex broker. The app converts the data into interactive visualizations built with D3 and GreenSock.",
+        "objective": "To get better at data visulization",
+        "challenges": "Learning D3 was a total headache. My broker also wouldn't provide more than six months of data at a time via their API, so I needed to learn how to upload data via CSV into a MongoDB.", 
+        "learned": "The D3 Framework",
+        "languages": ["React", "Express", "MongoDB", "GreenSock", "D3", "JavaScript ES6"],
+        "liveLink": "http://infinity-investments.herokuapp.com/",
+        "gitLink": "https://github.com/Eric-Lingren/infinity_investments",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472361-18550a80-cecf-11ea-88f2-c72e1860c20b.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/88472362-1b4ffb00-cecf-11ea-9b36-8f971626b7b7.png",
+            "https://user-images.githubusercontent.com/44101756/88750459-d4eade00-d112-11ea-8d5d-327b04fcd197.png",
+            "https://user-images.githubusercontent.com/44101756/88750339-89383480-d112-11ea-840f-74b790ed442a.png"
+        ],
+        "tags" : ["Full Stack"],
+        "additionalAssets" : []
+    },
+    {
         "title": "Count Champ",
         "thumbnailDescription" : "A React Native app that teaches players the nuances of card counting.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "A CRUD React Native that teaches players the nuances of card counting.  Uses SQLite for database management of user stats in local storage and Axios for deck and card management. This was available for download on the Google Play store but was removed due to not updating it for the latest security updates, but you can get the signed sdk from the resource link above.",
+        "objective": "Turn my blackjack project into a React Native app.",
+        "challenges": "Learning Expo, debugging in a mobile environment, gradle and signing packages.", 
+        "learned": "All of the above! :) ",
         "languages": ["React Native", "Android Studio", "SQLite", "Expo"],
         "liveLink": "",
         "gitLink": "https://github.com/Eric-Lingren/react_native/tree/master/count_champ",
@@ -130,15 +313,15 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/88472212-b3e57b80-cecd-11ea-92a0-b6b3520d68cc.png"
         ],
         "tags" : ["Front End"],
-        "additionalAssets" : []
+        "additionalAssets" : [countChampFree]
     },
     {
         "title": "Card Counters Blackjack",
         "thumbnailDescription" : "Not your average Blackjack game. It is designed to teach players how to count cards and maintains comprehensive game analytics.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "This is a front-end React application that is not your average Blackjack game.  I built it during my bootcamp and it is designed to teach players how to count cards and maintains comprehensive game analytics.  It uses the Deck of Cards API to provide decks, cards, and shuffle functionality.",
+        "objective": "To build a fully comprehensive blackjack trainer application.",
+        "challenges": "This is the first project Iever used the React Context API in, so learning how to structure that was very challenging.  I could do it better now.", 
+        "learned": "Context, and how crazy larger applications can get if you don't architect them correctly.",
         "languages": ["React", "ES6", "CSS"],
         "liveLink": "https://blackjack-for-cardcounters.netlify.app/#/",
         "gitLink": "https://github.com/Eric-Lingren/blackjack_project",
@@ -154,31 +337,12 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "title": "Infinity Investments",
-        "thumbnailDescription" : "A full stack site which maps over large sets of historical trade data provided from a forex broker.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
-        "languages": ["React", "Express", "MongoDB", "GreenSock", "D3", "JavaScript ES6"],
-        "liveLink": "http://infinity-investments.herokuapp.com/",
-        "gitLink": "https://github.com/Eric-Lingren/infinity_investments",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472361-18550a80-cecf-11ea-88f2-c72e1860c20b.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/88472362-1b4ffb00-cecf-11ea-9b36-8f971626b7b7.png",
-            "https://user-images.githubusercontent.com/44101756/88750459-d4eade00-d112-11ea-8d5d-327b04fcd197.png",
-            "https://user-images.githubusercontent.com/44101756/88750339-89383480-d112-11ea-840f-74b790ed442a.png"
-        ],
-        "tags" : ["Full Stack"],
-        "additionalAssets" : []
-    },
-    {
         "title": "Crypto Minerz",
         "thumbnailDescription" : "This full stack e-commerce site was collaboratively built with 2 friends during my bootcamp.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "This full stack e-commerce site was collaboratively built with 2 friends during my bootcamp. It uses the BestBuy API to authentication. Since we haven't kept our API credentials active beyond our schooling, the products now fail to load.",
+        "objective": "Build a project collaboratively with other developers.",
+        "challenges": "Coming to alignment on project scope and desired features. ", 
+        "learned": "Proper use of Githup workflows in a multi-dev environment",
         "languages": ["ReactStrap", "JavaScript", "MongoDB", "Express", "Node.js", "CSS"],
         "liveLink": "http://cryptominerz.herokuapp.com/",
         "gitLink": "https://github.com/jmc90/vcommerce-v2",
@@ -194,10 +358,10 @@ const projects = [
     {
         "title": "Smart Garden",
         "thumbnailDescription" : "A full stack app which allows adding, removing and saving plants or gardens. It also makes smart plant recommendations based on companion planting.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "This is a MERN full stack app built during my bootcamp. It makes Axios requests to a MongoDB, which allows adding, removing, and saving plants or gardens. It also provides custom plant recommendations based on companion planting.  It is hosted on the free tier of Heroku, so it may take 15 seconds for the live site to spin up.",
+        "objective": "Build a platform I could use to quickly see which plants I should place next to each other in my garden. ",
+        "challenges": "Modifying dom elements correctly in React through mapping.", 
+        "learned": "This project gave me a much better understanding of structuring data within a database.",
         "languages": ["React", "MongoDB", "Express", "Mongoose", "Node.js", "JavaScript ES6", "CSS"],
         "liveLink": "https://smart-garden-planting.herokuapp.com/",
         "gitLink": "https://github.com/Eric-Lingren/smartgarden",
@@ -212,7 +376,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "title": "Fun With Canvas",
+        "title": "Canvas Fun",
         "thumbnailDescription" : "Several projects built using constructor functions and canvas to show fun DOM interactions.",
         "detailsDescription" : "This site contains several projects with a variety of different things I have built using constructor functions in Javascript ES5 and canvas to show the fun interactions you are able to have with the DOM.",
         "objective": "This was my first time working with HTML canvas and my goal with this project was to better understand its inner workings and to become more familiar with constructors and classes.",
@@ -251,10 +415,10 @@ const projects = [
     {
         "title": "CSS Zen Garden",
         "thumbnailDescription" : "A fully responsive front-end site created as a clone of the original based solely on a PSD.",
-        "detailsDescription" : "",
-        "objective": "",
-        "challenges": "", 
-        "learned": "",
+        "detailsDescription" : "A fully responsive front-end site created as a clone of the original based solely on a PSD. This illustrates the ability to replicate ideas from a design team's mock-ups and implement those into a fully realized project. Landing page only.",
+        "objective": "Replicate and existing front end project",
+        "challenges": "Getting items to align properly", 
+        "learned": "How to properly nest Html elements",
         "languages": ["HTML5", "CSS3"],
         "liveLink": "http://zengarden.surge.sh/",
         "gitLink": "https://github.com/Eric-Lingren/zen_garden_project",
@@ -262,9 +426,28 @@ const projects = [
         "images" : [
             "https://user-images.githubusercontent.com/44101756/88473070-1f801680-ced7-11ea-80d4-ad1e740dc53a.png"
         ],
-        "tags" : [],
+        "tags" : ["Front End"],
         "additionalAssets" : []
     }
 ]
 
 export default projects
+
+// {
+//     "title": "",
+//     "thumbnailDescription" : "",
+//     "detailsDescription" : "",
+//     "objective": "",
+//     "challenges": "", 
+//     "learned": "",
+//     "languages": ["MT4, AWS"],
+//     "liveLink": "",
+//     "gitLink": "",
+//     "thumbnailImage" : "",
+//     "images" : [
+
+//     ],
+//     "tags" : ["Back End"],
+//     "additionalAssets" : [
+//     ]
+// },
