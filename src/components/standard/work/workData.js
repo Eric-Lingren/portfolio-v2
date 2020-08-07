@@ -431,6 +431,8 @@ const projects = [
 
 export default projects
 
+
+// project template
 // {
 //     "title": "",
 //     "thumbnailDescription" : "",
@@ -438,14 +440,13 @@ export default projects
 //     "objective": "",
 //     "challenges": "", 
 //     "learned": "",
-//     "languages": ["MT4, AWS"],
+//     "languages": ["MT4"],
 //     "liveLink": "",
 //     "gitLink": "",
 //     "thumbnailImage" : "",
 //     "images" : [
 
 //     ],
-//     "tags" : ["Back End"],
-//     "additionalAssets" : [
-//     ]
+//     "tags" : [""],
+//     "" : []
 // },
