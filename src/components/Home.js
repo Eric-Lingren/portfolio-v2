@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { TweenLite, TweenMax, Linear } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
-import mouseoverSound from  '../assets/audio1.wav'
+// import mouseoverSound from  '../assets/audio1.wav'
 
 const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
-    const [windowWidth, setWindowWidth] = useState(0)
+    // const [windowWidth, setWindowWidth] = useState(0)
     let history = useHistory()
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
@@ -14,7 +14,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     // const mouseoverAudio = new Audio(mouseoverSound)
 
     useEffect(() => {
-        setWindowWidth(window.innerWidth)
+        // setWindowWidth(window.innerWidth)
         TweenLite.to(fullExpereienceButton.current, .75, {
             backgroundColor:"#55942b", 
             boxShadow: '0px 0px 10px 8px #fff',
@@ -105,7 +105,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
             <canvas className='home-canvas' ref={canvasRef} />
 
             <div className='home-button-container'>
-                {
+                {/* {
                     windowWidth > 430 ? 
                     <button 
                         className='eightbit-btn' 
@@ -125,7 +125,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                     > 
                         Game Not Available on Mobile
                     </button>
-                }
+                } */}
                 <button 
                     className='eightbit-btn eightbit-btn--proceed'
                     ref={standardExpereienceButton}

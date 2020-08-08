@@ -4,19 +4,23 @@ import WorkCard from './WorkCard'
 
 const WorkList = ({selectedFilters}) => {
 
-    const mappedWork = workData.map((project, index) => {
-        let card = project.tags.filter(tag => selectedFilters.includes(tag))
-        if(card.length){
-            return(
-                <WorkCard 
-                    key={index}
-                    id={index}
-                    title={project.title}
-                    thumbnailDescription={project.thumbnailDescription}
-                    thumbnailImage={project.thumbnailImage}
-                />
-            )
-        }
+    let filteredProjects = []
+
+    workData.forEach( project => {
+        let matchedProject =  project.tags.filter(tag => selectedFilters.includes(tag))
+        matchedProject.length && filteredProjects.push(project)
+    })
+
+    const mappedWork = filteredProjects.map((project, index) => {
+        return(
+            <WorkCard 
+                key={index}
+                id={index}
+                title={project.title}
+                thumbnailDescription={project.thumbnailDescription}
+                thumbnailImage={project.thumbnailImage}
+            />
+        )
     })
 
     return(

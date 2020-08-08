@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link as ScrollLink } from "react-scroll";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const Navbar = () => {
 
@@ -34,12 +34,12 @@ const Navbar = () => {
                 to="skills"
                 spy={true}
                 smooth={true}
-                offset={0}
+                offset={-50}
                 duration={700}
             > 
                 Skills 
             </ScrollLink>
-            { window.innerWidth > 425 && <Link className='navbar-link' to='/game'> Game Mode </Link> }
+            {/* { window.innerWidth > 425 && <Link className='navbar-link' to='/game'> Game Mode </Link> } */}
         </div>
     )
 }

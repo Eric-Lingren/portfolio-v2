@@ -24,26 +24,6 @@ const projects = [
         "additionalAssets" : ["https://projecteuler.net/"]
     },
     {
-        "title": "Coding Challenges",
-        "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
-        "detailsDescription" : "This simple PrismJS based site is to display code snippets of some coding challenges I have done.  This is an ongoing project that I add to when I have time.",
-        "objective": "Practice and improve coding skills.",
-        "challenges": "Trying to use js methods that I am unfamiliar with but more optimal.", 
-        "learned": "Better method utilization and problem-solving.",
-        "languages": ["React", "JavaScript", "CSS", "PrismJS"],
-        "liveLink": "https://erics-coding-challenges.netlify.app/",
-        "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/88745769-0f02b280-d108-11ea-8b60-a3bcc16b3cc4.png",
-            "https://user-images.githubusercontent.com/44101756/88745773-1033df80-d108-11ea-996c-a424f674e2ec.png",
-            "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
-            "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
-        ],
-        "tags" : ["Challenges"],
-        "additionalAssets" : []
-    },
-    {
         "title": "Over The Wire",
         "thumbnailDescription" : "A gamified site that focuses on learning Linux, networking and security concepts.",
         "detailsDescription" : "This project is a series of coding challenges that are found at overthewire.com.  This is a gamified site geared towards learning web and server security and improving Linux skills.",
@@ -240,6 +220,26 @@ const projects = [
         ],
         "tags" : ["Front End", "Teaching"],
         "additionalAssets" : [ "https://youtu.be/goqoOdKhnoA" ]
+    },
+    {
+        "title": "Coding Challenges",
+        "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
+        "detailsDescription" : "This simple PrismJS based site is to display code snippets of some coding challenges I have done.  This is an ongoing project that I add to when I have time.",
+        "objective": "Practice and improve coding skills.",
+        "challenges": "Trying to use js methods that I am unfamiliar with but more optimal.", 
+        "learned": "Better method utilization and problem-solving.",
+        "languages": ["React", "JavaScript", "CSS", "PrismJS"],
+        "liveLink": "https://erics-coding-challenges.netlify.app/",
+        "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/88745769-0f02b280-d108-11ea-8b60-a3bcc16b3cc4.png",
+            "https://user-images.githubusercontent.com/44101756/88745773-1033df80-d108-11ea-996c-a424f674e2ec.png",
+            "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
+            "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
+        ],
+        "tags" : ["Challenges"],
+        "additionalAssets" : []
     },
     {
         "title": "Custom NPM Packages",
@@ -446,7 +446,24 @@ const projects = [
         ],
         "tags" : ["Front End"],
         "additionalAssets" : []
-    }
+    },
+    // {
+    //     "title": "This Portfolio Site",
+    //     "thumbnailDescription" : "",
+    //     "detailsDescription" : "",
+    //     "objective": "",
+    //     "challenges": "", 
+    //     "learned": "",
+    //     "languages": ["MT4"],
+    //     "liveLink": "",
+    //     "gitLink": "",
+    //     "thumbnailImage" : "",
+    //     "images" : [
+
+    //     ],
+    //     "tags" : ["Front End"],
+    //     "additionalAssets" : ["https://xd.adobe.com/view/bd3cc9ca-c9d3-4e2c-5cd3-a0b8778a62a8-cb0d/"]
+    // },
 ]
 
 export default projects

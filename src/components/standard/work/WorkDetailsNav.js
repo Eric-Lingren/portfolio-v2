@@ -12,12 +12,12 @@ const WorkDetailsNavbar = () => {
             > 
                 {"<-"} Back
             </Link>
-            {
+            {/* {
                 window.innerWidth > 425 ?
                 <Link className='navbar-link' to='/game'> Game Mode </Link>
                 :
                 <span></span>
-            }
+            } */}
         </div>
     )
 }

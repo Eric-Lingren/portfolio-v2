@@ -29,27 +29,21 @@
 }
 
 .skill-badge-image {
-    width: auto;
-    height: 100px;
+    width: 10vw;
+    height: auto;
     margin: 25px 25px 25px 25px;
 }
 
 .skill-badge-image-long {
-    width: auto;
-    height: 100px;
+    width: 10vw;
+    height: auto;
     margin: 25px 15px 25px 15px;
 }
 
 .carousel-image {
-    width: 400px;
-    height: 400px;
-}
-
-
-@media only screen and (min-width: 2560px) {
-    .carousel-image {
-        height: 500px;
-    }
+    width: 70vw;
+    height: auto;
+    margin: 15px 0;
 }
 
 @media only screen and (min-width: 1440px) {
@@ -57,14 +51,14 @@
         height: 10vw;
         width: 35vh;
     }
-    .skill-badge-image-long {
-        width: auto;
-        height: 70px;
-    }
-    .skill-badge-image {
-        width: auto;
-        height: 70px;
-    }
+    // .skill-badge-image-long {
+    //     width: auto;
+    //     height: 70px;
+    // }
+    // .skill-badge-image {
+    //     width: auto;
+    //     height: 70px;
+    // }
 }
 
 @media only screen and (min-width: 1200px) {
@@ -72,22 +66,16 @@
         height: 10vw;
         width: 35vh;
     }
-    .skill-badge-image-long {
-        width: auto;
-        height: 70px;
-    }
-    .skill-badge-image {
-        width: auto;
-        height: 70px;
-    }
+    // .skill-badge-image-long {
+    //     width: auto;
+    //     height: 70px;
+    // }
+    // .skill-badge-image {
+    //     width: auto;
+    //     height: 70px;
+    // }
     
 }
-
-// @media only screen and (min-width: 1024px) {
-//     .carousel-image {
-//         height: 500px;
-//     }
-// }
 
 @media only screen and (max-width: 768px) {
     .header-logo {
@@ -110,16 +98,13 @@
             height: 50px;
         }
     }
-    .skill-badge-image-long {
-        height: 50px;
-        margin: 10px 10px 10px 10px;
-    }
-    .skill-badge-image {
-        margin: 10px 0 10px 0;
-    }
-    .carousel-image {
-        height: 300px;
-    }
+    // .skill-badge-image-long {
+    //     height: 50px;
+    //     margin: 10px 10px 10px 10px;
+    // }
+    // .skill-badge-image {
+    //     margin: 10px 0 10px 0;
+    // }
 }
 
 
@@ -127,9 +112,11 @@
     .header-logo {
         height: 20vw;
     }
-    .carousel-image {
-        width: 400px;
-        height: 225px;
+    .skill-badge-image {
+        width: 20vw;
+    }
+    .skill-badge-image-long {
+        width: 25vw;
     }
 }
 

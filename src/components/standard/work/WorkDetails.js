@@ -20,7 +20,7 @@ const WorkDetails = ({ match }) => {
     const githubLinkClass = githubLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
 
     const mappedCarouselImages = work.images.map( (image, i) => {
-        return <img src={image} key={i} alt='project' className='carousel-image'/>
+        return <img src={image} key={i} alt='project' className='carousel-image'  />
     })
 
     const mappedLanguages = work.languages.map( (language, i) => {
@@ -33,8 +33,8 @@ const WorkDetails = ({ match }) => {
 
     const mappedAdditionalLinks = work.additionalAssets.length && work.additionalAssets.map( (resource, i) => {
         return(
-            <a href={resource} target='_blank' rel='noopener noreferrer' >
-                <span key={i} className='additional-resources-link'> Resource {i+1} </span>
+            <a href={resource} target='_blank' rel='noopener noreferrer' className='additional-resources-link'>
+                <span key={i} > Resource {i+1} </span>
             </a>
         )
     })
