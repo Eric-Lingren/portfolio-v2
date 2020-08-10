@@ -25,15 +25,34 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
             delay: 3
         })
         // Animates Yellow Standard Button
-        TweenLite.to(standardExpereienceButton.current, .75, {
-            backgroundColor:"#E59400", 
-            boxShadow: '0px 0px 10px 8px #fff',
-            ease: Linear.easeNone,
-            opacity: 1,
-            yoyo: true,
-            repeat: -1,
-            delay: 3,
-        })
+        // TweenLite.to(standardExpereienceButton.current, .75, {
+        //     backgroundColor:"#E59400", 
+        //     boxShadow: '0px 0px 10px 8px #fff',
+        //     ease: Linear.easeNone,
+        //     opacity: 1,
+        //     yoyo: true,
+        //     repeat: -1,
+        //     delay: 3,
+        // })
+        TweenLite.fromTo(standardExpereienceButton.current, .75, 
+            {
+                backgroundColor:"#E59400", 
+                boxShadow: '0px 0px 10px 8px #fff',
+                ease: Linear.easeNone,
+                opacity: .25,
+                yoyo: true,
+                repeat: -1,
+                delay: 3,
+            },{
+                backgroundColor:"#E59400", 
+                boxShadow: '0px 0px 10px 8px #fff',
+                ease: Linear.easeNone,
+                opacity: 1,
+                yoyo: true,
+                repeat: -1,
+                delay: 3,
+            }
+        )
     }, [])
 
     // Animated Pixelate-Out of Logo
