@@ -34,12 +34,21 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
         //     repeat: -1,
         //     delay: 3,
         // })
+        TweenLite.fromTo(standardExpereienceButton.current, 1, 
+            {
+                opacity: 0,
+                delay: 1,
+            },{
+                opacity: .25,
+                delay: 1,
+            }
+        )
         TweenLite.fromTo(standardExpereienceButton.current, .75, 
             {
                 backgroundColor:"#E59400", 
                 boxShadow: '0px 0px 10px 8px #fff',
                 ease: Linear.easeNone,
-                opacity: .25,
+                opacity: .5,
                 yoyo: true,
                 repeat: -1,
                 delay: 3,
