@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { TweenLite, TweenMax, Linear } from 'gsap'
+import { TweenLite, TweenMax, Linear, TimelineLite, TimelineMax } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
 // import mouseoverSound from  '../assets/audio1.wav'
@@ -40,25 +40,44 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
         //         delay: 8,
         //     }
         // )
-        TweenLite.fromTo(standardExpereienceButton.current, .75, 
-            {
-                backgroundColor:"#E59400", 
-                boxShadow: '0px 0px 10px 8px #fff',
-                ease: Linear.easeNone,
-                opacity: .5,
-                yoyo: true,
-                repeat: -1,
-                delay: 3,
-            },{
-                backgroundColor:"#E59400", 
-                boxShadow: '0px 0px 10px 8px #fff',
-                ease: Linear.easeNone,
-                opacity: 1,
-                yoyo: true,
-                repeat: -1,
-                delay: 3,
-            }
-        )
+        // TweenLite.fromTo(standardExpereienceButton.current, .75, 
+        //     {
+        //         backgroundColor:"#E59400", 
+        //         boxShadow: '0px 0px 10px 8px #fff',
+        //         ease: Linear.easeNone,
+        //         opacity: .5,
+        //         yoyo: true,
+        //         repeat: -1,
+        //         delay: 3,
+        //     },{
+        //         backgroundColor:"#E59400", 
+        //         boxShadow: '0px 0px 10px 8px #fff',
+        //         ease: Linear.easeNone,
+        //         opacity: 1,
+        //         yoyo: true,
+        //         repeat: -1,
+        //         delay: 3,
+        //     }
+        // )
+        var tl = new TimelineMax({paused:true}),
+        tm = 1;
+
+        tl
+        .to(standardExpereienceButton.current, tm, {opacity: 0})
+        .to(standardExpereienceButton.current, tm, {opacity: 1})
+        .add("startTest") // place at the beginning of the desired testing area
+        .to(standardExpereienceButton.current,tm, {x:400})
+        // .to(".orange",tm, {x:400})
+        // .to(".yellow",tm, {x:400})
+        .add("endTest") // move to the end of desired testing area
+        // .to(".purple",tm, {x:400});
+
+        //play red and blue 3 times then play entire timeline
+
+        var anotherTimeline = new TimelineLite();
+        anotherTimeline.add(tl.tweenFromTo(0, "startTest", {repeat:0, delay: 3}))
+        .add(tl.tweenFromTo("startTest", tl.duration()));
+
     }, [])
 
     // Animated Pixelate-Out of Logo
