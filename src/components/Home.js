@@ -15,58 +15,24 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
 
     useEffect(() => {
         // setWindowWidth(window.innerWidth)
-        TweenLite.to(fullExpereienceButton.current, .75, {
-            backgroundColor:"#55942b", 
-            boxShadow: '0px 0px 10px 8px #fff',
-            ease: Linear.easeNone,
-            opacity: 1,
-            yoyo: true,
-            repeat: -1,
-            delay: 3
-        })
-        // Animates Yellow Standard Button
-        // TweenLite.to(standardExpereienceButton.current, .75, {
-        //     backgroundColor:"#E59400", 
+        // This will be used when game mode is complete
+        // TweenLite.to(fullExpereienceButton.current, .75, {
+        //     backgroundColor:"#55942b", 
         //     boxShadow: '0px 0px 10px 8px #fff',
         //     ease: Linear.easeNone,
         //     opacity: 1,
         //     yoyo: true,
         //     repeat: -1,
-        //     delay: 3,
+        //     delay: 3
         // })
-        // TweenLite.to(standardExpereienceButton.current, 2, 
-        //     {
-        //         opacity: .5,
-        //         delay: 8,
-        //     }
-        // )
-        // TweenLite.fromTo(standardExpereienceButton.current, .75, 
-        //     {
-        //         backgroundColor:"#E59400", 
-        //         boxShadow: '0px 0px 10px 8px #fff',
-        //         ease: Linear.easeNone,
-        //         opacity: .5,
-        //         yoyo: true,
-        //         repeat: -1,
-        //         delay: 3,
-        //     },{
-        //         backgroundColor:"#E59400", 
-        //         boxShadow: '0px 0px 10px 8px #fff',
-        //         ease: Linear.easeNone,
-        //         opacity: 1,
-        //         yoyo: true,
-        //         repeat: -1,
-        //         delay: 3,
-        //     }
-        // )
-        var tl = new TimelineMax({paused:true}),
+
+        let tl = new TimelineMax({paused:true}),
         tm = 1;
 
         tl
         .to(standardExpereienceButton.current, tm, {opacity: 0})
         .to(standardExpereienceButton.current, tm, {opacity: .5})
-        .add("startTest") // place at the beginning of the desired testing area
-        // .to(standardExpereienceButton.current,tm, {opacity: .5, ease: Linear.easeNone,})
+        .add("startTest")
         .to(standardExpereienceButton.current,tm, {
             opacity: 1, 
             backgroundColor:"#E59400", 
@@ -75,14 +41,8 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
             yoyo: true, 
             repeat: -1
         })
-        // .to(".orange",tm, {x:400})
-        // .to(".yellow",tm, {x:400})
-        // .add("endTest") // move to the end of desired testing area
-        // .to(".purple",tm, {x:400});
 
-        //play red and blue 3 times then play entire timeline
-
-        var anotherTimeline = new TimelineLite();
+        let anotherTimeline = new TimelineLite();
         anotherTimeline.add(tl.tweenFromTo(0, "startTest", {delay: 1}))
         .add(tl.tweenFromTo("startTest", tl.duration()));
 
