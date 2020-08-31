@@ -5,12 +5,13 @@ import emailIcon from '../../assets/about/email.png'
 
 const Footer = () => {
 
-
+    const currentYear = new Date().getFullYear(); 
 
     return(
         <div className='footer-wrapper'>
 
-            <h1>© 2020 Eric Lingren</h1>
+            <h1 className='footer-text'>© {currentYear} </h1>
+            <h1 className='footer-text'>Made with <span className='heart'>♥</span> by Eric Lingren</h1>
             
             <div className='footer-contact-icon-wrapper'>
                 <a target='_blank' rel="noopener noreferrer" href='https://www.github.com/Eric-Lingren'>

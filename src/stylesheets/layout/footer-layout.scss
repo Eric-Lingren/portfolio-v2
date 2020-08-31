@@ -1,6 +1,16 @@
 .footer-wrapper{
-    // background-color: blueviolet;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     border-top: 5px solid white;
+    align-items: center;
+}
+
+.footer-text{
+    font-family: $press-start-font-family;
+    font-size: 16px;
+    padding-top: 10px;
+}
+
+.heart{
+    font-size: 24px;
 }

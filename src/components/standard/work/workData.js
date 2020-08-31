@@ -146,6 +146,49 @@ const projects = [
         "additionalAssets" : []
     },
     {
+        "title": "Forex Market Data Scraper",
+        "thumbnailDescription" : "A Python Script to download tick data for the equities, commodities and forex markets",
+        "detailsDescription" : "This is an automated script which finds tick data for the currency, equity, and commodity markets and downloads the data. It uses asynchronous requests to re-obtain data if a fetch failed.  It also contains status progress bars and automatically builds all the unique URL's to request data from. ",
+        "objective": "To be able to download accurate historical market data for backtesting trading algorithms. ",
+        "challenges": "Checking for failed downloads are re-requesting the files.", 
+        "learned": "Asynchronous fetching in Python, error handling, timing requests, and progress bars",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/scraper",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91767545-86a97e80-eb99-11ea-97b7-01a821894257.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/91767587-9759f480-eb99-11ea-8edc-f4dd6c6bcd3f.png",
+            "https://user-images.githubusercontent.com/44101756/91767620-a9d42e00-eb99-11ea-994e-ee4345e83ee0.png",
+            "https://user-images.githubusercontent.com/44101756/91767627-ae004b80-eb99-11ea-9d75-8369c3f77e58.png",
+            "https://user-images.githubusercontent.com/44101756/91767630-afca0f00-eb99-11ea-938a-ea143ddbd5aa.png"
+            
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Forex Market Data Validator",
+        "thumbnailDescription" : "A Python Script which validates, scrubs, and cleans historical market data",
+        "detailsDescription" : "This is an interactive python script that allows the user to check a series of criteria of downloaded data before putting it to use.  It will check the existence of all files within a time series, verify the files contain data, alert if the data has low volume below a standard deviation, sort the data by timestamps, and remove any null rows from the data set.  Once the checks are complete, it will save the data into an excel file for later use.",
+        "objective": "To ensure a clean and accurate dataset is available after downloading but before use.",
+        "challenges": "Working with extremely large data sets (tens of millions of lines) in a performant and asynchronous manner", 
+        "learned": "Reusable functions, working with pandas data frames, using python loggers, performing statistical evaluations within python",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/scraper",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91771628-8791de80-eba0-11ea-9c3e-0cc30bb06e5f.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/91771617-83fe5780-eba0-11ea-8567-1bcefd355d93.png",
+            "https://user-images.githubusercontent.com/44101756/91771619-852f8480-eba0-11ea-9e79-72f4c3121c5c.png",
+            "https://user-images.githubusercontent.com/44101756/91771622-8660b180-eba0-11ea-8c18-5a39361cd52f.png",
+            "https://user-images.githubusercontent.com/44101756/91771625-86f94800-eba0-11ea-9a7d-2ffa3230dd0a.png",
+            "https://user-images.githubusercontent.com/44101756/91771627-86f94800-eba0-11ea-8459-844ecd9c9211.png"
+            
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
         "title": "Python Image Webscraper",
         "thumbnailDescription" : "A Python Script to Crawl a Site and Download Images",
         "detailsDescription" : "This is the first web scraper I built. It accepts an array of site URL's and runs through all the HTML on each page looking for div tags with data-thumbnail attributes to find image URL's and downloads them. ",
@@ -192,7 +235,7 @@ const projects = [
         "languages": ["Javascript, HTTP"],
         "liveLink": "",
         "gitLink": "",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89609463-2b53cd00-d835-11ea-96e0-eefc92790367.png",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91765259-e43bcc00-eb95-11ea-95e0-9d12dfbd76cf.png",
         "images" : [
             "https://user-images.githubusercontent.com/44101756/89609323-bf716480-d834-11ea-9a5e-99ce67be6360.png",
             "https://user-images.githubusercontent.com/44101756/89609326-c13b2800-d834-11ea-8ffa-7c4db409ea98.png",
