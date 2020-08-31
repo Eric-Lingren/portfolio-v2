@@ -5,6 +5,7 @@
 
 .profile-picture {
     height: 200px;
+    border-radius: 50%;
 } 
 
 .about-contact-icon {
@@ -29,13 +30,13 @@
 }
 
 .skill-badge-image {
-    width: 10vw;
+    width: 120px;
     height: auto;
     margin: 25px 25px 25px 25px;
 }
 
 .skill-badge-image-long {
-    width: 10vw;
+    width: 120px;
     height: auto;
     margin: 25px 15px 25px 15px;
 }
@@ -51,14 +52,6 @@
         height: 10vw;
         width: 35vh;
     }
-    // .skill-badge-image-long {
-    //     width: auto;
-    //     height: 70px;
-    // }
-    // .skill-badge-image {
-    //     width: auto;
-    //     height: 70px;
-    // }
 }
 
 @media only screen and (min-width: 1200px) {
@@ -66,14 +59,6 @@
         height: 10vw;
         width: 35vh;
     }
-    // .skill-badge-image-long {
-    //     width: auto;
-    //     height: 70px;
-    // }
-    // .skill-badge-image {
-    //     width: auto;
-    //     height: 70px;
-    // }
     
 }
 
@@ -98,25 +83,32 @@
             height: 50px;
         }
     }
-    // .skill-badge-image-long {
-    //     height: 50px;
-    //     margin: 10px 10px 10px 10px;
-    // }
-    // .skill-badge-image {
-    //     margin: 10px 0 10px 0;
-    // }
+    .skill-badge-image-long {
+        width: 90px;
+        margin: 10px 10px 10px 10px;
+    }
+    .skill-badge-image {
+        width: 80px;
+        margin: 10px 10px 10px 10px;
+    }
 }
 
+.footer-contact-icon-github{
+    height: 50px;
+    margin-top: 10px;
+}
+.footer-contact-icon-linkedin{
+    height: 45px;
+    margin-top: 10px;
+}
+.footer-contact-icon-email{
+    height: 45px;
+    margin: 10px 0px 0px 15px;
+}
 
 @media only screen and (max-width: 425px) {
     .header-logo {
         height: 20vw;
-    }
-    .skill-badge-image {
-        width: 20vw;
-    }
-    .skill-badge-image-long {
-        width: 25vw;
     }
 }
 

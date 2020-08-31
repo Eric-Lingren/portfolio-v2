@@ -1,6 +1,6 @@
 import React from 'react'
 import { Element } from 'react-scroll'
-import profileRound from '../../../assets/about/profile-round.png'
+import profileRound from '../../../assets/about/profile-round.jpg'
 import githubIcon from '../../../assets/about/github.png'
 import linkedinIcon from '../../../assets/about/linkedin.png'
 import emailIcon from '../../../assets/about/email.png'

@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import About from './about/About'
 import Work from './work/Work'
 import Skills from './skills/Skills'
+import Footer from './Footer'
 
 const StandardHome = () => {
 
@@ -13,6 +14,7 @@ const StandardHome = () => {
                 <About />
                 <Work />
                 <Skills />
+                <Footer />
             </div>
         </div>
     )
