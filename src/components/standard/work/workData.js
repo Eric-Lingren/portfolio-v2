@@ -175,7 +175,7 @@ const projects = [
         "learned": "Reusable functions, working with pandas data frames, using python loggers, performing statistical evaluations within python",
         "languages": ["Python"],
         "liveLink": "",
-        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/scraper",
+        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/data_validator",
         "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91771628-8791de80-eba0-11ea-9c3e-0cc30bb06e5f.png",
         "images" : [
             "https://user-images.githubusercontent.com/44101756/91771617-83fe5780-eba0-11ea-8567-1bcefd355d93.png",
