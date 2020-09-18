@@ -106,6 +106,19 @@
     margin: 10px 0px 0px 15px;
 }
 
+
+@media only screen and (max-width: 768px) {
+    .footer-contact-icon-github{
+        height: 35px;
+    }
+    .footer-contact-icon-linkedin{
+        height: 33px;
+    }
+    .footer-contact-icon-email{
+        height: 33px;
+    }
+}
+
 @media only screen and (max-width: 425px) {
     .header-logo {
         height: 20vw;
