@@ -145,7 +145,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
                     onClick={handleInitilizeSite}
                     // onMouseEnter={() => mouseoverAudio.play()}
                 > 
-                    Standard Site 
+                    Enter 
                 </button>
             </div>
         </div>
