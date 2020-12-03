@@ -24,6 +24,24 @@ const projects = [
         "additionalAssets" : ["https://projecteuler.net/"]
     },
     {
+        "title": "Chrome Doggo Extension",
+        "thumbnailDescription" : "A chrome extension that shows a random dog image or gif.",
+        "detailsDescription" : "This project is custom build chrome extension that when clicked loads an iframe in the browser rendering a fully interactive react app with dog gifs and images",
+        "objective": "Have some fun learning how to build a chrome extension.",
+        "challenges": "Learning how to compile js files into one package for the extension to work.  It was really challenging to get everything to load from a custom react app into the users active browser tab.", 
+        "learned": "Chrome security, requiremnets and build patterns.",
+        "languages": ["JavaScript", "React", "Bable"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/doggo-chrome-extension",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/101100084-20127300-3583-11eb-8a1c-8400f7eca084.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/101099156-7383c180-3581-11eb-9913-04c2dd9d52f0.png",
+            "https://user-images.githubusercontent.com/44101756/101099160-741c5800-3581-11eb-86ee-f6b6ea74f097.png",
+        ],
+        "tags" : ["Front End"],
+        "additionalAssets" : []
+    },
+    {
         "title": "Over The Wire",
         "thumbnailDescription" : "A gamified site that focuses on learning Linux, networking and security concepts.",
         "detailsDescription" : "This project is a series of coding challenges that are found at overthewire.com.  This is a gamified site geared towards learning web and server security and improving Linux skills.",
