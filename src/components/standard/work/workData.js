@@ -31,7 +31,7 @@ const projects = [
         "challenges": "Learning how to compile js files into one package for the extension to work.  It was really challenging to get everything to load from a custom react app into the users active browser tab.", 
         "learned": "Chrome security, Extension requirements/patterns",
         "languages": ["JavaScript", "React", "Babel"],
-        "liveLink": "",
+        "liveLink": "https://chrome.google.com/webstore/detail/doggo-images/biaoklnpaodaoifepdddddobpejccdpj?hl=en",
         "gitLink": "https://github.com/Eric-Lingren/doggo-chrome-extension",
         "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/101100084-20127300-3583-11eb-8a1c-8400f7eca084.png",
         "images" : [
