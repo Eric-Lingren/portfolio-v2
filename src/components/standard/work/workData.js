@@ -62,7 +62,28 @@ const projects = [
         "additionalAssets" : ["https://overthewire.org/wargames/"]
     },
     {
-        "title": "Forex Robots",
+        "title": "IOD Analytics Dashboard",
+        "thumbnailDescription" : "A data visualization aggregator to display user-product flows",
+        "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables to join and compile the data for the Chart.js and React front end to consume.",
+        "objective": "To display user journey stories across a particular product platform in a clear manner.",
+        "challenges": "Aggregating thousands of records across many tables in a performant manner for rendering.", 
+        "learned": "Complex nested SQL table joins.",
+        "languages": ["React, Chart.js, MySql, Node, Express"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89608129-78ce3b00-d831-11ea-9fcd-e6535752d478.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89608117-7370f080-d831-11ea-92df-b872a55a2c42.png",
+            "https://user-images.githubusercontent.com/44101756/89608125-7835a480-d831-11ea-915c-623c8ba82673.png",
+            "https://user-images.githubusercontent.com/44101756/89608126-7835a480-d831-11ea-9545-f7977269f7b5.png",
+            "https://user-images.githubusercontent.com/44101756/89608127-78ce3b00-d831-11ea-9b24-ae8b9470af68.png",
+            "https://user-images.githubusercontent.com/44101756/89608698-1118ef80-d833-11ea-9185-e2abf7b4785c.png"
+        ],
+        "tags" : ["Back End", "Front End", "Full Stack", "Database"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "MT4 Forex Robots",
         "thumbnailDescription" : "A collection of robot algorithms that trade the foreign currency markets.",
         "detailsDescription" : "This is a collection of 10 different robot algos I have built over the years for the MT4 FOREX trading platform.  Since these are all proprietary, the repo is not publically available, but you can view the performance of some of them via the MyFxBook Platform links above.",
         "objective": "Testing different automated revenue generation strategies.",
@@ -83,6 +104,69 @@ const projects = [
             "https://www.myfxbook.com/portfolio/current-live-acct/3298221",
             "https://www.myfxbook.com/portfolio/live/1913941"
         ]
+    },
+    {
+        "title": "Forex Server Bash Scripts",
+        "thumbnailDescription" : "A series of Bash scripts to aid in deployment and configuration of python forex trading algos on Linux Digital Ocean servers.",
+        "detailsDescription" : "This project is a series of bash scripts to improve the efficiency of my Linux server maintenance.  My servers run a series of Forex robot trading algorithms, and these scripts were built for faster deployment and scale of those robots.",
+        "objective": "Faster management and maintenance of Linux server and provide a quicker rollout of many forex algo bots on the Oanda trading platform simultaneously for more rapid testing. ",
+        "challenges": "Learning the syntax of Bash was a little tricky, as was working with arrays and for loops in the Bash language. ", 
+        "learned": "Fundamental understanding of writing in Bash, language syntax and best practices.",
+        "languages": ["Linux", "Bash", "Shell"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/oanda_server_scripts",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/107995107-44cf9180-6f9b-11eb-8671-48af7e910a01.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/107995098-4305ce00-6f9b-11eb-9b5d-8bc28dd9862b.png",
+            "https://user-images.githubusercontent.com/44101756/107995103-439e6480-6f9b-11eb-8bad-a709996faa66.png",
+            "https://user-images.githubusercontent.com/44101756/107995106-4436fb00-6f9b-11eb-9d9f-fb5ff6cd9eb3.png",
+            "https://user-images.githubusercontent.com/44101756/107995107-44cf9180-6f9b-11eb-8671-48af7e910a01.png"
+        ],
+        "tags" : ["Linux", "Security", "Back End"],
+        "additionalAssets" : ["https://drive.google.com/file/d/1HrapZaoP7-ioQxTQbIIxT_pV2xirI2mW/view?usp=sharing"]
+    },
+    {
+        "title": "Forex Market Data Validator",
+        "thumbnailDescription" : "A Python Script which validates, scrubs, and cleans historical market data",
+        "detailsDescription" : "This is an interactive python script that allows the user to check a series of criteria of downloaded data before putting it to use.  It will check the existence of all files within a time series, verify the files contain data, alert if the data has low volume below a standard deviation, sort the data by timestamps, and remove any null rows from the data set.  Once the checks are complete, it will save the data into an excel file for later use.",
+        "objective": "To ensure a clean and accurate dataset is available after downloading but before use.",
+        "challenges": "Working with extremely large data sets (tens of millions of lines) in a performant and asynchronous manner", 
+        "learned": "Reusable functions, working with pandas data frames, using python loggers, performing statistical evaluations within python",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/data_validator",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91771628-8791de80-eba0-11ea-9c3e-0cc30bb06e5f.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/91771617-83fe5780-eba0-11ea-8567-1bcefd355d93.png",
+            "https://user-images.githubusercontent.com/44101756/91771619-852f8480-eba0-11ea-9e79-72f4c3121c5c.png",
+            "https://user-images.githubusercontent.com/44101756/91771622-8660b180-eba0-11ea-8c18-5a39361cd52f.png",
+            "https://user-images.githubusercontent.com/44101756/91771625-86f94800-eba0-11ea-9a7d-2ffa3230dd0a.png",
+            "https://user-images.githubusercontent.com/44101756/91771627-86f94800-eba0-11ea-8459-844ecd9c9211.png"
+            
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Forex Market Data Scraper",
+        "thumbnailDescription" : "A Python Script to download tick data for the equities, commodities and forex markets",
+        "detailsDescription" : "This is an automated script which finds tick data for the currency, equity, and commodity markets and downloads the data. It uses asynchronous requests to re-obtain data if a fetch failed.  It also contains status progress bars and automatically builds all the unique URL's to request data from. ",
+        "objective": "To be able to download accurate historical market data for backtesting trading algorithms. ",
+        "challenges": "Checking for failed downloads are re-requesting the files.", 
+        "learned": "Asynchronous fetching in Python, error handling, timing requests, and progress bars",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/scraper",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91767545-86a97e80-eb99-11ea-97b7-01a821894257.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/91767587-9759f480-eb99-11ea-8edc-f4dd6c6bcd3f.png",
+            "https://user-images.githubusercontent.com/44101756/91767620-a9d42e00-eb99-11ea-994e-ee4345e83ee0.png",
+            "https://user-images.githubusercontent.com/44101756/91767627-ae004b80-eb99-11ea-9d75-8369c3f77e58.png",
+            "https://user-images.githubusercontent.com/44101756/91767630-afca0f00-eb99-11ea-938a-ea143ddbd5aa.png"
+            
+        ],
+        "tags" : ["Back End"],
+        "additionalAssets" : []
     },
     {
         "title": "Auto-Expiring Demo URL's",
@@ -124,29 +208,8 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "title": "IOD Analytics Dashboard",
-        "thumbnailDescription" : "A data visualization aggregator to display user-product flows",
-        "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables to join and compile the data for the Chart.js and React front end to consume.",
-        "objective": "To display user journey stories across a particular product platform in a clear manner.",
-        "challenges": "Aggregating thousands of records across many tables in a performant manner for rendering.", 
-        "learned": "Complex nested SQL table joins.",
-        "languages": ["React, Chart.js, MySql, Node, Express"],
-        "liveLink": "",
-        "gitLink": "",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89608129-78ce3b00-d831-11ea-9fcd-e6535752d478.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/89608117-7370f080-d831-11ea-92df-b872a55a2c42.png",
-            "https://user-images.githubusercontent.com/44101756/89608125-7835a480-d831-11ea-915c-623c8ba82673.png",
-            "https://user-images.githubusercontent.com/44101756/89608126-7835a480-d831-11ea-9545-f7977269f7b5.png",
-            "https://user-images.githubusercontent.com/44101756/89608127-78ce3b00-d831-11ea-9b24-ae8b9470af68.png",
-            "https://user-images.githubusercontent.com/44101756/89608698-1118ef80-d833-11ea-9185-e2abf7b4785c.png"
-        ],
-        "tags" : ["Back End", "Front End", "Full Stack", "Database"],
-        "additionalAssets" : []
-    },
-    {
-        "title": "API Server",
-        "thumbnailDescription" : "A Freelance Client Contract for a Custom an API Server",
+        "title": "BU API Server",
+        "thumbnailDescription" : "A Freelance Client Contract for a Custom an API Server built for Bryan University",
         "detailsDescription" : "This project was contract work for a client; therefore the URLs and repos are private, so I have included a few screenshots. This site has full Cross-Site Script and No-SQL injection protection.",
         "objective": "The client requested a full CRUD 'cheap' server that could accept and respond to requests securely and have clean data in a MongoDB architecture.",
         "challenges": "Getting DNS forwarding configured correctly with their provider's CNAME records.", 
@@ -164,46 +227,23 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "title": "Forex Market Data Scraper",
-        "thumbnailDescription" : "A Python Script to download tick data for the equities, commodities and forex markets",
-        "detailsDescription" : "This is an automated script which finds tick data for the currency, equity, and commodity markets and downloads the data. It uses asynchronous requests to re-obtain data if a fetch failed.  It also contains status progress bars and automatically builds all the unique URL's to request data from. ",
-        "objective": "To be able to download accurate historical market data for backtesting trading algorithms. ",
-        "challenges": "Checking for failed downloads are re-requesting the files.", 
-        "learned": "Asynchronous fetching in Python, error handling, timing requests, and progress bars",
-        "languages": ["Python"],
-        "liveLink": "",
-        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/scraper",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91767545-86a97e80-eb99-11ea-97b7-01a821894257.png",
+        "title": "Coding Challenges",
+        "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
+        "detailsDescription" : "This simple PrismJS based site is to display code snippets of some coding challenges I have done.  This is an ongoing project that I add to when I have time.",
+        "objective": "Practice and improve coding skills.",
+        "challenges": "Trying to use js methods that I am unfamiliar with but more optimal.", 
+        "learned": "Better method utilization and problem-solving.",
+        "languages": ["React", "JavaScript", "CSS", "PrismJS"],
+        "liveLink": "https://erics-coding-challenges.netlify.app/",
+        "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
         "images" : [
-            "https://user-images.githubusercontent.com/44101756/91767587-9759f480-eb99-11ea-8edc-f4dd6c6bcd3f.png",
-            "https://user-images.githubusercontent.com/44101756/91767620-a9d42e00-eb99-11ea-994e-ee4345e83ee0.png",
-            "https://user-images.githubusercontent.com/44101756/91767627-ae004b80-eb99-11ea-9d75-8369c3f77e58.png",
-            "https://user-images.githubusercontent.com/44101756/91767630-afca0f00-eb99-11ea-938a-ea143ddbd5aa.png"
-            
+            "https://user-images.githubusercontent.com/44101756/88745769-0f02b280-d108-11ea-8b60-a3bcc16b3cc4.png",
+            "https://user-images.githubusercontent.com/44101756/88745773-1033df80-d108-11ea-996c-a424f674e2ec.png",
+            "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
+            "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
         ],
-        "tags" : ["Back End"],
-        "additionalAssets" : []
-    },
-    {
-        "title": "Forex Market Data Validator",
-        "thumbnailDescription" : "A Python Script which validates, scrubs, and cleans historical market data",
-        "detailsDescription" : "This is an interactive python script that allows the user to check a series of criteria of downloaded data before putting it to use.  It will check the existence of all files within a time series, verify the files contain data, alert if the data has low volume below a standard deviation, sort the data by timestamps, and remove any null rows from the data set.  Once the checks are complete, it will save the data into an excel file for later use.",
-        "objective": "To ensure a clean and accurate dataset is available after downloading but before use.",
-        "challenges": "Working with extremely large data sets (tens of millions of lines) in a performant and asynchronous manner", 
-        "learned": "Reusable functions, working with pandas data frames, using python loggers, performing statistical evaluations within python",
-        "languages": ["Python"],
-        "liveLink": "",
-        "gitLink": "https://github.com/Eric-Lingren/duka/tree/master/data_validator",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/91771628-8791de80-eba0-11ea-9c3e-0cc30bb06e5f.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/91771617-83fe5780-eba0-11ea-8567-1bcefd355d93.png",
-            "https://user-images.githubusercontent.com/44101756/91771619-852f8480-eba0-11ea-9e79-72f4c3121c5c.png",
-            "https://user-images.githubusercontent.com/44101756/91771622-8660b180-eba0-11ea-8c18-5a39361cd52f.png",
-            "https://user-images.githubusercontent.com/44101756/91771625-86f94800-eba0-11ea-9a7d-2ffa3230dd0a.png",
-            "https://user-images.githubusercontent.com/44101756/91771627-86f94800-eba0-11ea-8459-844ecd9c9211.png"
-            
-        ],
-        "tags" : ["Back End"],
+        "tags" : ["Challenges"],
         "additionalAssets" : []
     },
     {
@@ -220,25 +260,6 @@ const projects = [
         "images" : [
             "https://user-images.githubusercontent.com/44101756/89606282-c7c5a180-d82c-11ea-8c55-2968c9980389.png",
             "https://user-images.githubusercontent.com/44101756/89606285-c85e3800-d82c-11ea-820a-b34e673490d1.png"
-        ],
-        "tags" : ["Back End"],
-        "additionalAssets" : []
-    },
-    {
-        "title": "Python Arithmetic Arranger",
-        "thumbnailDescription" : "A free code camp project to learn data formatting & validation by arranging arrays into formatted strings",
-        "detailsDescription" : "For this project, I was provided an array of math problems in string format and was required to perform a series of data validation and error handling before formatting the outputs in the desired way.",
-        "objective": "Enhance my foundational Python scripting skills.",
-        "challenges": "Using the test files in a Python ecosystem proved to be quite hard for me.", 
-        "learned": "A better grasp of working withing a multi-file Python codebase.",
-        "languages": ["Python"],
-        "liveLink": "",
-        "gitLink": "https://github.com/Eric-Lingren/free-code-camp/tree/master/scientific-computing-with-python/projects/arithmetic-formatter",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89607289-5b986d00-d82f-11ea-949a-361c017e0c89.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/89607268-520f0500-d82f-11ea-8cae-c4a36b9974b1.png",
-            "https://user-images.githubusercontent.com/44101756/89607282-59cea980-d82f-11ea-9fbd-93919ab7a960.png",
-            "https://user-images.githubusercontent.com/44101756/89607284-5affd680-d82f-11ea-9030-9a83713ad010.png"
         ],
         "tags" : ["Back End"],
         "additionalAssets" : []
@@ -283,23 +304,22 @@ const projects = [
         "additionalAssets" : [ "https://youtu.be/goqoOdKhnoA" ]
     },
     {
-        "title": "Coding Challenges",
-        "thumbnailDescription" : "A simple PrismJS site to display code snippets of some coding challenges I have done.",
-        "detailsDescription" : "This simple PrismJS based site is to display code snippets of some coding challenges I have done.  This is an ongoing project that I add to when I have time.",
-        "objective": "Practice and improve coding skills.",
-        "challenges": "Trying to use js methods that I am unfamiliar with but more optimal.", 
-        "learned": "Better method utilization and problem-solving.",
-        "languages": ["React", "JavaScript", "CSS", "PrismJS"],
-        "liveLink": "https://erics-coding-challenges.netlify.app/",
-        "gitLink": "https://github.com/Eric-Lingren/coding_challenges",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473253-f3fe2b80-ced8-11ea-963c-efdb482a3a5d.png",
+        "title": "Python Arithmetic Arranger",
+        "thumbnailDescription" : "A free code camp project to learn data formatting & validation by arranging arrays into formatted strings",
+        "detailsDescription" : "For this project, I was provided an array of math problems in string format and was required to perform a series of data validation and error handling before formatting the outputs in the desired way.",
+        "objective": "Enhance my foundational Python scripting skills.",
+        "challenges": "Using the test files in a Python ecosystem proved to be quite hard for me.", 
+        "learned": "A better grasp of working withing a multi-file Python codebase.",
+        "languages": ["Python"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/free-code-camp/tree/master/scientific-computing-with-python/projects/arithmetic-formatter",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89607289-5b986d00-d82f-11ea-949a-361c017e0c89.png",
         "images" : [
-            "https://user-images.githubusercontent.com/44101756/88745769-0f02b280-d108-11ea-8b60-a3bcc16b3cc4.png",
-            "https://user-images.githubusercontent.com/44101756/88745773-1033df80-d108-11ea-996c-a424f674e2ec.png",
-            "https://user-images.githubusercontent.com/44101756/88745776-10cc7600-d108-11ea-818f-541b12ac3e3a.png",
-            "https://user-images.githubusercontent.com/44101756/88745778-11fda300-d108-11ea-9962-b38006b16c5c.png"
+            "https://user-images.githubusercontent.com/44101756/89607268-520f0500-d82f-11ea-8cae-c4a36b9974b1.png",
+            "https://user-images.githubusercontent.com/44101756/89607282-59cea980-d82f-11ea-9fbd-93919ab7a960.png",
+            "https://user-images.githubusercontent.com/44101756/89607284-5affd680-d82f-11ea-9030-9a83713ad010.png"
         ],
-        "tags" : ["Challenges"],
+        "tags" : ["Back End"],
         "additionalAssets" : []
     },
     {
