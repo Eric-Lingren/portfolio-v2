@@ -144,7 +144,7 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/91771627-86f94800-eba0-11ea-8459-844ecd9c9211.png"
             
         ],
-        "tags" : ["Back End"],
+        "tags" : ["Linux", "Back End"],
         "additionalAssets" : []
     },
     {
@@ -165,7 +165,7 @@ const projects = [
             "https://user-images.githubusercontent.com/44101756/91767630-afca0f00-eb99-11ea-938a-ea143ddbd5aa.png"
             
         ],
-        "tags" : ["Back End"],
+        "tags" : ["Linux", "Back End"],
         "additionalAssets" : []
     },
     {
