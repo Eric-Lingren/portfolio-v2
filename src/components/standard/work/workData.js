@@ -83,8 +83,8 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "title": "MT4 Forex Robots",
-        "thumbnailDescription" : "A collection of robot algorithms that trade the foreign currency markets.",
+        "title": "Metatrader MT4 Forex Robots",
+        "thumbnailDescription" : "A collection of robot algorithms that trade the foreign currency markets built in MT4 for Metatrader platform integration.",
         "detailsDescription" : "This is a collection of 10 different robot algos I have built over the years for the MT4 FOREX trading platform.  Since these are all proprietary, the repo is not publically available, but you can view the performance of some of them via the MyFxBook Platform links above.",
         "objective": "Testing different automated revenue generation strategies.",
         "challenges": "Everything about these was hard, especially the weird MT4 coding syntax they use, which is a C++ based derivative language.", 
@@ -104,6 +104,27 @@ const projects = [
             "https://www.myfxbook.com/portfolio/current-live-acct/3298221",
             "https://www.myfxbook.com/portfolio/live/1913941"
         ]
+    },
+    {
+        "title": "Oanda Python Forex Robots",
+        "thumbnailDescription" : "A collection of robot algorithms built in python that trade the foreign currency markets via the Oanda platform.",
+        "detailsDescription" : "This is a fully custom forex robot algorithm library built using the python Backtrader framework as reference, with full integration into the Oanda version 20 API schema. I built this platform after dissatsifactory results with other Python/Oanda platforms I was able to find on the market.",
+        "objective": "Build a better Forex trading platform in Python that integrates directly with the Oanda API and can execute trades automatically.",
+        "challenges": "The python itsself wasnt too bad since at this point I had built many python projects. Learning how to plan for scale, efficencey, and optimization within the python ecosystem was the biggest learning curve I had on this project.", 
+        "learned": "Proper class design and inheritence for scale and efficiency",
+        "languages": ["Python, Linux"],
+        "liveLink": "",
+        "gitLink": "https://github.com/Eric-Lingren/oanda_v20_platform_public",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/108016137-1370b900-6fcf-11eb-9633-e5da02e50c4a.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/108016137-1370b900-6fcf-11eb-9633-e5da02e50c4a.png",
+            "https://user-images.githubusercontent.com/44101756/108016138-153a7c80-6fcf-11eb-81f8-de911440e349.png",
+            "https://user-images.githubusercontent.com/44101756/108016140-15d31300-6fcf-11eb-871c-75a5f75bdd95.png",
+            "https://user-images.githubusercontent.com/44101756/108016142-166ba980-6fcf-11eb-9e92-ac631fdba3c5.png",
+            "https://user-images.githubusercontent.com/44101756/108016143-17044000-6fcf-11eb-8528-75df299d8509.png"
+        ],
+        "tags" : ["Back End", "Linux"],
+        "additionalAssets" : []
     },
     {
         "title": "Forex Server Bash Scripts",
