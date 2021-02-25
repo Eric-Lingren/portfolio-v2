@@ -3,6 +3,28 @@ import countChampFree from '../../../assets/work/count-champ/CountChampFree-sign
 
 const projects = [
     {
+        "title": "Cardano Blockchain Stake Pool",
+        "thumbnailDescription" : "A blockchain stake pool on the Cardano network for processing transactions and minting blocks",
+        "detailsDescription" : "This project is a fully functional Cardano network blockchain stake pool operating publically under the ticker CJP.  It includes a Core node, a Relay node, and a Cold Node.  It's fully integrated with the blockchain ecosystem to process transactions for the ADA community and mints blocks.",
+        "objective": "Learn how to build and operate a blockchain network node.",
+        "challenges": "Building custom blockchain transactions on my own server nodes was pretty hard the first few times.  It's a lot different building your own transactions rather than relying on another relay operator to build and sign transactions as most consumer-facing blockchain interactions do.", 
+        "learned": "I have always had a high-level understanding of blockchain, but this project taught me more about the nuances of blockchain transactions, blockchain security, and block generation than I ever imagined.",
+        "languages": ["Bash", "Haskell"],
+        "liveLink": "https://captianjackadapool.com/",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/109230666-7528e400-7782-11eb-9898-49ea3e53c8de.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/109230151-a1903080-7781-11eb-9872-ae845216a9f5.png",
+            "https://user-images.githubusercontent.com/44101756/109230157-a3f28a80-7781-11eb-919d-b50055e9f408.png",
+            "https://user-images.githubusercontent.com/44101756/109230160-a48b2100-7781-11eb-8aee-35e5405df2ec.png",
+            "https://user-images.githubusercontent.com/44101756/109230162-a523b780-7781-11eb-996c-222fac21b0df.png",
+            "https://user-images.githubusercontent.com/44101756/109230164-a5bc4e00-7781-11eb-991b-de2a0cf2b5da.png",
+            "https://user-images.githubusercontent.com/44101756/109230166-a5bc4e00-7781-11eb-90b2-714bdb2b09e2.png",
+        ],
+        "tags" : ["Back End", "Linux", "Security"],
+        "additionalAssets" : []
+    },
+    {
         "title": "Project Euler",
         "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
         "detailsDescription" : "An ongoing site that I am using to work through the Project Euler challenges that are found at projecteuler.net. All the logic is in the JS file and you can show the result of each question I have completed.",
@@ -22,24 +44,6 @@ const projects = [
         ],
         "tags" : ["Challenges"],
         "additionalAssets" : ["https://projecteuler.net/"]
-    },
-    {
-        "title": "Chrome Doggo Extension",
-        "thumbnailDescription" : "A chrome extension that shows a random dog image or gif.",
-        "detailsDescription" : "This project is a custom built chrome extension that when clicked loads an iframe in the users current browser rendering a fully interactive react app with dog gifs and images",
-        "objective": "Have some fun learning how to build a chrome extension.",
-        "challenges": "Learning how to compile js files into one package for the extension to work.  It was quite challenging to get everything to load from a custom react app into the users active browser tab.", 
-        "learned": "Chrome security, Extension requirements/patterns",
-        "languages": ["JavaScript", "React", "Babel"],
-        "liveLink": "https://chrome.google.com/webstore/detail/doggo-images/biaoklnpaodaoifepdddddobpejccdpj?hl=en",
-        "gitLink": "https://github.com/Eric-Lingren/doggo-chrome-extension",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/101100084-20127300-3583-11eb-8a1c-8400f7eca084.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/101099156-7383c180-3581-11eb-9913-04c2dd9d52f0.png",
-            "https://user-images.githubusercontent.com/44101756/101099160-741c5800-3581-11eb-86ee-f6b6ea74f097.png",
-        ],
-        "tags" : ["Front End"],
-        "additionalAssets" : []
     },
     {
         "title": "Over The Wire",
@@ -187,6 +191,24 @@ const projects = [
             
         ],
         "tags" : ["Linux", "Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "title": "Chrome Doggo Extension",
+        "thumbnailDescription" : "A chrome extension that shows a random dog image or gif.",
+        "detailsDescription" : "This project is a custom built chrome extension that when clicked loads an iframe in the users current browser rendering a fully interactive react app with dog gifs and images",
+        "objective": "Have some fun learning how to build a chrome extension.",
+        "challenges": "Learning how to compile js files into one package for the extension to work.  It was quite challenging to get everything to load from a custom react app into the users active browser tab.", 
+        "learned": "Chrome security, Extension requirements/patterns",
+        "languages": ["JavaScript", "React", "Babel"],
+        "liveLink": "https://chrome.google.com/webstore/detail/doggo-images/biaoklnpaodaoifepdddddobpejccdpj?hl=en",
+        "gitLink": "https://github.com/Eric-Lingren/doggo-chrome-extension",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/101100084-20127300-3583-11eb-8a1c-8400f7eca084.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/101099156-7383c180-3581-11eb-9913-04c2dd9d52f0.png",
+            "https://user-images.githubusercontent.com/44101756/101099160-741c5800-3581-11eb-86ee-f6b6ea74f097.png",
+        ],
+        "tags" : ["Front End"],
         "additionalAssets" : []
     },
     {
