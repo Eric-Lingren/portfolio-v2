@@ -25,6 +25,26 @@ const projects = [
         "additionalAssets" : []
     },
     {
+        "title": "Algo Explorer",
+        "thumbnailDescription" : "A series of industry standard sorting algorithms I built for practice",
+        "detailsDescription" : "Algo Explorer was one of my favorite projects I have built. This contains some of the most common algorithms with each step animated to demonstrate how they operate.",
+        "objective": "I wanted to learn how algorithms work better and how they differ from each other, so I wrote them from the ground up.",
+        "challenges": "This was one of the most challenging projects I have worked on.  Not because writing the algorithms was particularly hard, but because I wanted to show the actual interactions the code I wrote was taking in real-time rather than using a gif or video.  I had to delay the code and do some challenging remounting steps in React to correctly render the behavior in animations with chart.js as the algorithm ran.", 
+        "learned": "I learned a lot about how different algorithms behave and how the logic differs between them. I also learned how space and time could affect behaviors. Animating each step of my code helped drive these concepts home so I'm happy I decided to build that in. I plan to add more to this project and I'm really looking forward to adding some searches in.",
+        "languages": ["React", "Node"],
+        "liveLink": "https://algoexplorer.netlify.app/",
+        "gitLink": "https://github.com/Eric-Lingren/algo-explorer",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/122433275-50d05d80-cf53-11eb-9413-7966df99361e.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/122444549-e670ea80-cf5d-11eb-8185-116a5c1f0091.png",
+            "https://user-images.githubusercontent.com/44101756/122444763-1ddf9700-cf5e-11eb-9ca8-34ca0cf6d6a2.png",
+            "https://user-images.githubusercontent.com/44101756/122441075-6bf29b80-cf5a-11eb-8dc5-6300d0ff672b.png",
+            "https://user-images.githubusercontent.com/44101756/122441152-8298f280-cf5a-11eb-8722-4419200ae244.png",
+        ],
+        "tags" : ["Back End", "Front End", "Full Stack"],
+        "additionalAssets" : []
+    },
+    {
         "title": "Project Euler",
         "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
         "detailsDescription" : "An ongoing site that I am using to work through the Project Euler challenges that are found at projecteuler.net. All the logic is in the JS file and you can show the result of each question I have completed.",
