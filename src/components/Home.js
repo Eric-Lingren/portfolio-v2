@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { TweenLite, TweenMax, Linear, TimelineLite, TimelineMax } from 'gsap'
+import { TweenMax, Linear, TimelineLite, TimelineMax } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
 // import mouseoverSound from  '../assets/audio1.wav'
@@ -9,7 +9,7 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     // const [windowWidth, setWindowWidth] = useState(0)
     let history = useHistory()
     const canvasRef = useRef()
-    const fullExpereienceButton = useRef()
+    // const fullExpereienceButton = useRef()
     const standardExpereienceButton = useRef()
     // const mouseoverAudio = new Audio(mouseoverSound)
 

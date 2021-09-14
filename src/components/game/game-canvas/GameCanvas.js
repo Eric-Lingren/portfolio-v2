@@ -45,7 +45,7 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
     }
 
      // Reusable bullet getter
-     const getBullet = () => {
+    const getBullet = () => {
         const bullet = bulletRef.current
         return bullet
     }
