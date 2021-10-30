@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { TweenMax, Linear, TimelineLite, TimelineMax } from 'gsap'
 import { withGame } from '../providers/GameProvider'
 import invaderLogo from '../assets/invader-logo2.png'
-// import mouseoverSound from  '../assets/audio1.wav'
+import mouseoverSound from  '../assets/audio1.wav'
 
 const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     const [windowWidth, setWindowWidth] = useState(0)
@@ -11,42 +11,12 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     const canvasRef = useRef()
     const fullExpereienceButton = useRef()
     const standardExpereienceButton = useRef()
-    // const mouseoverAudio = new Audio(mouseoverSound)
-
+    const mouseoverAudio = new Audio(mouseoverSound)
     useEffect(() => {
         setWindowWidth(window.innerWidth)
-        // This will be used when game mode is complete
-        // TweenLite.to(fullExpereienceButton.current, .75, {
-        //     backgroundColor:"#55942b", 
-        //     boxShadow: '0px 0px 10px 8px #fff',
-        //     ease: Linear.easeNone,
-        //     opacity: 1,
-        //     yoyo: true,
-        //     repeat: -1,
-        //     delay: 3
-        // })
-
-        let tl = new TimelineMax({paused:true}),
-        tm = 1;
-
-        tl
-        .to(standardExpereienceButton.current, tm, {opacity: 0})
-        .to(standardExpereienceButton.current, tm, {opacity: .5})
-        .add("startTest")
-        .to(standardExpereienceButton.current,tm, {
-            opacity: 1, 
-            backgroundColor:"#E59400", 
-            boxShadow: '0px 0px 10px 8px #fff',
-            ease: Linear.easeNone,
-            yoyo: true, 
-            repeat: -1
-        })
-
-        let anotherTimeline = new TimelineLite();
-        anotherTimeline.add(tl.tweenFromTo(0, "startTest", {delay: 1}))
-        .add(tl.tweenFromTo("startTest", tl.duration()));
-
     }, [])
+
+
 
     // Animated Pixelate-Out of Logo
     useEffect(()=> {
@@ -99,8 +69,10 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
     })
 
     const handleInitilizeSite = (e) => {
+        
         const { value } = e.target
         if(value === 'game'){
+            if(windowWidth < 700) return alert('Not available on mobile')
             setIsPlaying(true, history)
             setCustomAlert('')
         }
@@ -113,42 +85,31 @@ const Home = ({  setIsPlaying, setCustomAlert, setDidSkip }) => {
 
 
     return(
+        <>
         <div className='home-wrapper'>
             <canvas className='home-canvas' ref={canvasRef} />
-
             <div className='home-button-container'>
-                {
-                    windowWidth > 430 ? 
-                    <button 
-                        className='eightbit-btn' 
-                        ref={fullExpereienceButton}
-                        value='game'
-                        onClick={handleInitilizeSite}
-                        // onMouseEnter={() => mouseoverAudio.play()}
-                    > 
-                        Gamified Site 
-                    </button>
-                : 
-                    <button 
-                        className='eightbit-btn mobile-button' 
-                        ref={fullExpereienceButton}
-                        value='game'
-                        // onMouseEnter={() => mouseoverAudio.play()}
-                    > 
-                        Game Not Available on Mobile
-                    </button>
-                }
-                <button 
-                    className='eightbit-btn eightbit-btn--proceed'
+                <button  
+                    className='start-btn'
                     ref={standardExpereienceButton}
                     value='standard'
                     onClick={handleInitilizeSite}
-                    // onMouseEnter={() => mouseoverAudio.play()}
+                    onMouseEnter={() => mouseoverAudio.play()}
                 > 
-                    Enter 
+                    Enter
                 </button>
+                {/* <button 
+                    className='start-btn' 
+                    ref={fullExpereienceButton}
+                    value='game'
+                    onClick={handleInitilizeSite}
+                    onMouseEnter={() => mouseoverAudio.play()}
+                > 
+                    Game 
+                </button> */}
             </div>
         </div>
+        </>
     )
 }
 

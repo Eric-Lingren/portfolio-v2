@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { withGame } from '../providers/GameProvider'
 import portfolioLogo from '../assets/portfolio-logo-name.png'
 import playerIcon from '../assets/player.png'
+import ScoreComponent from './game/game-componentes/ScoreComponent'
 
 const Header = ({ isInGameMode, lives }) => {
 
@@ -16,6 +17,7 @@ const Header = ({ isInGameMode, lives }) => {
         setLivesIcons(livesList) 
     }, [ lives ] )
 
+
     const mappedLives = livesIcons.map( icon => {
         return <img key={icon} className='player-icon' alt='lives-icon' src={playerIcon} />
     })
@@ -24,12 +26,7 @@ const Header = ({ isInGameMode, lives }) => {
     return(
         <div className='header-wrapper'>
             <div className='score-container'>
-            { isInGameMode && 
-                <>
-                    <h2 className='game-labels'> Score: </h2> 
-                    <h2 className='game-labels'> 0 </h2>
-                </>
-            }
+            { isInGameMode &&  <ScoreComponent /> }
             </div>
             <div className='header-logo-container'>
                 <Link to='/'>
