@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { withGame } from '../../../providers/GameProvider'
+import { withGameComponent } from '../../../providers/GameComponentProvider'
+
 import playerImage from '../../../assets/player.png'
 import bulletImage from '../../../assets/bullet.png'
 import enemyBlue from '../../../assets/enemy-blue.png'
@@ -22,7 +24,8 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
     const bulletRef = useRef()
     const isShootingRef = useRef()
     const enemyBlueRef = useRef()
-    const themeSongAudio = new Audio(themeSong)
+    // const themeSongAudio = new Audio(themeSong)
+    const themeSongAudio = new Audio(shootSound)
     const shootAudio = new Audio(shootSound)
     let enemies = [ {x:50, y:50, row: 0}, {x:150, y:50, row: 0}, {x:250, y:50, row: 0}, {x:350, y:50, row: 0}, {x:450, y:50, row: 0}, {x:550, y:50, row: 0}, {x:650, y:50, row: 0}, {x:750, y:50, row: 0}, {x:850, y:50, row: 0}, {x:950, y:50, row: 0} ]
     // let enemies = [ {x:50, y:50, row: 0}   ]
@@ -228,6 +231,7 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
 
     const incrementScore = (points) => {
         currentScore = currentScore+=points
+        console.log(currentScore)
         // console.log(currentScore)
         setScore(currentScore)
         // let newScore = currentScore + points
@@ -241,7 +245,7 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
     }
 
     const enemiesAnimationLoop = () => {
-          if(isLevelPlaying){
+        if(isLevelPlaying){
             for(let i = 0; i < enemies.length; i++ ){
                 // Hit Right Wall
                 if(canvasWidth-75 <= enemies[i].x + 10 && (enemies[i].row % 2 === 0)){
@@ -271,7 +275,7 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
     return(
         <div className='game-canvas-container'>
             <canvas className='game-canvas' ref={gameCanvasRef} />
-            <input ref={isShootingRef} type="text" value={false} />
+            <input ref={isShootingRef} type="text" value={false} onChange={null} />
             <img 
                 positionx={0}
                 positiony={0}
@@ -325,4 +329,4 @@ const GameCanvas = ({ isLevelPlaying, setIsLevelPlaying, level, setScore }) => {
     )
 }
 
-export default withGame(GameCanvas)
+export default withGameComponent(withGame(GameCanvas))

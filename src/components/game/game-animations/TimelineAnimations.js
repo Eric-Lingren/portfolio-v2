@@ -17,7 +17,7 @@ export function line1Timeline(){
         tl.fromTo(".animate-typewriter-cursor", 4, {
             width: "0",
         }, {
-            width: "40%",
+            width: "500px",
             ease:  SteppedEase.config(37)
         }, 0);
         
@@ -41,7 +41,7 @@ export function line2Timeline(){
             width: "0",
             opacity: 1
         }, {
-            width: "60%",
+            width: "650px",
             ease:  SteppedEase.config(37),
             yoyo: true
         }, 0);
@@ -66,7 +66,7 @@ export function line3Timeline(){
             width: "0",
             opacity: 1
         }, {
-            width: "20%",
+            width: "250px",
             ease:  SteppedEase.config(15),
             yoyo: true,
             repeat: -1,
@@ -93,7 +93,55 @@ export function line7Timeline(){
             width: "0",
             opacity: 1
         }, {
-            width: "40%",
+            width: "450px",
+            ease:  SteppedEase.config(25),
+        }, 0);
+        
+        // text cursor animation
+        tl.fromTo(".animate-typewriter-cursor", .75, {
+        "border-right-color": "rgba(255,255,255,0.75)"
+        }, {
+        "border-right-color": "rgba(255,255,255,0)",
+        repeat: -1,
+        ease:  SteppedEase.config(37)
+        }, 0);
+        
+        tl.play()
+}
+
+
+export function line8Timeline(){
+    let tl = new TimelineMax( { paused: true } )
+        // letter animation
+        tl.fromTo(".animate-typewriter-cursor", 3, {
+            width: "0",
+            opacity: 1
+        }, {
+            width: "400px",
+            ease:  SteppedEase.config(25),
+        }, 0);
+        
+        // text cursor animation
+        tl.fromTo(".animate-typewriter-cursor", .75, {
+        "border-right-color": "rgba(255,255,255,0.75)"
+        }, {
+        "border-right-color": "rgba(255,255,255,0)",
+        repeat: -1,
+        ease:  SteppedEase.config(37)
+        }, 0);
+        
+        tl.play()
+}
+
+
+export function line9Timeline(){
+    let tl = new TimelineMax( { paused: true } )
+        // letter animation
+        tl.fromTo(".animate-typewriter-cursor", 3, {
+            width: "0",
+            opacity: 1
+        }, {
+            width: "650px",
             ease:  SteppedEase.config(25),
         }, 0);
         

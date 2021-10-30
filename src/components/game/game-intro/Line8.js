@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { withGame } from '../../../providers/GameProvider'
-import { line7Timeline } from '../game-animations/TimelineAnimations'
+import { line8Timeline } from '../game-animations/TimelineAnimations'
 
 const Line8 = ({ setCurrentIntroLine }) => {
 
     useEffect(() => {
-        line7Timeline()
+        line8Timeline()
         setTimeout(() => {
             setCurrentIntroLine(9)
         }, 3500)

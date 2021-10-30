@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 const GameContext = React.createContext()
-let gameScore = 0
+
 class GameProvider extends Component {
     constructor(){
         super()
@@ -12,7 +12,6 @@ class GameProvider extends Component {
             firstMount: 0,
             customAlert: '',
             currentIntroLine : 1,
-            // score: 0,
             lives: 3,
             level: 10,
             isLevelPlaying: true,
@@ -48,19 +47,19 @@ class GameProvider extends Component {
     }
 
 
+
+
     render(){
         return (
             <GameContext.Provider 
                 value={{
-                    gameScore: gameScore,
                     ...this.state,
                     setIsPlaying: this.setIsPlaying,
                     setDidSkip: this.setDidSkip,
                     setCustomAlert: this.setCustomAlert,
                     setCurrentIntroLine: this.setCurrentIntroLine,
                     setToggleIsInGameMode: this.setToggleIsInGameMode,
-                    setIsLevelPlaying: this.setIsLevelPlaying,
-                    
+                    setIsLevelPlaying: this.setIsLevelPlaying
                 }}>
                 { this.props.children }
             </GameContext.Provider>
