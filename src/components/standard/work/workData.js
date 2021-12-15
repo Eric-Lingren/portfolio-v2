@@ -52,15 +52,12 @@ const projects = [
         "challenges": "Needing to optimize for efficiency and speed.", 
         "learned": "How to utilize console time to account for efficiency.",
         "languages": ["JavaScript", "HTML", "CSS"],
-        "liveLink": "http://ericsprojecteuler.surge.sh/",
-        "gitLink": "https://github.com/Eric-Lingren/project_euler",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88473186-47bc4500-ced8-11ea-8d91-832fce3fa197.png",
+        "liveLink": "https://zealous-turing-45f02b.netlify.app/",
+        "gitLink": "https://github.com/Eric-Lingren/project-euler-react",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/146278408-ebf2a949-3958-4c55-92ae-71263940e685.png",
         "images" : [
-            "https://user-images.githubusercontent.com/44101756/88742201-dca08780-d0fe-11ea-9ea1-b77142aae721.png",
-            "https://user-images.githubusercontent.com/44101756/88742205-de6a4b00-d0fe-11ea-8a6f-40d4e2f1541b.png",
-            "https://user-images.githubusercontent.com/44101756/88742207-df02e180-d0fe-11ea-9135-25e110410db0.png",
-            "https://user-images.githubusercontent.com/44101756/88742209-df9b7800-d0fe-11ea-8369-547d668652b5.png",
-            "https://user-images.githubusercontent.com/44101756/88745450-576da080-d107-11ea-8be8-3838071e6fe5.png"
+            "https://user-images.githubusercontent.com/44101756/146278415-14e8ba78-ef4d-4e49-8369-fa51f5ee46b1.png",
+            "https://user-images.githubusercontent.com/44101756/146278420-057608d8-e967-42b4-ad52-f6827c884300.png"
         ],
         "tags" : ["Challenges"],
         "additionalAssets" : ["https://projecteuler.net/"]
