@@ -11,16 +11,33 @@
 .about-contact-icon {
     &-github{
         cursor: pointer;
-        height: 75px;
+        height:70px;
+        border: 2px solid black;
+        border-radius: 100%;
     }
     &-linkedin{
         cursor: pointer;
         height: 63px;
-        margin-right: 25px;
+        border: 2px solid black;
+        border-radius: 100%;
     }
     &-email{
         cursor: pointer;
         height: 63px;
+        border: 2px solid black;
+        border-radius: 100%;
+    }
+}
+
+.about-contact-icon {
+    &-github:hover{
+        border: 2px solid #2AF782;
+    }
+    &-linkedin:hover{
+        border: 2px solid #2AF783;
+    }
+    &-email:hover{
+        border: 2px solid #2AF783;
     }
 }
 
@@ -99,11 +116,11 @@
 }
 .footer-contact-icon-linkedin{
     height: 45px;
-    margin-top: 10px;
+    margin: 0px 15px 0px 15px;
 }
 .footer-contact-icon-email{
     height: 45px;
-    margin: 10px 0px 0px 15px;
+    margin: 10px 0px 0px 0px;
 }
 
 

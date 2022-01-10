@@ -15,7 +15,7 @@ const WorkList = ({selectedFilters}) => {
         return(
             <WorkCard 
                 key={index}
-                id={index}
+                id={project.id}
                 title={project.title}
                 thumbnailDescription={project.thumbnailDescription}
                 thumbnailImage={project.thumbnailImage}

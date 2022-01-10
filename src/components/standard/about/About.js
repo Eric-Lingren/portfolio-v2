@@ -20,7 +20,7 @@ const About = () => {
                                         30 countries
                                     </a>. 
                                 </p>
-                                <p className='about-text'> In my free time I enjoy gardening, fishing and vintage video games. </p>
+                                <p className='about-text'> In my free time I enjoy gardening, fishing, sailing and vintage video games. </p>
                                 <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential and solving challenging problems. </p>
 
                             </div>
@@ -28,9 +28,11 @@ const About = () => {
                                 <a target='_blank' rel="noopener noreferrer" href='https://www.github.com/Eric-Lingren'>
                                     <img className='about-contact-icon-github' src={githubIcon} alt='github' />
                                 </a>
+                                <div className='contact-icon-spacer'/>
                                 <a target='_blank' rel="noopener noreferrer" href='https://www.linkedin.com/in/ericlingren/'>
                                     <img className='about-contact-icon-linkedin' src={linkedinIcon} alt='linkedin' />
                                 </a>
+                                <div className='contact-icon-spacer'/>
                                 <a href='mailto:ericlingren@gmail.com'>
                                     <img className='about-contact-icon-email' src={emailIcon} alt='email' />
                                 </a>

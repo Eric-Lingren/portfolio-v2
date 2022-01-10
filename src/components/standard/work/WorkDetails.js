@@ -12,7 +12,8 @@ const WorkDetails = ({ match }) => {
 
 
     let id = parseInt(match.params.id)
-    let work = workData[id]
+    let work = workData.filter(workItem => workItem.id === id)
+    work = work[0]
 
     const liveLinkAvailable = work.liveLink.length > 0
     const liveLinkClass = liveLinkAvailable ? 'work-details-link-available' : 'work-details-link-not-available'
