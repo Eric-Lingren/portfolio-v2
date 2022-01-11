@@ -363,7 +363,7 @@ const projects = [
     },
     {
         "id": 13,
-        "title": "Teaching Intro to API's",
+        "title": "Teaching Intro to RESTful APIs",
         "thumbnailDescription" : "Teaching a University class for their Full Stack Web Development API course",
         "detailsDescription" : "In the resource above, you will find a recording of me teaching an introduction to API class for Bryan University. This is published with the school's permission to demonstrate my skills and competency, not to be shared as a learning tutorial. ",
         "objective": "Help students understand RESTful API usage.",
@@ -374,7 +374,8 @@ const projects = [
         "gitLink": "",
         "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/148847581-c720b32a-7430-43ed-8960-b1382d8aeb93.png",
         "images" : [
-            "https://user-images.githubusercontent.com/44101756/148847195-446d54c4-5093-4376-8313-d77c97e8c591.png"
+            "https://user-images.githubusercontent.com/44101756/148847195-446d54c4-5093-4376-8313-d77c97e8c591.png",
+            "https://user-images.githubusercontent.com/44101756/149029045-cc7fcc4f-d3ae-498e-b697-e5ffeda2802c.png"
         ],
         "tags" : ["Back End", "Teaching"],
         "additionalAssets" : [ "https://youtu.be/VOEvKxuXHTc" ]
