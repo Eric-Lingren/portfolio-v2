@@ -3,7 +3,7 @@ import countChampFree from '../../../assets/work/count-champ/CountChampFree-sign
 
 const projects = [
     {
-        "id": 30,
+        "id": 31,
         "title": "Cardano Blockchain Stake Pool",
         "thumbnailDescription" : "A blockchain stake pool on the Cardano network for processing transactions and minting blocks",
         "detailsDescription" : "This project is a fully functional Cardano network blockchain stake pool operating publically under the ticker CJP.  It includes a Core node, a Relay node, and a Cold Node.  It's fully integrated with the blockchain ecosystem to process transactions for the ADA community and mints blocks.",
@@ -26,7 +26,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "id": 29,
+        "id": 30,
         "title": "Algo Explorer",
         "thumbnailDescription" : "A series of industry standard sorting algorithms I built for practice",
         "detailsDescription" : "Algo Explorer was one of my favorite projects I have built. This contains some of the most common algorithms with each step animated to demonstrate how they operate.",
@@ -47,7 +47,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "id": 28,
+        "id": 29,
         "title": "Project Euler",
         "thumbnailDescription" : "My Project Euler algorithm coding challenges.",
         "detailsDescription" : "An ongoing site that I am using to work through the Project Euler challenges that are found at projecteuler.net. All the logic is in the JS file and you can show the result of each question I have completed.",
@@ -66,7 +66,7 @@ const projects = [
         "additionalAssets" : ["https://projecteuler.net/"]
     },
     {
-        "id": 27,
+        "id": 28,
         "title": "Over The Wire",
         "thumbnailDescription" : "A gamified site that focuses on learning Linux, networking and security concepts.",
         "detailsDescription" : "This project is a series of coding challenges that are found at overthewire.com.  This is a gamified site geared towards learning web and server security and improving Linux skills.",
@@ -87,7 +87,7 @@ const projects = [
         "additionalAssets" : ["https://overthewire.org/wargames/"]
     },
     {
-        "id": 26,
+        "id": 27,
         "title": "IOD Analytics Dashboard",
         "thumbnailDescription" : "A data visualization aggregator to display user-product flows",
         "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables in order to join and compile the data for the Chart.js and React front end to consume.",
@@ -109,7 +109,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "id": 25,
+        "id": 26,
         "title": "Metatrader MT4 Forex Robots",
         "thumbnailDescription" : "A collection of robot algorithms that trade the foreign currency markets built in MT4 for Metatrader platform integration.",
         "detailsDescription" : "This is a collection of 10 different robot algos I have built over the years for the MT4 FOREX trading platform.  Since these are all proprietary, the repo is not publically available, but you can view the performance of some of them via the MyFxBook Platform links above.",
@@ -133,7 +133,7 @@ const projects = [
         ]
     },
     {
-        "id": 24,
+        "id": 25,
         "title": "FX Broker Platform + Trading Bots",
         "thumbnailDescription" : "Robot algorithms in a custom-build REST python platform that trade the foreign currency markets via the Oanda.",
         "detailsDescription" : "This is a fully custom forex robot algorithm library built using the python Backtrader framework as reference, with full integration into the Oanda version 20 API schema. I built this platform after dissatsifactory results with other Python/Oanda platforms I was able to find on the market.",
@@ -155,7 +155,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "id": 23,
+        "id": 24,
         "title": "Forex Server Bash Scripts",
         "thumbnailDescription" : "A series of Bash scripts to aid in deployment and configuration of python forex trading algos on Linux Digital Ocean servers.",
         "detailsDescription" : "This project is a series of bash scripts to improve the efficiency of my Linux server maintenance.  My servers run a series of Forex robot trading algorithms, and these scripts were built for faster deployment and scale of those robots.",
@@ -176,7 +176,7 @@ const projects = [
         "additionalAssets" : ["https://drive.google.com/file/d/1HrapZaoP7-ioQxTQbIIxT_pV2xirI2mW/view?usp=sharing"]
     },
     {
-        "id": 22,
+        "id": 23,
         "title": "Forex Market Data Validator",
         "thumbnailDescription" : "A Python Script which validates, scrubs, and cleans historical market data",
         "detailsDescription" : "This is an interactive python script that allows the user to check a series of criteria of downloaded data before putting it to use.  It will check the existence of all files within a time series, verify the files contain data, alert if the data has low volume below a standard deviation, sort the data by timestamps, and remove any null rows from the data set.  Once the checks are complete, it will save the data into an excel file for later use.",
@@ -199,7 +199,7 @@ const projects = [
         "additionalAssets" : []
     },
     {
-        "id": 21,
+        "id": 22,
         "title": "Forex Market Data Scraper",
         "thumbnailDescription" : "A Python Script to download tick data for the equities, commodities and forex markets",
         "detailsDescription" : "This is an automated script which finds tick data for the currency, equity, and commodity markets and downloads the data. It uses asynchronous requests to re-obtain data if a fetch failed.  It also contains status progress bars and automatically builds all the unique URL's to request data from. ",
@@ -218,6 +218,26 @@ const projects = [
             
         ],
         "tags" : ["Linux", "Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "id": 21,
+        "title": "Website Render Optimizations",
+        "thumbnailDescription" : "Improving the render and mount times of a React app",
+        "detailsDescription" : "This corporate site has a private repo and is gated. After being provided new designs and building a website revamp with an image-heavy and resource-intensive site, the render times went abysmal and needed to be addressed.  I helped improve render times by 300%, which was deemed satisfactory by leadership.",
+        "objective": "To reduce first contentful paint to an acceptable threshhold.",
+        "challenges": "Many things through the platform needed to be adjusted to make this happen.", 
+        "learned": "To reduce the render times, all images were first properly resized and compressed. After that, all standard component imports were converted to lazy imports, then all mounting of components via routes were converted to use React Suspense. I also converted all 3rd party js scripts to render asynchronously and deferred all remaining render-blocking resources.",
+        "languages": ["React, Node.js"],
+        "liveLink": "https://insideoutdev.com/",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/149412336-eef54a90-4225-492c-af6f-202a2427b085.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/149412336-eef54a90-4225-492c-af6f-202a2427b085.png",
+            "https://user-images.githubusercontent.com/44101756/149412347-d630b6d8-dd06-4732-bb03-df6007ff9fad.png",
+            "https://user-images.githubusercontent.com/44101756/149412354-8ffa9f79-2d66-417c-90ca-73684ce299ac.png"
+        ],
+        "tags" : ["Front End", "Back End", "Full Stack"],
         "additionalAssets" : []
     },
     {
