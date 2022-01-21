@@ -87,28 +87,6 @@ const projects = [
         "additionalAssets" : ["https://overthewire.org/wargames/"]
     },
     {
-        "id": 27,
-        "title": "IOD Analytics Dashboard",
-        "thumbnailDescription" : "A Node.js data visualization aggregator to display user-product flows",
-        "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables in order to join and compile the data for the Chart.js and React front end to consume.",
-        "objective": "To display user journey stories across particular product platforms in a clear manner.",
-        "challenges": "Aggregating thousands of records across many tables in a performant manner for rendering.", 
-        "learned": "Complex nested SQL table joins.",
-        "languages": ["React, Chart.js, MySql, Node, Express"],
-        "liveLink": "",
-        "gitLink": "",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89608129-78ce3b00-d831-11ea-9fcd-e6535752d478.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/89608117-7370f080-d831-11ea-92df-b872a55a2c42.png",
-            "https://user-images.githubusercontent.com/44101756/89608125-7835a480-d831-11ea-915c-623c8ba82673.png",
-            "https://user-images.githubusercontent.com/44101756/89608126-7835a480-d831-11ea-9545-f7977269f7b5.png",
-            "https://user-images.githubusercontent.com/44101756/89608127-78ce3b00-d831-11ea-9b24-ae8b9470af68.png",
-            "https://user-images.githubusercontent.com/44101756/89608698-1118ef80-d833-11ea-9185-e2abf7b4785c.png"
-        ],
-        "tags" : ["Back End", "Front End", "Full Stack", "Database"],
-        "additionalAssets" : []
-    },
-    {
         "id": 32,
         "title": "Metatrader Analytics",
         "thumbnailDescription" : "A python data science project to quickly visualize forex trade system behavior",
@@ -242,6 +220,28 @@ const projects = [
             
         ],
         "tags" : ["Linux", "Back End"],
+        "additionalAssets" : []
+    },
+    {
+        "id": 27,
+        "title": "IOD Analytics Dashboard",
+        "thumbnailDescription" : "A Node.js data visualization aggregator to display user-product flows",
+        "detailsDescription" : "This project was built with my team for our company. The repo and live site are both gated and not publically available. I was primarily responsible for the back end side of this project. It takes user data across seven different database tables in order to join and compile the data for the Chart.js and React front end to consume.",
+        "objective": "To display user journey stories across particular product platforms in a clear manner.",
+        "challenges": "Aggregating thousands of records across many tables in a performant manner for rendering.", 
+        "learned": "Complex nested SQL table joins.",
+        "languages": ["React, Chart.js, MySql, Node, Express"],
+        "liveLink": "",
+        "gitLink": "",
+        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/89608129-78ce3b00-d831-11ea-9fcd-e6535752d478.png",
+        "images" : [
+            "https://user-images.githubusercontent.com/44101756/89608117-7370f080-d831-11ea-92df-b872a55a2c42.png",
+            "https://user-images.githubusercontent.com/44101756/89608125-7835a480-d831-11ea-915c-623c8ba82673.png",
+            "https://user-images.githubusercontent.com/44101756/89608126-7835a480-d831-11ea-9545-f7977269f7b5.png",
+            "https://user-images.githubusercontent.com/44101756/89608127-78ce3b00-d831-11ea-9b24-ae8b9470af68.png",
+            "https://user-images.githubusercontent.com/44101756/89608698-1118ef80-d833-11ea-9185-e2abf7b4785c.png"
+        ],
+        "tags" : ["Back End", "Front End", "Full Stack", "Database"],
         "additionalAssets" : []
     },
     {
