@@ -15,13 +15,13 @@ const About = () => {
                         <img className='profile-picture' src={profileRound} alt='profile' />
                         <div>
                             <div className='text-container'>
-                                <p className='about-text'> I am an avid traveler and have been to over {' '}
+                                <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential, solving challenging problems and telling stories through data. </p>
+                                <p className='about-text'> In my free time I enjoy gardening, fishing, sailing and vintage video games. </p>
+                                <p className='about-text'> I am also an avid traveler and have been to more than {' '}
                                     <a className='countries-link' target='_blank' rel="noopener noreferrer" href='https://www.google.com/maps/d/u/0/edit?mid=1YB7JYG2UK7EyiVxPEPE4YjJtZQ_y2cjL&ll=4.7542124741991785%2C0&z=2'>
                                         30 countries
                                     </a>. 
                                 </p>
-                                <p className='about-text'> In my free time I enjoy gardening, fishing, sailing and vintage video games. </p>
-                                <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential, solving challenging problems and telling stories with data. </p>
 
                             </div>
                             <div className='contact-icon-wrapper'>
