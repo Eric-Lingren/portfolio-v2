@@ -21,7 +21,7 @@ const About = () => {
                                     </a>. 
                                 </p>
                                 <p className='about-text'> In my free time I enjoy gardening, fishing, sailing and vintage video games. </p>
-                                <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential and solving challenging problems. </p>
+                                <p className='about-text'> I am passionate about learning new things, helping others achieve their full potential, solving challenging problems and telling stories with data. </p>
 
                             </div>
                             <div className='contact-icon-wrapper'>
