@@ -158,8 +158,8 @@ const projects = [
     },
     {
         "id": 25,
-        "title": "FX Broker Platform + Trading Bots",
-        "thumbnailDescription" : "Robot algorithms in a custom-build REST python platform that trade the foreign currency markets via Oanda.",
+        "title": "Forex Platform & Trading Bots",
+        "thumbnailDescription" : "Python robot algorithms and a custom-built broker platform that trade the foreign currency markets via the Oanda REST API.",
         "detailsDescription" : "This is a fully custom forex robot algorithm library built using the python Backtrader framework as reference, with full integration into the Oanda version 20 API schema. I built this platform after dissatsifactory results with other Python/Oanda platforms I was able to find on the market.",
         "objective": "Build a better Forex trading platform in Python that integrates directly with the Oanda API and can execute trades automatically.",
         "challenges": "The python itsself wasnt too bad since at this point I had built many python projects. Learning how to plan for scale, efficiency, and optimization within the python ecosystem was the biggest learning curve I had on this project.", 
