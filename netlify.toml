@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build"
+  command = "CI= npm run build"
   publish = "build"
 
 [build.environment]
-  CI = "false"
+  NODE_VERSION = "22"
