@@ -40,7 +40,6 @@ const WorkList = ({selectedFilters}) => {
     })
 
     const mappedWorkList = filteredProjects.map((project, index) => {
-        console.log(project.title)
         return (
           // <h1>{project.title}</h1>
           <MenuItem

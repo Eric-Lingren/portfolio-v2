@@ -604,27 +604,27 @@ const projects = [
         "tags" : ["Full Stack"],
         "additionalAssets" : []
     },
-    {
-        "id": 3,
-        "title": "Smart Garden",
-        "thumbnailDescription" : "A full stack app which allows adding, removing and saving plants or gardens. It also makes smart plant recommendations based on companion planting.",
-        "detailsDescription" : "This is a MERN full stack app built during my bootcamp. It makes Axios requests to a MongoDB, which allows adding, removing, and saving plants or gardens. It also provides custom plant recommendations based on companion planting.  It is hosted on the free tier of Heroku, so it may take 15 seconds for the live site to spin up.",
-        "objective": "Build a platform I could use to quickly see which plants I should place next to each other in my garden. ",
-        "challenges": "Modifying dom elements correctly in React through mapping.", 
-        "learned": "This project gave me a much better understanding of structuring data within a database.",
-        "languages": ["React", "MongoDB", "Express", "Mongoose", "Node.js", "JavaScript ES6", "CSS"],
-        "liveLink": "https://smart-garden-planting.herokuapp.com/",
-        "gitLink": "https://github.com/Eric-Lingren/smartgarden",
-        "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472883-f068a580-ced4-11ea-8d02-bfac66bd1cc0.png",
-        "images" : [
-            "https://user-images.githubusercontent.com/44101756/88472885-f199d280-ced4-11ea-9742-a5f00c352021.png",
-            "https://user-images.githubusercontent.com/44101756/88751807-a1f61980-d115-11ea-9c94-bfec64430d9a.png",
-            "https://user-images.githubusercontent.com/44101756/88751812-a589a080-d115-11ea-90dd-ea9bbae0e956.png",
-            "https://user-images.githubusercontent.com/44101756/88751813-a6223700-d115-11ea-987c-63cd4b528ec1.png"
-        ],
-        "tags" : ["Full Stack"],
-        "additionalAssets" : []
-    },
+    // {
+    //     "id": 3,
+    //     "title": "Smart Garden",
+    //     "thumbnailDescription" : "A full stack app which allows adding, removing and saving plants or gardens. It also makes smart plant recommendations based on companion planting.",
+    //     "detailsDescription" : "This is a MERN full stack app built during my bootcamp. It makes Axios requests to a MongoDB, which allows adding, removing, and saving plants or gardens. It also provides custom plant recommendations based on companion planting.  It is hosted on the free tier of Heroku, so it may take 15 seconds for the live site to spin up.",
+    //     "objective": "Build a platform I could use to quickly see which plants I should place next to each other in my garden. ",
+    //     "challenges": "Modifying dom elements correctly in React through mapping.", 
+    //     "learned": "This project gave me a much better understanding of structuring data within a database.",
+    //     "languages": ["React", "MongoDB", "Express", "Mongoose", "Node.js", "JavaScript ES6", "CSS"],
+    //     "liveLink": "https://smart-garden-planting.herokuapp.com/",
+    //     "gitLink": "https://github.com/Eric-Lingren/smartgarden",
+    //     "thumbnailImage" : "https://user-images.githubusercontent.com/44101756/88472883-f068a580-ced4-11ea-8d02-bfac66bd1cc0.png",
+    //     "images" : [
+    //         "https://user-images.githubusercontent.com/44101756/88472885-f199d280-ced4-11ea-9742-a5f00c352021.png",
+    //         "https://user-images.githubusercontent.com/44101756/88751807-a1f61980-d115-11ea-9c94-bfec64430d9a.png",
+    //         "https://user-images.githubusercontent.com/44101756/88751812-a589a080-d115-11ea-90dd-ea9bbae0e956.png",
+    //         "https://user-images.githubusercontent.com/44101756/88751813-a6223700-d115-11ea-987c-63cd4b528ec1.png"
+    //     ],
+    //     "tags" : ["Full Stack"],
+    //     "additionalAssets" : []
+    // },
     {
         "id": 2,
         "title": "Canvas Fun",

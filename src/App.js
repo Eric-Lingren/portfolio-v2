@@ -12,7 +12,7 @@ import WorkDetails from './components/standard/work/WorkDetails'
 // import { loadFull } from "tsparticles"
 // import { loadPolygonMaskPlugin } from "tsparticles-plugin-polygon-mask"
 
-import Particle from './Particle'
+// import Particle from './Particle'
 
 
 const App = () => {
@@ -21,17 +21,16 @@ const App = () => {
 
   return (
     <div className="App">
-    <h1>Welcome</h1>
-    <Particle />
+    {/* <Particle /> */}
       {/* <Particles options={particleConfig} init={particleInit} /> */}
       {/* <Particles id="tsparticles" options={options} init={particlesInit} /> */}
-      {/* <Header />
+      <Header />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/standard/work-details/:id" component={WorkDetails} />
         <Route path="/standard" component={StandardHome} />
         <Route path="/game" component={GameHome} />
-      </Switch> */}
+      </Switch>
     </div>
   );
 }
