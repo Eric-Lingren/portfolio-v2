@@ -2,7 +2,23 @@ import React from 'react'
 import workData from './workData'
 import WorkCard from './WorkCard'
 
+import "./workMenuItems/menutest.scss";
+
+import MenuItem from "./workMenuItems/MenuItem";
+{
+  /* <nav class="menu" >
+
+        <MenuItem />
+            
+        <MenuItem />
+      </nav> */
+}
+
+
+
 const WorkList = ({selectedFilters}) => {
+
+    const renderMappedWorkList = true
 
     let filteredProjects = []
 
@@ -11,7 +27,7 @@ const WorkList = ({selectedFilters}) => {
         matchedProject.length && filteredProjects.push(project)
     })
 
-    const mappedWork = filteredProjects.map((project, index) => {
+    const mappedWorkCards = filteredProjects.map((project, index) => {
         return(
             <WorkCard 
                 key={index}
@@ -23,9 +39,25 @@ const WorkList = ({selectedFilters}) => {
         )
     })
 
+    const mappedWorkList = filteredProjects.map((project, index) => {
+        console.log(project.title)
+        return (
+          // <h1>{project.title}</h1>
+          <MenuItem
+            key={index}
+            id={project.id}
+            title={project.title}
+            thumbnailDescription={project.thumbnailDescription}
+            thumbnailImage={project.thumbnailImage}
+          />
+        );
+    })
+
     return(
-        <div className='work-list-container'>
-            {mappedWork}
+        // <div className='work-list-container'>
+        <div className={renderMappedWorkList ? 'menu' : 'work-list-container'}>
+            {renderMappedWorkList ? mappedWorkList : mappedWorkCards}
+            {/* {mappedWorkCards} */}
         </div>
     )
 }

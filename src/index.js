@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './stylesheets/main.scss'
 import GameProvider from './providers/GameProvider'
 import GameComponentProvider from './providers/GameComponentProvider'
-import App from './App'
+import App from './App.js'
 
 ReactDOM.render(
   <React.StrictMode>
