@@ -1,0 +1,125 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "title": "Portfolio v2: 3D exploded-interface rebuild",
+  "slug": "portfolio-v2-3d-rebuild",
+  "created": "2026-10-09T00:35:00Z",
+  "summary": "Rebuild Eric Lingren's ~4-year-stale CRA portfolio (last content update Jan 2022) as a Next.js + React Three Fiber site aimed at hiring managers and engineering leads, with email contact as the single conversion goal. Concept is an 'Exploded Interface': one persistent WebGL canvas behind real DOM content where UI layers peel apart and reassemble on scroll. A fidelity progression (sketch, then dither/pixel, then polished 3D) plays across the home page scroll to mirror idea, AI-assisted build, shipped product. The AI toolkit gets a hand-authored 3D system diagram (agents, flows, data contracts) with scroll stepping and click-to-inspect. Final visual style is to be settled by a deliberately low-fidelity prototype before the full build.",
+  "decisions": [
+    "No decisions were made outside the grill thread; everything started open.",
+    "Primary audience is hiring managers and engineering leads (senior/staff FE roles). Primary goal is maximizing inbound email contact.",
+    "Architecture is a hybrid: one persistent WebGL canvas fixed behind real DOM content, with the scene driven by scroll per section. Fallback if complexity is too high: hero-only 3D with plain polished DOM. Build the hero scene as a self-contained unit so the fallback stays cheap.",
+    "Core 3D concept is the 'Exploded Interface' (pure option A): the site's UI layers deconstruct into z-space and reassemble per section. No scripted typing intro, no code-to-render concept, no particle field, no glass shader.",
+    "Home page section order (provisional pending prototype): Hero, Positioning (3 short pillars: FE craft, product/UX judgment, AI-native workflow), AI toolkit, Selected work, Experience, Contact. Plus per-case-study routes /work/:slug in real DOM and a /colophon page covering how the site was built.",
+    "AI toolkit section is placed before Selected work so the narrative reads idea, process, result and matches the fidelity progression. Skimmers reach Work via hero 'View work' CTA and nav anchors. The home-page AI section stays tight (about 4 to 6 scroll steps) and deep detail lives in its case study route.",
+    "Selected work is 3 to 5 deep case studies, not a project grid: 2 to 3 sanitized employer case studies (problem, approach, impact; no proprietary code, names, or internal details), 1 AI toolkit case study, and 1 case study of this site. Optionally 0 to 1 old project only if FE-strong. Specific employer projects are picked later when Eric gathers material.",
+    "Primary CTA is email: a copy-email button plus a mailto link with prefilled subject. Eric does not want a public availability line, a Calendly or book-a-call CTA, or a role-fit block (it implied job-seeking; Eric was told it was dropped and did not ask for it back).",
+    "Conversion supporting features kept: recruiter quick-view toggle (disables 3D and shows a one-page scannable view), impact numbers in case studies, OG/link-preview image, content painting before WebGL loads (no blocking preloader), conversion analytics with events on CTA clicks, scroll depth, and case study opens.",
+    "Cuts accepted by Eric: skills badge grid, 31-project grid with filters, long bio paragraph (replace with 2-line positioning and a one-line hobby/travel flavor in the footer), multi-field contact form, blocking intro/preloader, travel map, old teaching videos, Space Invaders game in nav, blog.",
+    "Testimonials are real screenshots of praise Eric has received, redacted with one uniform style (solid blocks or uniform blur on names, avatars, channel and project names), framed in site styling, with a role label per card and no personal names. Redaction must remove confidential employer details.",
+    "AI toolkit section is a static showcase, not a live LLM chatbot and not a replay of real recorded agent runs. It is a hand-authored, choreographed 3D system diagram showing agents/skills, flows, data contracts, and model tiers. Interaction is scroll-driven stepping by default with click or tap on any node to inspect (contract excerpt, tier, inputs/outputs). No free orbit camera.",
+    "Stack: Next.js App Router with static export, React Three Fiber, drei, GSAP + ScrollTrigger, Lenis, MDX for case studies. Canvas lives in the root layout so it persists across routes.",
+    "Device handling uses 3 adaptive tiers. Tier 1: full scene with postprocessing, DPR up to 2. Tier 2: same choreography with fewer layers, no heavy postprocessing, DPR capped near 1.5. Tier 3: static poster frames per section, no scroll choreography, DOM fully intact, used for weak GPUs, prefers-reduced-motion, or WebGL failure. detect-gpu picks the start tier; drei PerformanceMonitor downgrades live and never upgrades mid-session.",
+    "Performance budgets: text visible under 1s, LCP under 2.0s on a mid phone over 4G, canvas JS lazy-loaded after first paint, 3D assets under 1.5MB total.",
+    "Visual direction: a fidelity progression across the whole home page scroll, reversible on scroll-up. Hero is sketch/technical-drawing linework, middle is 1-bit/pixel dither, later sections and work are polished modern 3D. Implemented as one custom material with a single fidelity value from 0 to 1 driven by scroll. Case study routes stay fully polished. Fallback if the sketch hero does not hook: play the progression once in the hero on load, with the rest of the site polished.",
+    "Final visual style (clean technical drawing vs technical drawing plus dither vs full progression) and the AI-before-Work order are provisional and will be confirmed by the prototype.",
+    "A throwaway prototype comes first on a local branch via /prototype, kept very low fidelity: plain boxes for 5 to 8 layers, no textures, no real typography, no dark mode toggle, a fidelity shader driven by scroll, a debug slider and toggle to lock fidelity, six placeholder sections in the new order with lorem text. It must answer: does the sketch hero hook in 3 seconds, do fidelity transitions feel intentional, does the section order read as a story, does it hold 60fps on Eric's phone.",
+    "Launch is a single release after everything is built (no staged v1/v2). Scope includes: hero and full-page fidelity progression, all sections in DOM, 3 case studies plus AI and site case studies, AI scroll-driven diagram with inspect, experience timeline with resume PDF, testimonials wall, contact, recruiter quick-view, adaptive tiers, analytics, and colophon.",
+    "Repository: rebuild in this repo as a fresh Next.js app on a feature branch, replacing the CRA code. Preserve the old site under git tag v1-legacy and branch legacy/cra-site. Master keeps serving the old site until merge, and the merge is the cutover.",
+    "Eric's existing content to refresh: name, email, GitHub and LinkedIn links, and the hobby/travel flavor (50+ countries, sailing, vintage games). Old site has no work experience section and no resume, and its skills list is dated; these are new content work, not design decisions."
+  ],
+  "open_threads": [],
+  "next_action": "Run /prototype to build the throwaway low-fidelity fidelity-progression prototype on a local branch, then confirm the final visual direction and section order before /to-tasks.",
+  "status": "ready",
+  "iteration": 1,
+  "disposed_threads": [],
+  "deferred": [
+    {
+      "text": "Space Invaders easter egg (e.g. Konami code) reviving the old site's game",
+      "rationale": "Low priority and not needed for the contact-conversion goal; excluded from the single launch scope.",
+      "context": "Old site had a canvas Space Invaders game under /game with sprites and audio in src/assets. Retro flavor was discussed as a possible hidden easter egg, not part of the main identity.",
+      "source_seed": null
+    },
+    {
+      "text": "Additional case studies beyond the initial 3 to 5",
+      "rationale": "Curation is a seniority signal and content gathering is the real bottleneck; more can be added after launch.",
+      "context": "Launch set is 2 to 3 sanitized employer studies, the AI toolkit study, and the site study. Old projects were judged mostly backend, forex, or challenge work that muddies an FE-first story.",
+      "source_seed": null
+    },
+    {
+      "text": "Hosting and analytics defaults: stay on Netlify with ericlingren.com and use Plausible or Umami",
+      "rationale": "Proposed as defaults near the end of the grill; Eric did not object or choose a tool, so the specific analytics product is left open for implementation.",
+      "context": "Netlify is already wired to this repo and the domain. Analytics should be privacy-friendly with no cookie banner and track CTA clicks (copy email, mailto, resume download), scroll depth, and case study opens.",
+      "source_seed": null
+    }
+  ],
+  "out_of_scope": [
+    {
+      "text": "Public 'open to roles' or availability badge and role-fit block",
+      "rationale": "Eric does not want to advertise job-seeking publicly."
+    },
+    {
+      "text": "Calendly or book-a-call CTA",
+      "rationale": "Eric wants contact by email only so he has context before any meeting lands on his calendar."
+    },
+    {
+      "text": "Live LLM 'ask about Eric' chatbot",
+      "rationale": "Cliche, costs money, needs abuse guardrails, and risks the model inventing facts for a hiring manager."
+    },
+    {
+      "text": "Replay of real recorded agent sessions in the AI section",
+      "rationale": "Real AI sessions run long; Eric chose a choreographed static diagram instead."
+    },
+    {
+      "text": "Scripted typing-prompt intro (code-to-render concept)",
+      "rationale": "Eric judged it added little value; pure Exploded Interface chosen."
+    },
+    {
+      "text": "Particle-field and refractive-glass 3D concepts, and a full navigable 3D world",
+      "rationale": "Not chosen over the Exploded Interface in a hybrid DOM-plus-canvas architecture."
+    },
+    {
+      "text": "Skills badge grid, 31-project grid with filters, long bio, multi-field contact form, blocking preloader, travel map, old teaching videos, game in nav, blog",
+      "rationale": "Accepted cuts that dilute the FE-first story or add conversion friction."
+    },
+    {
+      "text": "Full retro pixel aesthetic as the site's brand",
+      "rationale": "Reads as a side project to engineering leads and clashes with the exploded-interface concept; pixel/dither appears only as a stage in the fidelity progression."
+    }
+  ],
+  "implementation_decisions": [
+    "Mirror inspectable 3D nodes as keyboard-focusable DOM buttons; mark the canvas aria-hidden; keep all content in the DOM; show visible focus rings; treat prefers-reduced-motion as Tier 3. These accessibility defaults were stated as given without Eric objecting.",
+    "Supporting library defaults: GSAP + ScrollTrigger for choreography, Lenis for smooth scroll, custom GLSL where it earns its keep, and Tailwind or CSS modules for DOM styling.",
+    "Case studies authored in MDX; dedicated routes at /work/:slug must be real, deep-linkable DOM.",
+    "Light mode is technical-drawing paper; a dark/blueprint mode inverting the same system was proposed and is not yet confirmed. Type pairing (grotesk headings, monospace labels) and one signal accent color were proposed defaults, not confirmed."
+  ],
+  "risks_and_tradeoffs": [
+    "Three art directions (sketch, dither, polished) must be nailed and transitions must feel intentional rather than glitchy; the prototype is the gate.",
+    "A sketch-state hero must wow on its own; if it does not, fall back to a one-time hero evolution.",
+    "Dither can shimmer at low DPR or during motion; needs stable screen-space dithering, with flat shading as the Tier 2/3 fallback.",
+    "Putting AI before Work risks managers stopping at the AI section; mitigated by keeping it tight and by nav and CTA anchors to Work.",
+    "Redacted testimonial and case study material may leak employer details if redaction is inconsistent; confidentiality must be checked per item.",
+    "Content is the real bottleneck (case study writing, impact numbers, redacted screenshots, experience timeline, resume PDF), not engineering."
+  ],
+  "further_notes": [
+    "Eric's content to-do outside design: pick the employer case studies and gather impact numbers, collect and redact praise screenshots, write the experience timeline, produce a resume PDF.",
+    "Current repo facts: CRA + React 17 + React Router 5 + SASS + GSAP 3.4, deployed on Netlify at ericlingren.com; last content commit Jan 2022, only build fixes in Feb 2026. Rebuild from scratch rather than porting code."
+  ],
+  "verification": {
+    "iteration": 1,
+    "personas": [
+      "grounding",
+      "accuracy",
+      "completeness",
+      "coherence"
+    ],
+    "refutations_upheld": 0,
+    "refutations_screened": 3,
+    "clean": true,
+    "status": "verified"
+  }
+}
