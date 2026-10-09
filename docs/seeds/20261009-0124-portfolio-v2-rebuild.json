@@ -1,38 +1,42 @@
 {
   "schema_version": "4",
-  "producer": "prototype",
+  "producer": "manual",
   "source": {
-    "type": "seed",
-    "ref": "docs/seeds/20261009-0035-portfolio-v2-3d-rebuild.json"
+    "type": "session",
+    "ref": null
   },
   "title": "Portfolio v2: fly-through exploded-interface rebuild",
-  "slug": "portfolio-v2-fly-through",
-  "created": "2026-10-09T08:17:41Z",
-  "summary": "Successor to the portfolio-v2-3d-rebuild seed after the /prototype session (findings: docs/prototypes/20261009-0042-fidelity-progression-3d.md, PR #15). Round 1 (WebGL boxes beside DOM text with a sketch, dither, polished shader) had smooth transitions but Eric judged it not immersive and lacking senior frontend flair. Round 2 compared four variants (fidelity lens, fly-through, inspect mode, desk scene) and Eric chose the fly-through: the home page sections are real DOM panels placed in z-space with CSS 3D transforms, and scroll flies the camera through them. Panels ahead are wireframes and a build line wipes each into its polished version as the camera arrives, with a thin 1-bit dither band riding the wipe edge. R3F and WebGL are dropped. Everything else from the parent seed (audience, email-only conversion, content plan, routes, cuts) carries forward.",
+  "slug": "portfolio-v2-rebuild",
+  "created": "2026-10-09T08:24:27Z",
+  "summary": "Rebuild Eric Lingren's ~4-year-stale CRA portfolio (last content update Jan 2022) as a Next.js static site aimed at hiring managers and engineering leads, with email contact as the single conversion goal. This seed merges the original grill seed (portfolio-v2-3d-rebuild) with the /prototype outcome (portfolio-v2-fly-through). The grill chose an 'Exploded Interface' concept with a sketch, dither, polished fidelity progression. The prototype (findings: docs/prototypes/20261009-0042-fidelity-progression-3d.md, PR #15) showed that decorative WebGL geometry beside DOM text was not immersive, and Eric chose a fly-through instead: the home page sections are real DOM panels placed in z-space with CSS 3D transforms, scroll flies the camera through them, and each panel is wiped from wireframe to polished as the camera arrives, with a thin 1-bit dither band riding the wipe edge. R3F and WebGL are dropped. The AI toolkit gets a hand-authored system diagram with scroll stepping and click-to-inspect. Content, not engineering, is the bottleneck.",
   "decisions": [
-    "Primary audience is hiring managers and engineering leads (senior/staff FE roles). Primary goal is maximizing inbound email contact. (carried from parent seed)",
-    "Core concept is the fly-through: the home page sections are real DOM panels placed along the z-axis, and scroll position drives a camera that flies through them. When the camera reaches a panel, the panel sits flat at z = 0 and reads like a normal page. This replaces the round-1 approach of decorative WebGL geometry beside DOM text, which Eric found not immersive and lacking senior FE flair.",
+    "Primary audience is hiring managers and engineering leads (senior/staff FE roles). Primary goal is maximizing inbound email contact.",
+    "Core concept is the fly-through: the home page sections are real DOM panels placed along the z-axis, and scroll position drives a camera that flies through them. When the camera reaches a panel, the panel sits flat at z = 0 and reads like a normal page. This is how the grill's 'Exploded Interface' concept is realized: the exploded layers are the site's own sections. It replaces the round-1 approach of decorative WebGL geometry beside DOM text, which Eric found not immersive and lacking senior FE flair.",
     "Rendering is CSS 3D transforms on DOM only. React Three Fiber, drei, WebGL, detect-gpu, and drei PerformanceMonitor are dropped from the stack.",
     "Fly-through mechanics validated in the prototype: a fixed full-viewport stage with perspective around 1100px containing a preserve-3d world; panel i at z = -i * D with D around 1700px; panels alternate horizontal offsets and a yaw that eases to 0 on arrival; the camera lerps toward scroll progress times (N - 1) * D; camera X follows a smoothstep between neighboring panel offsets; panels fade out shortly after the camera passes them. Exact constants are tunable.",
     "Fidelity progression is per panel, not page-wide: each panel renders its section twice with an identical layout (sketch/wireframe and polished). Theme CSS may change only color, background, and border style so both versions align pixel for pixel. A build wipe clips the sketch layer from the top as the camera approaches, with a visible accent build line at the wipe edge.",
     "The dither stage survives as a thin 1-bit dither band riding the build line between the wireframe and polished versions, keeping the idea, AI-assisted build, shipped product narrative. It must be implemented without WebGL.",
     "Personality comes from blueprint annotations: each panel shows a component tag with its z position, and handwritten redline callouts float between panels. Sketch-mode sections carry redline notes that are absolutely positioned so they never affect layout.",
     "Desktop gets a subtle mouse look-around (a few degrees of world rotation following the cursor). Touch devices get no replacement: scroll only, no gyroscope.",
-    "Home page section order: Hero, Positioning (3 short pillars: FE craft, product/UX judgment, AI-native workflow), AI toolkit, Selected work, Experience, Contact. Each section is one fly-through panel. Plus per-case-study routes /work/:slug in real DOM, fully polished and not in the fly-through, and a /colophon page covering how the site was built. (order carried from parent seed; not challenged in the prototype)",
+    "Home page section order: Hero, Positioning (3 short pillars: FE craft, product/UX judgment, AI-native workflow), AI toolkit, Selected work, Experience, Contact. Each section is one fly-through panel. AI toolkit is placed before Selected work so the narrative reads idea, process, result. Skimmers reach Work via the hero 'View work' CTA and nav anchors. Plus per-case-study routes /work/:slug in real DOM, fully polished and not in the fly-through, and a /colophon page covering how the site was built.",
     "The hero keeps a 'View work' CTA so skimmers reach proof in one click.",
-    "AI toolkit section is a static, hand-authored system diagram (agents/skills, flows, data contracts, model tiers) with scroll-driven stepping and click or tap on any node to inspect (contract excerpt, tier, inputs/outputs). With WebGL dropped it is built in DOM/CSS inside its fly-through panel. Not a live LLM chatbot and not a replay of recorded agent runs. Home-page version stays tight (about 4 to 6 steps); deep detail lives in its case study route.",
-    "Selected work is 3 to 5 deep case studies: 2 to 3 sanitized employer case studies (problem, approach, impact; no proprietary code, names, or internal details), 1 AI toolkit case study, and 1 case study of this site. Optionally 0 to 1 old project only if FE-strong. (carried from parent seed)",
-    "Primary CTA is email: a copy-email button plus a mailto link with prefilled subject. No public availability line, no Calendly or book-a-call CTA, no role-fit block. (carried from parent seed)",
-    "Conversion supporting features kept: recruiter quick-view toggle (disables the fly-through and shows a one-page scannable view), impact numbers in case studies, OG/link-preview image, content painting before any motion code loads (no blocking preloader), conversion analytics with events on CTA clicks, scroll depth, and case study opens. (carried from parent seed)",
-    "Fallback is a flat stacked page: the same section components rendered once, stacked, in polished mode. It serves prefers-reduced-motion, the recruiter quick-view, and any device downgraded for poor frame rate. This replaces the parent seed's three GPU tiers.",
-    "Performance budgets: text visible under 1s, LCP under 2.0s on a mid phone over 4G, fly-through code loaded after first paint. (parent seed's 3D asset budget no longer applies)",
-    "Testimonials are real screenshots of praise Eric has received, redacted with one uniform style, framed in site styling, with a role label per card and no personal names. Redaction must remove confidential employer details. (carried from parent seed)",
-    "Cuts accepted by Eric: skills badge grid, 31-project grid with filters, long bio paragraph (replace with 2-line positioning and a one-line hobby/travel flavor in the footer), multi-field contact form, blocking intro/preloader, travel map, old teaching videos, Space Invaders game in nav, blog. (carried from parent seed)",
+    "AI toolkit section is a static, hand-authored system diagram (agents/skills, flows, data contracts, model tiers) with scroll-driven stepping and click or tap on any node to inspect (contract excerpt, tier, inputs/outputs). With WebGL dropped it is built in DOM/CSS inside its fly-through panel. No free orbit camera. Not a live LLM chatbot and not a replay of recorded agent runs. Home-page version stays tight (about 4 to 6 steps); deep detail lives in its case study route.",
+    "Selected work is 3 to 5 deep case studies, not a project grid: 2 to 3 sanitized employer case studies (problem, approach, impact; no proprietary code, names, or internal details), 1 AI toolkit case study, and 1 case study of this site. Optionally 0 to 1 old project only if FE-strong. Specific employer projects are picked later when Eric gathers material.",
+    "Primary CTA is email: a copy-email button plus a mailto link with prefilled subject. Eric does not want a public availability line, a Calendly or book-a-call CTA, or a role-fit block (it implied job-seeking; Eric was told it was dropped and did not ask for it back).",
+    "Conversion supporting features kept: recruiter quick-view toggle (disables the fly-through and shows a one-page scannable view), impact numbers in case studies, OG/link-preview image, content painting before any motion code loads (no blocking preloader), conversion analytics with events on CTA clicks, scroll depth, and case study opens.",
+    "Fallback is a flat stacked page: the same section components rendered once, stacked, in polished mode. It serves prefers-reduced-motion, the recruiter quick-view, and any device downgraded for poor frame rate. This replaces the three GPU tiers planned before the prototype.",
+    "Performance budgets: text visible under 1s, LCP under 2.0s on a mid phone over 4G, fly-through code loaded after first paint. The earlier 1.5MB 3D asset budget no longer applies.",
+    "Testimonials are real screenshots of praise Eric has received, redacted with one uniform style (solid blocks or uniform blur on names, avatars, channel and project names), framed in site styling, with a role label per card and no personal names. Redaction must remove confidential employer details.",
+    "Cuts accepted by Eric: skills badge grid, 31-project grid with filters, long bio paragraph (replace with 2-line positioning and a one-line hobby/travel flavor in the footer), multi-field contact form, blocking intro/preloader, travel map, old teaching videos, Space Invaders game in nav, blog.",
     "Stack: Next.js App Router with static export, MDX for case studies, CSS 3D for the fly-through. The fly-through stage is a home-page concern; case study routes are plain polished DOM.",
-    "Launch is a single release after everything is built. Scope: fly-through home with per-panel build wipe and dither band, all sections, 3 case studies plus AI and site case studies, AI diagram with inspect, experience timeline with resume PDF, testimonials wall, contact, recruiter quick-view, flat fallback, analytics, and colophon. (scope carried from parent seed, adjusted for the fly-through)",
-    "Repository: rebuild in this repo as a fresh Next.js app on feat/portfolio-v2-3d-rebuild, replacing the CRA code. Preserve the old site under git tag v1-legacy and branch legacy/cra-site. Master keeps serving the old site until merge, and the merge is the cutover. (carried from parent seed)"
+    "Launch is a single release after everything is built. Scope: fly-through home with per-panel build wipe and dither band, all sections, 3 case studies plus AI and site case studies, AI diagram with inspect, experience timeline with resume PDF, testimonials wall, contact, recruiter quick-view, flat fallback, analytics, and colophon.",
+    "Repository: rebuild in this repo as a fresh Next.js app on feat/portfolio-v2-3d-rebuild, replacing the CRA code. Preserve the old site under git tag v1-legacy and branch legacy/cra-site. Master keeps serving the old site until merge, and the merge is the cutover.",
+    "Eric's existing content to refresh: name, email, GitHub and LinkedIn links, and the hobby/travel flavor (50+ countries, sailing, vintage games). Old site has no work experience section and no resume, and its skills list is dated; these are new content work, not design decisions.",
+    "The fly-through was chosen over four alternatives in the prototype: round-1 WebGL fidelity boxes beside text, a fidelity lens, an inspect/X-ray mode, and a desk scene."
   ],
   "open_threads": [],
+  "status": "ready",
+  "iteration": 2,
   "disposed_threads": [
     {
       "id": "pt-001",
@@ -59,7 +63,6 @@
       "iteration": 2
     }
   ],
-  "iteration": 2,
   "deferred": [
     {
       "text": "Space Invaders easter egg (e.g. Konami code) reviving the old site's game",
@@ -83,7 +86,7 @@
       "text": "Reuse the inspect-mode X-ray (explode the real DOM into its component tree) or the fidelity lens as easter eggs",
       "rationale": "Both were prototyped but not chosen; Eric did not ask for them as extras.",
       "context": "Prototype code was deleted with the throwaway branch; mechanics are described in docs/prototypes/20261009-0042-fidelity-progression-3d.md Explorations.",
-      "source_seed": "docs/seeds/20261009-0035-portfolio-v2-3d-rebuild.json"
+      "source_seed": null
     }
   ],
   "next_action": "Run /to-spec or /to-tasks on this seed. Early tasks should verify the fly-through on Eric's phone (60fps target) and the hero's first-load hook.",
@@ -145,21 +148,26 @@
     "Motion is driven purely by scroll position, so scrolling up reverses it. This must be checked by eye during the build.",
     "Accessibility defaults: all content stays real DOM in reading order; inspectable AI nodes are keyboard-focusable buttons with visible focus rings; prefers-reduced-motion uses the flat fallback.",
     "Supporting library defaults: Lenis for smooth scroll is optional; GSAP is optional since the prototype used a plain requestAnimationFrame loop; Tailwind or CSS modules for styling.",
-    "Light paper/blueprint palette for the sketch layer and a dark polished palette, as in the prototype; type pairing (grotesk headings, monospace labels) and one accent color remain proposed defaults."
+    "Light paper/blueprint palette for the sketch layer and a dark polished palette, as in the prototype; type pairing (grotesk headings, monospace labels) and one accent color remain proposed defaults.",
+    "Case studies are authored in MDX; /work/:slug routes must be real, deep-linkable DOM.",
+    "A dark/blueprint mode toggle that inverts the same system was proposed in the grill and is not confirmed."
   ],
   "risks_and_tradeoffs": [
     "Phone performance is untested. CSS 3D with six large DOM panels must hold 60fps on a mid phone; the flat fallback is the safety net.",
     "The 3-second hook is unconfirmed. Eric was unsure about the round-1 hero, and the fly-through hero was not judged on first load.",
     "A dither band without WebGL needs a CSS technique (for example a Bayer-pattern mask on a band at the wipe edge) that stays stable and does not shimmer during motion.",
     "Chrome preserve-3d depth sorting is fragile with intersecting or large planes; keep the world to panels and small annotations.",
-    "Putting AI before Work risks managers stopping at the AI section; mitigated by the hero 'View work' CTA and nav anchors. (carried from parent seed)",
-    "Redacted testimonial and case study material may leak employer details if redaction is inconsistent. (carried from parent seed)",
-    "Content is the real bottleneck (case study writing, impact numbers, redacted screenshots, experience timeline, resume PDF), not engineering. (carried from parent seed)"
+    "Putting AI before Work risks managers stopping at the AI section; mitigated by the hero 'View work' CTA and nav anchors.",
+    "Redacted testimonial and case study material may leak employer details if redaction is inconsistent.",
+    "Content is the real bottleneck (case study writing, impact numbers, redacted screenshots, experience timeline, resume PDF), not engineering."
   ],
   "further_notes": [
     "Eric's content to-do outside design: pick the employer case studies and gather impact numbers, collect and redact praise screenshots, write the experience timeline, produce a resume PDF.",
     "Current repo facts: CRA + React 17 + React Router 5 + SASS + GSAP 3.4, deployed on Netlify at ericlingren.com; last content commit Jan 2022, only build fixes in Feb 2026. Rebuild from scratch rather than porting code.",
-    "Prototype findings and code snippets: docs/prototypes/20261009-0042-fidelity-progression-3d.md (PR #15 into feat/portfolio-v2-3d-rebuild)."
+    "Prototype findings and code snippets: docs/prototypes/20261009-0042-fidelity-progression-3d.md (PR #15 into feat/portfolio-v2-3d-rebuild). The original grill seed and the post-prototype seed were merged into this file.."
   ],
-  "status": "ready"
+  "condensed_from": [
+    "20261009-0035-portfolio-v2-3d-rebuild.json",
+    "20261009-0117-portfolio-v2-fly-through.json"
+  ]
 }

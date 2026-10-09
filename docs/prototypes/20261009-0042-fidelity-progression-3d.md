@@ -1,7 +1,7 @@
 ---
 name: fidelity-progression-3d
 description: Prototype findings for the portfolio v2 3D direction. Fly-through of real DOM section panels in z-space won over the round-1 fidelity-shader boxes and three other immersive variants.
-source_seed: docs/seeds/20261009-0035-portfolio-v2-3d-rebuild.json
+source_seed: docs/seeds/20261009-0124-portfolio-v2-rebuild.json
 ---
 
 # Prototype: Fidelity progression and immersive 3D direction
