@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { Panel } from "@/components/Panel";
 import { SelectedWork } from "@/components/panels/SelectedWork";
 import { Positioning } from "@/components/panels/Positioning";
+import { Experience } from "@/components/panels/Experience";
 
 export type PanelEntry = {
   id: string;
@@ -31,7 +32,7 @@ export const PANELS: readonly PanelEntry[] = [
   { id: "positioning", name: "Positioning", title: "Positioning", render: (z) => <Positioning z={z} id="positioning" /> },
   standIn("ai-toolkit", "AIToolkit", "AI toolkit"),
   { id: "work", name: "SelectedWork", title: "Selected work", render: (z) => <SelectedWork z={z} id="work" /> },
-  standIn("experience", "Experience", "Experience"),
+  { id: "experience", name: "Experience", title: "Experience", render: (z) => <Experience z={z} id="experience" /> },
   standIn("testimonials", "Testimonials", "Testimonials"),
   standIn("contact", "Contact", "Contact"),
 ];
