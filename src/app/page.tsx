@@ -1,3 +1,4 @@
+import { Footer } from "@/components/Footer";
 import { FlatStack } from "@/components/flythrough/FlatStack";
 import { FlyThroughLoader } from "@/components/flythrough/FlyThroughLoader";
 
@@ -7,6 +8,7 @@ export default function Home() {
       <FlyThroughLoader>
         <FlatStack />
       </FlyThroughLoader>
+      <Footer />
     </main>
   );
 }
