@@ -5,6 +5,7 @@ import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { checkContent } from "../../../scripts/check-content.mjs";
 import { getStudy } from "@/lib/work";
+import { generateStaticParams } from "./[slug]/page";
 
 const ROOT = process.cwd();
 const FILE = path.join(ROOT, "content/work/investor-reports.mdx");
@@ -72,12 +73,7 @@ describe("investor-reports case study", () => {
     expect(mine).toEqual([]);
   });
 
-  it("is emitted by static export", () => {
-    const out = path.join(ROOT, "out/work");
-    if (!fs.existsSync(out)) return; // only meaningful after `next build`
-    const emitted =
-      fs.existsSync(path.join(out, `${SLUG}.html`)) ||
-      fs.existsSync(path.join(out, SLUG, "index.html"));
-    expect(emitted).toBe(true);
+  it("is emitted by static export params", () => {
+    expect(generateStaticParams().some((p) => p.slug === SLUG)).toBe(true);
   });
 });
