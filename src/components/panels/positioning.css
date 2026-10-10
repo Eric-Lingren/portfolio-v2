@@ -1,0 +1,73 @@
+.pos-heading {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.positioning {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.pillar-thumb {
+  height: 6rem;
+  border: 1.5px solid transparent;
+}
+
+.pillar-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.pillar-sentence,
+.pillar-proof {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.pillar-proof {
+  font-size: 0.9rem;
+}
+
+.panel-layer--polished .pillar {
+  background: #111827;
+  border-color: var(--po-border);
+}
+
+.panel-layer--polished .pillar-proof,
+.panel-layer--polished .pillar-proof a {
+  color: var(--accent-2);
+}
+
+.panel-layer--sketch .pillar {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--sketch .pillar-thumb {
+  background: repeating-linear-gradient(45deg, var(--sk-hatch) 0 1px, transparent 1px 8px);
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+@media (max-width: 800px) {
+  .positioning {
+    grid-template-columns: 1fr;
+  }
+}

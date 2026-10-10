@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Hero } from "@/components/Hero";
 import { Panel } from "@/components/Panel";
+import { Positioning } from "@/components/panels/Positioning";
 
 export type PanelEntry = {
   id: string;
@@ -26,7 +27,7 @@ function standIn(id: string, name: string, title: string): PanelEntry {
 
 export const PANELS: readonly PanelEntry[] = [
   { id: "hero", name: "Hero", title: "Hero", render: (z) => <Hero z={z} id="hero" /> },
-  standIn("positioning", "Positioning", "Positioning"),
+  { id: "positioning", name: "Positioning", title: "Positioning", render: (z) => <Positioning z={z} id="positioning" /> },
   standIn("ai-toolkit", "AIToolkit", "AI toolkit"),
   standIn("work", "SelectedWork", "Selected work"),
   standIn("experience", "Experience", "Experience"),
