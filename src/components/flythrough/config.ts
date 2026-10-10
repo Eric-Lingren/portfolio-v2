@@ -22,6 +22,10 @@ export const FLY_CONFIG = {
   farFade: 3.5,
   /** Panels this many steps behind the camera are fully faded out. */
   passedFade: 0.45,
+  /** Build wipe starts when a panel is this many steps ahead of the camera. */
+  wipeRange: 1.2,
+  /** Panel is fully built once the camera is within this many steps of it. */
+  wipeDone: 0.1,
 } as const;
 
 export type FlyConfig = typeof FLY_CONFIG;

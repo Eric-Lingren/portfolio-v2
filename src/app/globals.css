@@ -8,6 +8,7 @@
   --accent: #ff5a36;
   --accent-2: #06b6d4;
   --on-accent: #0c0a0e;
+  --cyan-glow: 0 0 0 1px #06b6d4, 0 0 28px rgba(6, 182, 212, 0.4);
 
   --sk-bg: #eff1f4;
   --sk-line: #1f2937;
@@ -48,6 +49,79 @@ samp {
   height: 2px;
   background: linear-gradient(90deg, #ff5a36, #06b6d4);
   box-shadow: 0 0 18px 2px #ff5a36;
+}
+
+/*
+ * Build wipe (stage only). Everything that moves is transform-only and set by
+ * flythrough/wipe.ts: the sketch box and the edge translate down by the built
+ * amount, the sketch content translates back up by the same amount.
+ */
+.panel-wipe,
+.panel-wipe-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.panel-wipe {
+  overflow: hidden;
+  transform: translateZ(1px);
+}
+
+.panel-wipe-inner {
+  height: 100%;
+  will-change: transform;
+}
+
+.panel-wipe-inner .panel-layer {
+  height: 100%;
+}
+
+.panel-wipe-edge {
+  transform: translateZ(2px);
+  visibility: hidden;
+}
+
+.panel-wipe-edge .build-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: -1px;
+}
+
+/* 1-bit coral dither riding below the line: static ordered-dither tiles, no WebGL. */
+.dither-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  image-rendering: pixelated;
+}
+
+.dither-band--dense {
+  top: 1px;
+  background: conic-gradient(#ff5a36 25%, transparent 0 50%, #ff5a36 0 75%, transparent 0) 0 0 / 4px 4px;
+}
+
+.dither-band--sparse {
+  top: 5px;
+  background: radial-gradient(circle at 1px 1px, #ff5a36 0.9px, transparent 1.1px) 0 0 / 4px 4px;
+}
+
+/* Card hover glow: polished layer only, desktop hover only. */
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished {
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .panel-layer--polished:hover {
+    border-color: var(--accent-2);
+    box-shadow: var(--cyan-glow);
+  }
 }
 
 .stack {
