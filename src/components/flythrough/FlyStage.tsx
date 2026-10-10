@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Callouts } from "./Callouts";
-import { layoutFor, lerpFactor, panelScrollProgress, panelStyle, scrollProgress, scrollToCamera, worldTransform, type Layout } from "./camera";
+import { layoutFor, lerpFactor, panelScrollTop, panelStyle, scrollProgress, scrollToCamera, worldTransform, type Layout } from "./camera";
 import { setStageScroll } from "./dwell-store";
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
@@ -97,7 +97,7 @@ export function FlyStage() {
       if (i < 0) return;
       e.preventDefault();
       window.scrollTo({
-        top: panelScrollProgress(i, COUNT) * ((FLY_CONFIG.scrollLvh - 100) / 100) * lvh,
+        top: panelScrollTop(i, COUNT, lvh),
         behavior: reduced ? "auto" : "smooth",
       });
     };
