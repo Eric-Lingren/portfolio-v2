@@ -7,6 +7,7 @@ import { useDwellStep } from "@/components/flythrough/dwell-store";
 import { useRenderMode } from "@/components/flythrough/render-mode";
 import { ALL_STEPS, FEEDBACK_EDGE, INTRO, fileUrl, nodeById, type ToolkitNode } from "@/content/ai-toolkit";
 import { Panel, type PanelLayers } from "../Panel";
+import { AIStatsStrip } from "./AIStatsStrip";
 import "./ai-toolkit.css";
 
 export type StepState = "done" | "active" | "upcoming";
@@ -73,6 +74,7 @@ export function AIToolkit({ layers = "polished", z = 0, id }: { layers?: PanelLa
     <Panel name="AIToolkit" z={z} id={id} layers={layers}>
       <h2 className="ai-heading">AI toolkit</h2>
       <p className="ai-intro">{INTRO}</p>
+      <AIStatsStrip />
       <div className="ai-diagram" data-testid="ai-diagram" data-mode={mode} data-active-step={active}>
         <div className="ai-flow">
         <div className="ai-feedback" data-testid="ai-feedback-edge" data-from={FEEDBACK_EDGE.from} data-to={FEEDBACK_EDGE.to} aria-hidden="true">
