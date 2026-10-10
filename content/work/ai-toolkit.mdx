@@ -1,0 +1,62 @@
+---
+title: A shared AI toolkit that takes work from idea to merged PR
+slug: ai-toolkit
+role: Designer and sole maintainer
+timeline: "[ERIC: start year] to present"
+stack: [Claude Code, TypeScript, Python, Bash, JSON Schema]
+outcomes:
+  - "[ERIC: before/after ratio for time from idea to merged PR, as a percentage]"
+  - A learning loop that turns review corrections into edits to the skills themselves
+  - This portfolio was built end to end by the pipeline described below
+cardOutcome: A skill and agent pipeline that runs from grill to merged PR, and improves itself from review feedback.
+cardNumber: null
+cardNumberLabel: ""
+thumbnail: /work/ai-toolkit/pipeline.png
+order: 3
+---
+
+{/* [ERIC: add diagram/screenshot of the pipeline stages, saved at public/work/ai-toolkit/pipeline.png] */}
+
+## Context
+
+I keep one shared toolkit of Claude Code skills, agents, scripts and schemas, and every project I work in loads it. It started as a handful of prompts. It is now a set of small stages that hand structured files to each other, so a feature can move from a loose idea to a reviewed pull request with me making decisions at a few chosen points instead of driving every step.
+
+## Problem
+
+Left alone, a single long agent session drifts. It forgets earlier decisions, skips tests when tired, and gives me a diff I have to re-derive the intent of. I wanted the opposite: short stages with narrow jobs, written artifacts between them, and the strongest model only where reasoning is actually needed. [ERIC: one concrete failure of the single-session approach that pushed you to split it up]
+
+## My role
+
+I designed the stages, wrote the skills, agents and contracts, and maintain all of it. I also act as the human in the loop: I answer the grill, approve seeds, and read the final review. [ERIC: confirm whether anyone else uses or contributes to the toolkit]
+
+## Key decisions
+
+**Decisions are captured before code.** A grill session interviews me about the plan until the branches of the design are resolved, then a seed step distills the conversation into a JSON file. Adversary agents try to refute the seed against the transcript, and a judge panel rules on what they find. Nothing downstream rereads the chat.
+
+**Tasks are vertical slices with contracts.** The seed becomes a task file of independently buildable slices, each with acceptance criteria and, for UI work, a browser check spec. A dispatcher routes code, reply and triage items to the right executor.
+
+**One task per build runner, one worktree per task.** Each runner syncs to a known base, then runs test-driven development: failing test, minimal fix, refactor. After that, read-only runners for lint, tests and browser checks gate the result. A visual judge compares screenshots to the stated intent, and a panel breaks ties. The runner returns a short receipt and keeps the full trace in a log.
+
+**Tiers are set per stage, not per session.** A single file maps every skill and agent to a tier, and a sync script keeps the definitions in line with it.
+
+<span style={{ border: "1px solid var(--accent-2)", borderRadius: 4, padding: "0 6px", fontFamily: "var(--font-geist-mono)", fontSize: "0.8em" }}>Haiku</span> runs lookups and the read-only runners: lint, test and browser checks. <span style={{ border: "1px solid var(--accent-2)", borderRadius: 4, padding: "0 6px", fontFamily: "var(--font-geist-mono)", fontSize: "0.8em" }}>Sonnet</span> builds, reviews and writes the seeds and task files. <span style={{ border: "1px solid var(--accent-2)", borderRadius: 4, padding: "0 6px", fontFamily: "var(--font-geist-mono)", fontSize: "0.8em" }}>Opus</span> is reserved for grilling, debugging and architecture work, where a wrong call is expensive.
+
+> The loop closes on itself. Review feedback is traced back to the stage that let the mistake through, and that stage gets edited.
+
+**The learning loop.** After a run, a capture agent writes what I corrected as a structured learning, and a script checks that its quotes actually appear in the transcript. When a pull request gets review comments, an attribution agent walks the history backward to find the earliest stage that should have caught the issue, and a grounding judge verifies the evidence before anything is logged. Later I apply the accumulated learnings to the target skill, and a benchmark runner scores the skill against synthetic scenarios with a judge panel so I can see whether an edit helped.
+
+## Built by this pipeline
+
+This site is the working example. The home page fly-through, the case studies and the content checks were all produced by the stages above.
+
+I grilled the plan, including the visual direction, which came out of two prototype branches. A seed recorded the decisions. The task file split the rebuild into slices: scaffold, the panel primitive, the case study pipeline, one task per case study, and so on. The dispatcher then ran the slices in waves, and each ran in its own worktree under TDD with lint and test gates. This case study is one of those slices, and the tests that check its word count and section list were written before the prose.
+
+Writing is where the pipeline needed me most. Content checks flag unresolved markers, internal links and statistics, but the voice is mine to fix. [ERIC: one thing the pipeline got wrong on this site and how you caught it]
+
+## Impact
+
+[ERIC: before/after ratio for cycle time, as a percentage, for work done with the toolkit versus without]. Lint, test and visual issues are caught before a human sees the diff, so review should centre on design questions. [ERIC: confirm that is what you see in practice, and the percentage change in review comments about style or missed tests]
+
+## What I'd do next
+
+I want the benchmark scores to gate skill edits automatically instead of being something I check by hand. I also want a cheaper way to replay a past run against a changed skill. [ERIC: anything else on the roadmap, or a limitation you would call out honestly]
