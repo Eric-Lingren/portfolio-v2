@@ -1,0 +1,86 @@
+/* Case study pages: plain polished DOM, dark only. */
+.case-study {
+  min-height: 100vh;
+  padding: 4rem 1.5rem 6rem;
+  background: var(--po-bg);
+  color: var(--po-ink);
+}
+
+.case-study__column {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.case-study__title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Meta strip on gray-900. */
+.case-study__summary {
+  margin-bottom: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--po-surface);
+  border: 1px solid var(--po-border);
+  border-radius: 8px;
+}
+
+.case-study__summary dl {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.case-study__summary dt {
+  color: var(--po-muted);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-study__summary dd {
+  margin: 0.15rem 0 0;
+  font-size: 1rem;
+}
+
+.case-study__summary ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+/* Body typography: 18px, 1.68 line-height. */
+.case-study__body {
+  font-size: 18px;
+  line-height: 1.68;
+}
+
+.case-study__body h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.case-study__body p {
+  margin: 0 0 1.1rem;
+}
+
+.case-study__body a {
+  color: var(--accent-2);
+}
+
+/* Pull quote: coral rule on a gray-900 surface. */
+.case-study__body blockquote {
+  margin: 1.75rem 0;
+  padding: 1.1rem 1.4rem;
+  background: var(--po-surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 1.2rem;
+}
+
+.case-study__body blockquote p {
+  margin: 0;
+}
