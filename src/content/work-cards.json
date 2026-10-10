@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "kpi-granularity",
+    "title": "KPI Granularity for Information Requests",
+    "outcome": "Firms can ask each portfolio company for each KPI at its own cadence, inside one Information Request.",
+    "number": null,
+    "numberLabel": "",
+    "thumbnail": "/work/kpi-granularity/thumbnail.png",
+    "hasThumbnail": false
+  },
+  {
+    "slug": "investor-reports",
+    "title": "Investor Report Makeover and the Auto-Submit toggle",
+    "outcome": "Rebuilt the page portfolio companies use to report to their investors, then added a toggle that lets them switch to auto-submit.",
+    "number": "20",
+    "numberLabel": "portfolio companies on the auto-submit toggle in week one",
+    "thumbnail": "/work/investor-reports/thumbnail.png",
+    "hasThumbnail": false
+  },
+  {
+    "slug": "frontend-platform",
+    "title": "Frontend platform re-architecture",
+    "outcome": "Three competing UI folders became one component tree, with lint rules that keep it that way.",
+    "number": null,
+    "numberLabel": "",
+    "thumbnail": "/work/frontend-platform/thumbnail.png",
+    "hasThumbnail": false
+  },
+  {
+    "slug": "render-performance",
+    "title": "Cutting render time at Inside Out Development",
+    "outcome": "[ERIC: one-line outcome of the render-time work, in plain words]",
+    "number": null,
+    "numberLabel": "",
+    "thumbnail": "/work/render-performance/thumbnail.png",
+    "hasThumbnail": false
+  }
+]
