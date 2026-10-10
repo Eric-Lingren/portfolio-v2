@@ -86,7 +86,7 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
       line,
       rule,
       message,
-      severity: rule === "eric-marker" ? "error" : "warn",
+      severity: rule === "eric-marker" || rule === "testimonials-placeholder" ? "error" : "warn",
     });
 
   for (const dir of SCAN_DIRS) {
@@ -143,6 +143,24 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
           `body is ${words} words (expected ${WORD_MIN}-${WORD_MAX})`,
         );
       }
+    }
+  }
+
+  const manifest = path.join(root, "src/content/testimonials.json");
+  if (fs.existsSync(manifest)) {
+    let entries = null;
+    try {
+      entries = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    } catch {
+      add(manifest, 1, "testimonials-placeholder", "testimonials manifest is not valid JSON");
+    }
+    if (Array.isArray(entries) && (entries.length < 4 || entries.length > 6)) {
+      add(
+        manifest,
+        1,
+        "testimonials-placeholder",
+        `testimonials manifest has ${entries.length} card(s); placeholders render until it has 4-6`,
+      );
     }
   }
 
