@@ -16,8 +16,9 @@ export type Layout = { scale: number; offsetX: number; maxYaw: number };
 
 /** Responsive layout: scale below ~1240px, flatter yaw and smaller offsets on narrow screens. */
 export function layoutFor(width: number, cfg: FlyConfig = FLY_CONFIG): Layout {
-  const scale = width >= cfg.scaleBelow ? 1 : Math.max(cfg.minScale, width / cfg.scaleBelow);
   const narrow = width < cfg.narrowBelow;
+  // Panels are already 92vw wide, so on phones a width-proportional scale only shrinks text to ~8px.
+  const scale = narrow ? cfg.narrowScale : width >= cfg.scaleBelow ? 1 : Math.max(cfg.minScale, width / cfg.scaleBelow);
   return {
     scale,
     offsetX: narrow ? cfg.offsetX * 0.25 : cfg.offsetX * Math.max(0.5, scale),

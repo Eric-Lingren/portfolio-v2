@@ -50,7 +50,8 @@
 }
 
 .ai-step[data-state="upcoming"] {
-  opacity: 0.5;
+  /* 0.5 dropped tier and step-number text below WCAG AA contrast on the dark layer. */
+  opacity: 0.8;
 }
 
 .ai-step-num {

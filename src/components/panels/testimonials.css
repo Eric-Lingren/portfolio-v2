@@ -63,3 +63,8 @@
   font-size: 0.875rem;
   color: var(--po-muted);
 }
+
+/* po-muted is tuned for the dark polished layer; on the light sketch layer it fails contrast. */
+.panel-layer--sketch .testimonial-role {
+  color: #4b5563;
+}
