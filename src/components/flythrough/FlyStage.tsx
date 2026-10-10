@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Callouts } from "./Callouts";
 import { clamp01, layoutFor, lerpFactor, panelStyle, scrollProgress, worldTransform, type Layout } from "./camera";
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
@@ -132,6 +133,7 @@ export function FlyStage() {
               </div>
             ))}
           </StageContext.Provider>
+          <Callouts />
         </div>
       </div>
       <div className="fly-spacer" aria-hidden="true" style={{ height: `${FLY_CONFIG.scrollLvh}lvh` }} />
