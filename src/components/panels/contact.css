@@ -1,0 +1,87 @@
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.contact-title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+}
+
+.contact-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.contact-photo {
+  flex: none;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.contact-photo img {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Sketch layer: hatched 1:1 placeholder that the build wipe turns into the photo. */
+.panel-layer--sketch .contact-photo {
+  border: 1px dashed var(--sk-line);
+  background: repeating-linear-gradient(45deg, var(--sk-hatch) 0 2px, transparent 2px 8px);
+}
+
+.panel-layer--sketch .contact-photo img {
+  visibility: hidden;
+}
+
+.contact-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-email {
+  margin: 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.contact-btn {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.contact-status {
+  margin: 0;
+  min-height: 1.5em;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
