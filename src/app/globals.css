@@ -276,11 +276,6 @@ samp {
   pointer-events: none;
 }
 
-.standin-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 700;
-}
-
 /* Redline callouts floating between panels (decorative, never in layout). */
 .fly-callouts {
   position: absolute;
