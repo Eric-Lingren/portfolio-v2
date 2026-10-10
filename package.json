@@ -11,7 +11,8 @@
     "test": "vitest run",
     "content:check": "node scripts/check-content.mjs",
     "content:check:strict": "node scripts/check-content.mjs --strict",
-    "testimonials:redact": "node scripts/redact-testimonials.mjs"
+    "testimonials:redact": "node scripts/redact-testimonials.mjs",
+    "resume:pdf": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-resume.mjs"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
@@ -32,6 +33,8 @@
     "eslint-config-next": "^16.4.0",
     "geist": "^1.7.2",
     "jsdom": "^30.1.2",
+    "pdf-lib": "^1.17.1",
+    "playwright-core": "1.62.0",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "vite": "^8.3.4",
