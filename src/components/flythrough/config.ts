@@ -3,8 +3,17 @@ export const FLY_CONFIG = {
   perspective: 1100,
   /** Distance between neighboring panels along z. */
   depth: 1700,
-  /** Total page scroll length, in lvh units (includes the 100lvh viewport itself). */
-  scrollLvh: 800,
+  /**
+   * Total page scroll length, in lvh units (includes the 100lvh viewport itself
+   * and every dwell segment below: 700 for travel + 3 dwell units at ~117 each).
+   */
+  scrollLvh: 1150,
+  /**
+   * Dwell segments: panel index -> weight, in the same units as one panel-to-panel
+   * travel step (1). While dwelling the camera holds exactly on that panel and
+   * the scroll drives the panel's own stepping. Index 2 is the AI toolkit panel.
+   */
+  dwell: { 2: 3 } as Readonly<Record<number, number>>,
   /** Fraction of the remaining distance the camera closes per frame at 60fps. */
   lerp: 0.12,
   /** Horizontal panel offset (px) on wide screens; alternates sign per panel. */

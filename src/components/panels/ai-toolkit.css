@@ -1,0 +1,276 @@
+.ai-heading {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ai-intro {
+  max-width: 48rem;
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.ai-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 72rem;
+}
+
+.ai-flow {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.ai-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 0.9rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.ai-step--loop {
+  grid-column: 1 / -1;
+}
+
+.ai-step[data-state="upcoming"] {
+  opacity: 0.5;
+}
+
+.ai-step-num {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ai-step-title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.ai-step-blurb {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.ai-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.55rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.ai-node:focus-visible,
+.ai-inspect-close:focus-visible,
+.ai-inspect-link:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+.ai-tier {
+  padding: 0 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Feedback edge: a dashed rail down the left side with an arrowhead into the first step. */
+.ai-feedback {
+  position: absolute;
+  top: 2rem;
+  bottom: 2rem;
+  left: 0.6rem;
+  width: 1.4rem;
+  border-left: 2px dashed currentColor;
+  border-top: 2px dashed currentColor;
+  border-bottom: 2px dashed currentColor;
+  pointer-events: none;
+}
+
+.ai-feedback::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  border-left: 9px solid currentColor;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.ai-feedback-label {
+  display: none;
+}
+
+.ai-inspect {
+  padding: 1rem 1.1rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.ai-inspect-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ai-inspect-title {
+  margin: 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 1rem;
+}
+
+.ai-inspect-close {
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ai-inspect-excerpt {
+  margin: 0.6rem 0;
+  line-height: 1.5;
+}
+
+.ai-inspect-io {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.ai-inspect-io h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ai-inspect-io ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.ai-inspect-link,
+.ai-more {
+  display: inline-block;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
+.ai-more {
+  margin-top: 1rem;
+}
+
+/* Layer colors only. Geometry above is shared by sketch and polished. */
+.panel-layer--polished .ai-step {
+  background: #111827;
+  border-color: var(--po-border);
+}
+
+.panel-layer--polished .ai-step[data-state="active"] {
+  border-color: var(--accent-2);
+  box-shadow: var(--cyan-glow);
+}
+
+.panel-layer--polished .ai-step-num,
+.panel-layer--polished .ai-feedback,
+.panel-layer--polished .ai-inspect-link,
+.panel-layer--polished .ai-more a {
+  color: var(--accent-2);
+}
+
+.panel-layer--polished .ai-node,
+.panel-layer--polished .ai-inspect-close {
+  border-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .ai-node[aria-expanded="true"] {
+  border-color: var(--accent-2);
+}
+
+.panel-layer--polished .ai-tier--haiku {
+  color: #86efac;
+}
+
+.panel-layer--polished .ai-tier--sonnet {
+  color: #93c5fd;
+}
+
+.panel-layer--polished .ai-tier--opus {
+  color: #fdba74;
+}
+
+.panel-layer--polished .ai-inspect {
+  background: #111827;
+  border-color: var(--accent-2);
+}
+
+.panel-layer--sketch .ai-step,
+.panel-layer--sketch .ai-inspect,
+.panel-layer--sketch .ai-node,
+.panel-layer--sketch .ai-inspect-close {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--sketch .ai-feedback {
+  color: var(--sk-line);
+}
+
+@media (max-width: 800px) {
+  .ai-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-flow {
+    padding-left: 1.75rem;
+  }
+
+  .ai-feedback {
+    left: 0.35rem;
+    width: 0.9rem;
+  }
+
+  .ai-inspect-io {
+    grid-template-columns: 1fr;
+  }
+}
