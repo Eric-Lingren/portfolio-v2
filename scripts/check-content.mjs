@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // Content hygiene checker for case studies and site copy.
 // Usage: node scripts/check-content.mjs [--strict] [--root <dir>]
-// Default mode warns on everything and exits 0. --strict exits 1 only when
-// unresolved [ERIC: markers remain. Case-study rules apply to content/work/*.mdx.
+// Default mode warns on everything and exits 0. --strict (the production launch
+// gate) exits 1 on STRICT_RULES: unresolved [ERIC: markers, testimonial
+// placeholders, internal links, phone numbers, and PR/file/line count claims in
+// headline-class copy. Structure rules (sections, word count, frontmatter keys)
+// stay warnings. Case-study rules apply to content/work/*.mdx.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,7 +35,25 @@ export const REQUIRED_FRONTMATTER = [
 export const WORD_MIN = 600;
 export const WORD_MAX = 900;
 
-const SCAN_DIRS = ["content", "src/content"];
+const SCAN_DIRS = ["content", "src/content", "src/components/panels"];
+export const STRICT_RULES = new Set([
+  "eric-marker",
+  "testimonials-placeholder",
+  "internal-link",
+  "phone",
+  "myfxbook",
+  "blocklist",
+  "headline-count",
+]);
+// Case study frontmatter keys that surface as headlines or card copy.
+const HEADLINE_KEYS = new Set(["title", "cardOutcome", "cardNumber", "cardNumberLabel", "outcomes"]);
+// Files whose whole text is headline-class copy (pillars, Experience, resume).
+const HEADLINE_FILES = new Set([
+  "src/content/positioning.ts",
+  "src/content/experience.ts",
+  "content/resume/resume.mdx",
+]);
+const isTestFile = (file) => /\.test\.[cm]?[jt]sx?$/.test(file);
 const TEXT_EXT = new Set([".md", ".mdx", ".ts", ".tsx", ".json", ".txt"]);
 
 const LINK_PATTERNS = [
@@ -52,7 +73,7 @@ function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) out.push(...walk(full));
-    else if (TEXT_EXT.has(path.extname(entry.name))) out.push(full);
+    else if (TEXT_EXT.has(path.extname(entry.name)) && !isTestFile(entry.name)) out.push(full);
   }
   return out;
 }
@@ -86,15 +107,19 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
       line,
       rule,
       message,
-      severity: rule === "eric-marker" || rule === "testimonials-placeholder" ? "error" : "warn",
+      severity: STRICT_RULES.has(rule) ? "error" : "warn",
     });
 
   for (const dir of SCAN_DIRS) {
     for (const file of walk(path.join(root, dir))) {
       const raw = fs.readFileSync(file, "utf8");
       const lines = raw.split("\n");
+      const rel = path.relative(root, file).split(path.sep).join("/");
       lines.forEach((text, i) => {
         const n = i + 1;
+        if (HEADLINE_FILES.has(rel) && COUNT_PHRASE.test(text)) {
+          add(file, n, "headline-count", "PR/file/line counts are not impact; keep them out of headline copy");
+        }
         if (text.includes("[ERIC:")) add(file, n, "eric-marker", "unresolved [ERIC: marker");
         for (const [re, label] of LINK_PATTERNS) {
           if (re.test(text)) add(file, n, "internal-link", label);
@@ -124,9 +149,12 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
           add(file, 1, "frontmatter", `missing summary frontmatter: ${key}`);
         }
       }
+      let key = null;
       for (let i = 0; i < fmLines; i++) {
-        if (COUNT_PHRASE.test(lines[i])) {
-          add(file, i + 1, "frontmatter-count", "PR/file/line counts belong in body text only");
+        const m = /^([A-Za-z]\w*):/.exec(lines[i]);
+        if (m) key = m[1];
+        if (key && HEADLINE_KEYS.has(key) && COUNT_PHRASE.test(lines[i])) {
+          add(file, i + 1, "headline-count", `count claim in ${key}; counts belong in body text only`);
         }
       }
       for (const section of REQUIRED_SECTIONS) {
