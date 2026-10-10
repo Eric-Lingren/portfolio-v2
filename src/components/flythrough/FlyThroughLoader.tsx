@@ -35,6 +35,8 @@ export function FlyThroughLoader({ children }: { children: ReactNode }) {
         import("./FlyStage").then((m) => {
           if (cancelled) return;
           setStage(() => m.FlyStage);
+          // Marks where the enhancement replaces the first-paint content; perf:check reads it.
+          performance.mark("fly-stage-swap");
           stopMonitor = startFrameMonitor({
             keepAlive: showPerf,
             onReading: showPerf ? setReading : undefined,

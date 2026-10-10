@@ -27,6 +27,8 @@ export const FLY_CONFIG = {
   /** Narrow-screen breakpoint: flatter yaw and smaller offsets. */
   narrowBelow: 768,
   minScale: 0.55,
+  /** Panel scale below narrowBelow (panels are 92vw wide already; keeps text readable). */
+  narrowScale: 0.9,
   /** Panels this many steps ahead are fully faded in the distance. */
   farFade: 3.5,
   /** Panels this many steps behind the camera are fully faded out. */

@@ -51,6 +51,7 @@
 
 .contact-email {
   margin: 0;
+  overflow-wrap: anywhere;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
 
