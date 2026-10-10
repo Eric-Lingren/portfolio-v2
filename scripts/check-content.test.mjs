@@ -70,6 +70,30 @@ describe("check-content rules", () => {
     expect(rules(root)).toContain(rule);
   });
 
+  describe("testimonials manifest", () => {
+    const card = (i) => ({ id: `t${i}`, image: `/testimonials/t${i}.png`, roleLabel: "Engineer", alt: "a" });
+    const manifestRoot = (entries) =>
+      project({ "src/content/testimonials.json": JSON.stringify(entries) });
+
+    it("flags an empty manifest as a strict error", () => {
+      const root = manifestRoot([]);
+      const f = checkContent({ root, strict: true });
+      expect(f.findings.map((x) => x.rule)).toContain("testimonials-placeholder");
+      expect(f.exitCode).toBe(1);
+    });
+
+    it("flags a manifest outside 4-6 cards", () => {
+      expect(rules(manifestRoot([card(1), card(2), card(3)]))).toContain("testimonials-placeholder");
+      expect(rules(manifestRoot([1, 2, 3, 4, 5, 6, 7].map(card)))).toContain("testimonials-placeholder");
+    });
+
+    it("accepts 4-6 cards and ignores a missing manifest", () => {
+      const ok = manifestRoot([1, 2, 3, 4].map(card));
+      expect(checkContent({ root: ok, strict: true }).exitCode).toBe(0);
+      expect(rules(project({}))).not.toContain("testimonials-placeholder");
+    });
+  });
+
   it("allows github.com/Eric-Lingren links", () => {
     const root = project({ "src/content/x.md": "https://github.com/Eric-Lingren/portfolio" });
     expect(rules(root)).not.toContain("internal-link");
