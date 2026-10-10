@@ -118,9 +118,9 @@ describe("check-content rules", () => {
 
   it("flags counts in frontmatter but allows them in body", () => {
     const fm = FM.replace("cardOutcome: c", "cardOutcome: Shipped 120 PRs");
-    expect(rules(project({ "content/work/a.mdx": fm + body() }))).toContain("frontmatter-count");
+    expect(rules(project({ "content/work/a.mdx": fm + body() }))).toContain("headline-count");
     const ok = project({ "content/work/a.mdx": FM + body(700, "Touched 40 files.") });
-    expect(rules(ok)).not.toContain("frontmatter-count");
+    expect(rules(ok)).not.toContain("headline-count");
   });
 
   it("uses git-ignored blocklist when present", () => {
@@ -147,9 +147,68 @@ describe("check-content modes", () => {
     expect(r.status).toBe(1);
   });
 
-  it("--strict does not fail on other rules", () => {
-    const root = project({ "content/a.md": "http://localhost:3000" });
+  it("--strict does not fail on structure-only warnings", () => {
+    const root = project({ "content/work/a.mdx": FM + body(200) });
     const r = spawnSync("node", [script, "--strict", "--root", root]);
     expect(r.status).toBe(0);
+  });
+
+  it("--strict reports file:line for every violation", () => {
+    const root = project({
+      "content/a.md": "ok\n[ERIC: todo]\ncall 555-123-4567\nhttp://localhost:3000",
+    });
+    const r = spawnSync("node", [script, "--strict", "--root", root]);
+    expect(r.status).toBe(1);
+    const out = r.stdout.toString();
+    expect(out).toContain("content/a.md:2 error [eric-marker]");
+    expect(out).toContain("content/a.md:3 error [phone]");
+    expect(out).toContain("content/a.md:4 error [internal-link]");
+  });
+});
+
+describe("strict launch gate", () => {
+  const strictRules = (files) => {
+    const r = checkContent({ root: project(files), strict: true });
+    return { rules: r.findings.filter((f) => f.severity === "error").map((f) => f.rule), exitCode: r.exitCode };
+  };
+
+  it("passes a fully clean tree", () => {
+    const card = (i) => ({ id: `t${i}`, image: `/t${i}.png`, roleLabel: "E", alt: "a" });
+    const r = strictRules({
+      "content/work/a.mdx": FM + body(),
+      "src/content/testimonials.json": JSON.stringify([1, 2, 3, 4].map(card)),
+      "src/content/positioning.ts": 'export const A = "Plain sentence.";',
+    });
+    expect(r).toEqual({ rules: [], exitCode: 0 });
+  });
+
+  it.each([
+    ["eric marker in json", { "src/content/ai-stats.json": '{"note":"[ERIC: run npm run stats:snapshot before launch]","sample":true}' }, "eric-marker"],
+    ["panel component marker", { "src/components/panels/X.tsx": "<p>[ERIC: fix]</p>" }, "eric-marker"],
+    ["resume marker", { "content/resume/resume.mdx": "- Cut render time on [ERIC: what]." }, "eric-marker"],
+    ["placeholder testimonials", { "src/content/testimonials.json": "[]" }, "testimonials-placeholder"],
+    ["internal link", { "src/components/panels/X.tsx": '<a href="https://linear.app/x">x</a>' }, "internal-link"],
+    ["phone", { "content/resume/resume.mdx": "Call (555) 123-4567" }, "phone"],
+    ["count in positioning", { "src/content/positioning.ts": 'const a = "Merged 300 PRs";' }, "headline-count"],
+    ["count in experience", { "src/content/experience.ts": 'text: "Touched 40 files",' }, "headline-count"],
+    ["count in resume", { "content/resume/resume.mdx": "- Wrote 20,000 lines of code" }, "headline-count"],
+    ["count in title", { "content/work/a.mdx": FM.replace("title: T", "title: 90 PRs later") + body() }, "headline-count"],
+    [
+      "count in outcomes list",
+      { "content/work/a.mdx": FM.replace("outcomes: [b]", "outcomes:\n  - 12 commits") + body() },
+      "headline-count",
+    ],
+  ])("fails on %s", (_n, files, rule) => {
+    const r = strictRules(files);
+    expect(r.rules).toContain(rule);
+    expect(r.exitCode).toBe(1);
+  });
+
+  it("ignores test files and counts outside headline fields", () => {
+    const r = strictRules({
+      "src/components/panels/X.test.tsx": "[ERIC: in a test] 555-123-4567",
+      "src/content/ai-toolkit.ts": 'const a = "Touched 40 files";',
+    });
+    expect(r).toEqual({ rules: [], exitCode: 0 });
   });
 });
