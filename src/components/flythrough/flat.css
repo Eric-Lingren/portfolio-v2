@@ -1,0 +1,16 @@
+/* Flat fallback: no 3D context anywhere in the stack. */
+.stack--flat .panel {
+  transform-style: flat;
+}
+
+.perf-overlay {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  z-index: 1000;
+  padding: 2px 6px;
+  font: 11px/1.4 ui-monospace, monospace;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
