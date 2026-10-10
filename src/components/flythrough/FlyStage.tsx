@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { Callouts } from "./Callouts";
-import { clamp01, layoutFor, lerpFactor, panelStyle, scrollProgress, worldTransform, type Layout } from "./camera";
+import { layoutFor, lerpFactor, panelScrollProgress, panelStyle, scrollProgress, scrollToCamera, worldTransform, type Layout } from "./camera";
+import { setStageScroll } from "./dwell-store";
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
 import { PANELS } from "./registry";
@@ -29,7 +30,8 @@ export function FlyStage() {
     let layout: Layout = layoutFor(window.innerWidth);
     let width = window.innerWidth;
     let lvh = window.innerHeight;
-    let target = scrollProgress(window.scrollY, lvh);
+    let target = scrollToCamera(scrollProgress(window.scrollY, lvh), COUNT).cameraProgress;
+    setStageScroll(scrollProgress(window.scrollY, lvh), COUNT);
     let current = target;
     let look: LookPoint = { x: 0, y: 0 };
     let lookTarget: LookPoint = { x: 0, y: 0 };
@@ -76,7 +78,9 @@ export function FlyStage() {
 
     const onScroll = () => {
       lvh = Math.max(lvh, window.innerHeight);
-      target = scrollProgress(window.scrollY, lvh);
+      const raw = scrollProgress(window.scrollY, lvh);
+      target = scrollToCamera(raw, COUNT).cameraProgress;
+      setStageScroll(raw, COUNT);
       wake();
     };
     const onResize = () => {
@@ -93,7 +97,7 @@ export function FlyStage() {
       if (i < 0) return;
       e.preventDefault();
       window.scrollTo({
-        top: clamp01(i / (COUNT - 1)) * ((FLY_CONFIG.scrollLvh - 100) / 100) * lvh,
+        top: panelScrollProgress(i, COUNT) * ((FLY_CONFIG.scrollLvh - 100) / 100) * lvh,
         behavior: reduced ? "auto" : "smooth",
       });
     };
@@ -108,6 +112,7 @@ export function FlyStage() {
     render();
 
     return () => {
+      setStageScroll(0, 1);
       if (raf) cancelAnimationFrame(raf);
       detachLook();
       window.removeEventListener("scroll", onScroll);
