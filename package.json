@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "content:check": "node scripts/check-content.mjs",
-    "content:check:strict": "node scripts/check-content.mjs --strict"
+    "content:check:strict": "node scripts/check-content.mjs --strict",
+    "testimonials:redact": "node scripts/redact-testimonials.mjs"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
@@ -31,6 +32,7 @@
     "eslint-config-next": "^16.4.0",
     "geist": "^1.7.2",
     "jsdom": "^30.1.2",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "vite": "^8.3.4",
     "vitest": "^5.0.3"
