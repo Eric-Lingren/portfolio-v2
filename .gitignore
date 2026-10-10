@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# private research material (employer screenshots, internal links). never commit.
+/docs/private/
