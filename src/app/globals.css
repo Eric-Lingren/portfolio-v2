@@ -167,3 +167,42 @@ samp {
   border-color: var(--accent-2);
   color: var(--accent-2);
 }
+
+/* Fly-through stage (enhancement layer; flat stack paints first). */
+.fly-stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--po-bg);
+}
+
+.fly-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.fly-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(960px, 92vw);
+  margin-left: calc(min(960px, 92vw) / -2);
+  margin-top: -35svh;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.fly-panel .panel-layer {
+  min-height: 70svh;
+}
+
+.fly-spacer {
+  pointer-events: none;
+}
+
+.standin-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+}

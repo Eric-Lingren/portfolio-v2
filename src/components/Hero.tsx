@@ -1,9 +1,9 @@
 import { MAILTO_URL } from "@/content/site";
 import { Panel, type PanelLayers } from "./Panel";
 
-export function Hero({ layers = "polished" }: { layers?: PanelLayers }) {
+export function Hero({ layers = "polished", z = 0, id }: { layers?: PanelLayers; z?: number; id?: string }) {
   return (
-    <Panel name="Hero" z={0} layers={layers}>
+    <Panel name="Hero" z={z} id={id} layers={layers}>
       <div className="hero">
         <p className="hero-eyebrow">FRONTEND-FIRST FULL-STACK ENGINEER</p>
         <h1 className="hero-name">
