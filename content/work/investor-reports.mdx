@@ -1,0 +1,65 @@
+---
+title: "Investor Report Makeover and the Auto-Submit toggle"
+slug: investor-reports
+role: Core engineer, auto-submit lead, at Standard Metrics
+timeline: Sep 2023 to Aug 2024
+stack:
+  - "[ERIC: confirm stack, e.g. React, TypeScript]"
+outcomes:
+  - Twenty portfolio companies switched to the auto-submit toggle in its first week
+  - Auto-submit went from idea to release in a couple of weeks, ahead of a reporting season
+  - "[ERIC: add before-and-after completion rate if you can find it]"
+cardOutcome: Rebuilt the page portfolio companies use to report to their investors, then added a toggle that lets them switch to auto-submit.
+cardNumber: "20"
+cardNumberLabel: portfolio companies on the auto-submit toggle in week one
+thumbnail: /work/investor-reports/thumbnail.png
+order: 2
+---
+
+{/* [ERIC: add demo-instance screenshot of the masthead before and after, then set a real thumbnail file and meaningful alt text. No images are in this draft on purpose.] */}
+
+## Context
+
+Standard Metrics gives investment firms one place to collect performance data from their portfolio companies. Each reporting period, a firm sends an investor report request and every portfolio company fills in its own page: financials, KPIs, sometimes documents and commentary.
+
+That page is the whole product for the people on the other end. They are not the buyer, they are finance leads and founders with a quarterly chore. How the page felt decided whether the chore got done on time. [ERIC: confirm how many portfolio companies use the page, if that is shareable]
+
+## Problem
+
+The completion rate of these reports is the number the product lives or dies by, and the page was working against it. Submitting was unclear, so people were not sure whether they had finished. Partial submits were hidden, so a firm could believe it had data that was incomplete. The progress bar was confusing enough that people could not tell how much was left.
+
+Separately, most companies reported the same way every period. For them, the manual submit step was friction with no upside. [ERIC: add what you saw or heard that made this obvious, a support pattern or a conversation]
+
+## My role
+
+I was one of the core engineers on the rebuild, working across the masthead, submit bar, progress tracking, completion banners, and success modals. I then led the auto-submit work from the first proposal through release.
+
+[ERIC: add who you worked with by role only, such as a product manager or designer, and what you owned versus what was shared.]
+
+## Key decisions
+
+**Rebuild the page in pieces instead of one big release.** The work shipped as a series of changes: a new masthead layout, footer progress trackers, a new save panel, and updated completion states. It was a large amount of change in an area people use under deadline, so each piece had to stand on its own and be easy to roll back. [ERIC: confirm whether pieces were flag-gated and how you rolled out]
+
+**Make progress honest.** The footer progress tracker shows what is done and what is left, and partial submits are visible instead of silent. I chose to show the uncomfortable state over a clean-looking one, because a report that looks finished and is not costs the firm more than a report that looks incomplete.
+
+**Put auto-submit on the report itself.** The obvious home for a setting like this is an account page. I put the toggle on the report, at the moment the person is deciding whether to submit by hand again. Once switched on, the page shows how many days remain before the data is submitted automatically, so the person is never guessing what will happen. [ERIC: confirm the exact auto-submit behavior and any guardrails, such as what happens to missing fields]
+
+**Keep the first version small.** The idea went from proposal to release in a couple of weeks because the first version was narrow: one toggle, one clear state, built on the save and progress work that already existed. [ERIC: add one thing you deliberately left out of version one]
+
+## Impact
+
+Twenty portfolio companies used the new toggle in the first week after release, and most of them chose to move from manual submit to auto-submit. The release landed in time for the reporting season that was already underway.
+
+The first phase of the makeover was expected to lift report completion rate, and the project retro recorded strong positive feedback from portfolio company users.
+
+One honest gap: no before-and-after completion rate was recorded, and the retro lists it as an open question. I would rather say that than guess. [ERIC: if you can get the completion rate before and after, add it here, otherwise leave this paragraph as is]
+
+[ERIC: add any quote or reaction, attributed by role only, such as a customer success lead or a product leader.]
+
+## What I'd do next
+
+First, measure it. The completion-rate comparison should have been captured before the first change shipped. A baseline plus a simple tracked metric would let the next round of changes prove themselves instead of relying on anecdotes.
+
+Second, look at who did not switch to auto-submit. A toggle that most people adopt suggests the default behavior was wrong for them. The minority who stay manual might have good reasons, and understanding those reasons could shape a better review step. [ERIC: add what you would build for that group]
+
+Third, extend the same idea to the other recurring chores on the page. Anything a company does identically every period is a candidate for a remembered setting. [ERIC: add a specific candidate you noticed while working on this]
