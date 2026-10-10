@@ -161,3 +161,11 @@ export function dwellProgressAt(progress: number, count: number, index: number, 
   const start = index + weights.slice(0, index).reduce((a, b) => a + b, 0);
   return clamp01((clamp01(progress) * total - start) / w);
 }
+
+/**
+ * Page scrollY (px) that puts the camera exactly on panel `index`. The single
+ * source for anchor-click scrolling; inverse of scrollProgress + scrollToCamera.
+ */
+export function panelScrollTop(index: number, count: number, lvhPx: number, cfg: FlyConfig = FLY_CONFIG): number {
+  return panelScrollProgress(index, count, cfg) * ((cfg.scrollLvh - 100) / 100) * lvhPx;
+}
