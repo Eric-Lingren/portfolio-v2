@@ -1,0 +1,73 @@
+.experience {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.experience-title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+}
+
+.experience-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.experience-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.experience-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.experience-company {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.experience-dates {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--po-muted);
+}
+
+.experience-role,
+.experience-scope {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.experience-scope {
+  color: var(--po-muted);
+}
+
+.experience-highlights {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.875rem;
+}
+
+.experience-highlights a {
+  color: var(--accent-2);
+}
+
+.experience-footnote {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--po-muted);
+}

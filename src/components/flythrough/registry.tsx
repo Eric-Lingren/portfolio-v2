@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Hero } from "@/components/Hero";
 import { Panel } from "@/components/Panel";
+import { Experience } from "@/components/panels/Experience";
 
 export type PanelEntry = {
   id: string;
@@ -29,7 +30,7 @@ export const PANELS: readonly PanelEntry[] = [
   standIn("positioning", "Positioning", "Positioning"),
   standIn("ai-toolkit", "AIToolkit", "AI toolkit"),
   standIn("work", "SelectedWork", "Selected work"),
-  standIn("experience", "Experience", "Experience"),
+  { id: "experience", name: "Experience", title: "Experience", render: (z) => <Experience z={z} id="experience" /> },
   standIn("testimonials", "Testimonials", "Testimonials"),
   standIn("contact", "Contact", "Contact"),
 ];
