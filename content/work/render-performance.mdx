@@ -1,0 +1,78 @@
+---
+title: Cutting render time at Inside Out Development
+slug: render-performance
+role: Software Developer, InsideOut Development
+timeline: Apr 2019 to Mar 2022
+stack:
+  - "[ERIC: front-end framework and libraries used on this project]"
+outcomes:
+  - "[ERIC: the measured render-time change, with before and after numbers and how they were taken]"
+  - "[ERIC: one sentence on what users or the client noticed]"
+cardOutcome: "[ERIC: one-line outcome of the render-time work, in plain words]"
+cardNumber: null
+cardNumberLabel: ""
+thumbnail: /work/render-performance/thumbnail.png
+order: 4
+---
+
+{/* DRAFT: every [ERIC: ...] marker is a fact only Eric can supply. Screenshots are not added yet. */}
+
+## Context
+
+At InsideOut Development I worked as a software developer from April 2019 to March 2022. [ERIC: what kind of company is this, and what did the team build? One or two sentences, no client names.]
+
+The performance work centered on [ERIC: name the product or page, described without naming the client]. [ERIC: roughly how many people used it, and on what devices or networks?]
+
+[ERIC: add screenshot of the slow screen before the work, with alt text describing what it shows.]
+
+## Problem
+
+The screen was slow to render. [ERIC: what did slow look like in practice? A blank page, a frozen scroll, a laggy input?]
+
+Nobody had measured it at first, which made the early conversation about opinions instead of evidence. [ERIC: confirm or correct this. How was the problem first noticed, and by whom, by role?]
+
+[ERIC: what was the target? Was there a number the team or the client wanted to hit?]
+
+## My role
+
+I was the developer who [ERIC: owned the investigation, or paired with someone, or worked from a ticket someone else wrote?]. I handled [ERIC: profiling, the code changes, review, rollout, or some mix of those].
+
+[ERIC: who else touched this, described by role only, such as a lead developer or a designer? Do not use names.]
+
+## Key decisions
+
+**Measure before changing anything.** [ERIC: which tool did you use to profile the render, and what baseline did you record? Browser performance panel, React profiler, something else?]
+
+**Fix the largest cost first.** [ERIC: what was the single biggest cause you found? Unneeded re-renders, large lists, heavy computation in render, oversized data, images?]
+
+**Keep each change small enough to verify.** [ERIC: describe how you shipped the changes. One at a time, behind a flag, in one release?]
+
+> [ERIC: one sentence in your own words about the trade-off you weighed on this project. Optional pull quote.]
+
+**What I chose not to do.** [ERIC: was there a bigger rewrite on the table that you passed on, and why?]
+
+If the scale of the change helps explain a decision, say so here. [ERIC: how many components or screens were touched, and did that influence the order you worked in? Leave this out if it does not explain a decision.]
+
+## Impact
+
+The headline from the old version of this site was a 300% render improvement. I am not using that as a proof point until I can back it up. [ERIC: how was the 300% measured?]
+
+What I can say once the numbers are confirmed:
+
+- [ERIC: before and after render time, in milliseconds or seconds, and the page or interaction it applies to.]
+- [ERIC: where the numbers were taken, such as a lab profile, a production trace, or a user report, and on what hardware.]
+- [ERIC: any change in how people used the screen afterward, if you know of one.]
+
+[ERIC: add screenshot of the profiler or the finished screen after the work, with alt text describing what it shows.]
+
+I will not claim anything here that I cannot show a source for.
+
+## What I'd do next
+
+[ERIC: what is still slow or fragile on this project as you remember it?]
+
+If I were doing this work again, I would set up measurement first and keep it running, so a regression shows up the week it ships instead of months later. [ERIC: did you leave any monitoring or a performance budget in place at the time? If not, say so plainly.]
+
+[ERIC: one more thing you would change about how the work was scoped, communicated, or rolled out.]
+
+I would also write down what the baseline was on the day I started. [ERIC: confirm whether you still have the original numbers anywhere. If not, this study should say the baseline was not recorded.]
