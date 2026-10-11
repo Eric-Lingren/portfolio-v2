@@ -11,6 +11,7 @@
  *   4. axe         zero serious/critical violations, interactive and classic
  *   5. keyboard    Tab reaches nav, AI diagram nodes and CTAs, focus visible
  *   6. reversal    panel transforms match scrolling down then back up
+ *   7. hover       desktop mouse creeping across the hero CTAs flips :hover once
  *
  * Flags: --skip-build, --shots <dir> (also write review screenshots).
  */
@@ -20,6 +21,7 @@ import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
+import { checkHoverStability } from "./hover-stability-check.mjs";
 import { startStaticServer } from "./perf/static-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -361,6 +363,14 @@ async function checkReversal(browser, base) {
   }
 }
 
+async function checkHover(browser, base) {
+  const hits = await checkHoverStability(browser, base);
+  for (const r of hits) {
+    if (r.skipped) record(`hover: ${r.name} found`, false, "not found");
+    else record(`hover: ${r.name} flips once`, r.ok, `hover flips=${r.flips}, cursor flips=${r.cursorFlips}`);
+  }
+}
+
 async function shots(browser, base, dir) {
   mkdirSync(dir, { recursive: true });
   const out = [];
@@ -405,6 +415,7 @@ async function main() {
     await checkAxe(browser, server.url);
     await checkKeyboard(browser, server.url);
     await checkReversal(browser, server.url);
+    await checkHover(browser, server.url);
     const dir = flagValue("--shots");
     if (dir) await shots(browser, server.url, resolve(dir));
   } finally {

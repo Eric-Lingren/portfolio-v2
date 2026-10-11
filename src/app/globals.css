@@ -254,6 +254,8 @@ samp {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
+  /* The world box shares a plane with the settled panel; it must not take 3D hit-tests (hover/cursor flicker). */
+  pointer-events: none;
   will-change: transform;
 }
 

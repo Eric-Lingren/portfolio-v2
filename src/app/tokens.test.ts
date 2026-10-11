@@ -65,3 +65,10 @@ describe("accent text contrast (WCAG AA, 4.5:1)", () => {
     expect(contrastRatio("#777777", "#777777")).toBeCloseTo(1, 5);
   });
 });
+
+describe("fly-through hit-testing", () => {
+  it("keeps .fly-world out of 3D hit-tests so the settled panel owns hover and cursor", () => {
+    const block = /\.fly-world\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(normalize(block)).toContain("pointer-events:none");
+  });
+});
