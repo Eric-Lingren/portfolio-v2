@@ -1,20 +1,14 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { RenderModeContext } from "@/components/flythrough/render-mode";
-import { setStageScroll, stepFromProgress } from "@/components/flythrough/dwell-store";
-import { panelScrollProgress } from "@/components/flythrough/camera";
 import { FLY_CONFIG } from "@/components/flythrough/config";
 import { ALL_STEPS, FEEDBACK_EDGE, INTRO, LEARNING_LOOP, NODES, REVIEW, STEPS, fileUrl, nodeById } from "@/content/ai-toolkit";
-import { AIToolkit, stepState } from "./AIToolkit";
+import { AIToolkit } from "./AIToolkit";
 
-const COUNT = 7;
-const INDEX = 2;
-const Z = -INDEX * FLY_CONFIG.depth;
-
-afterEach(() => setStageScroll(0, 1));
+const Z = -2 * FLY_CONFIG.depth;
 
 describe("diagram data", () => {
   it("has 4 to 6 forward steps plus a learning-loop feedback edge back to the first", () => {
@@ -51,35 +45,6 @@ describe("diagram data", () => {
   it("flags unconfirmed copy for content:check", () => {
     expect(REVIEW.length).toBeGreaterThan(0);
     expect(REVIEW.every((r) => r.startsWith("[ERIC:"))).toBe(true);
-  });
-});
-
-describe("scroll-step functions", () => {
-  it("stepFromProgress maps dwell progress to a step and clamps", () => {
-    expect(stepFromProgress(0, 7)).toBe(0);
-    expect(stepFromProgress(0.5, 7)).toBe(3);
-    expect(stepFromProgress(0.999, 7)).toBe(6);
-    expect(stepFromProgress(1, 7)).toBe(6);
-    expect(stepFromProgress(-1, 7)).toBe(0);
-    expect(stepFromProgress(5, 7)).toBe(6);
-    expect(stepFromProgress(0.7, 1)).toBe(0);
-  });
-
-  it("stepFromProgress is monotonic and visits every step", () => {
-    const seen = new Set<number>();
-    let prev = 0;
-    for (let k = 0; k <= 1000; k++) {
-      const s = stepFromProgress(k / 1000, 7);
-      expect(s).toBeGreaterThanOrEqual(prev);
-      prev = s;
-      seen.add(s);
-    }
-    expect(seen.size).toBe(7);
-  });
-
-  it("stepState marks earlier steps done, the current active, later upcoming", () => {
-    expect([0, 1, 2, 3].map((i) => stepState(i, 2))).toEqual(["done", "done", "active", "upcoming"]);
-    expect(stepState(6, ALL_STEPS.length)).toBe("done");
   });
 });
 
@@ -136,31 +101,32 @@ describe("AIToolkit", () => {
     expect(screen.getByRole("link", { name: /case study/i }).getAttribute("href")).toBe("/work/ai-toolkit");
   });
 
-  it("complete mode (default) shows all steps done with no scroll stepping", () => {
-    const { container } = render(<AIToolkit />);
-    act(() => setStageScroll(0, COUNT)); // scroll position must not matter
-    const states = [...container.querySelectorAll("[data-step]")].map((el) => el.getAttribute("data-state"));
-    expect(states).toEqual(ALL_STEPS.map(() => "done"));
-  });
-
-  it("staged mode steps with scroll through the dwell", () => {
-    const { container } = render(
+  it("has no scroll stepping: every step renders the same in staged and complete mode", () => {
+    const staged = render(
       <RenderModeContext.Provider value="staged">
         <AIToolkit z={Z} />
       </RenderModeContext.Provider>,
-    );
-    const active = () => container.querySelector('[data-state="active"]')?.getAttribute("data-step");
-    const start = panelScrollProgress(INDEX, COUNT);
-    const span = FLY_CONFIG.dwell[INDEX] / (COUNT - 1 + FLY_CONFIG.dwell[INDEX]);
-    act(() => setStageScroll(start, COUNT));
-    expect(active()).toBe(ALL_STEPS[0].id);
-    act(() => setStageScroll(start + span * 0.5, COUNT));
-    expect(active()).toBe(ALL_STEPS[3].id);
-    act(() => setStageScroll(start + span, COUNT));
-    expect(active()).toBe(LEARNING_LOOP.id);
-    act(() => setStageScroll(start + span * 0.5, COUNT));
-    expect(active()).toBe(ALL_STEPS[3].id); // reversible
-    // every step stays in the DOM regardless
-    expect(container.querySelectorAll("[data-step]")).toHaveLength(ALL_STEPS.length);
+    ).container;
+    const complete = render(<AIToolkit />).container;
+    for (const c of [staged, complete]) {
+      const steps = [...c.querySelectorAll("[data-step]")];
+      expect(steps).toHaveLength(ALL_STEPS.length);
+      expect(steps.some((el) => el.hasAttribute("data-state"))).toBe(false);
+    }
+  });
+
+  it("spans steps with many nodes across two columns", () => {
+    const { container } = render(<AIToolkit />);
+    const wide = [...container.querySelectorAll(".ai-step--wide")].map((el) => el.getAttribute("data-step"));
+    expect(wide).toEqual(ALL_STEPS.filter((s) => s.nodes.length > 3).map((s) => s.id));
+    expect(wide).toContain(LEARNING_LOOP.id);
+  });
+
+  it("highlights a step on hover, focus or open node, like the selected work cards", () => {
+    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
+    expect(css).toMatch(/\(hover: hover\) and \(pointer: fine\)[\s\S]*\.ai-step:hover/);
+    expect(css).toMatch(/\.ai-step:focus-within/);
+    expect(css).toMatch(/\.ai-step:has\(\.ai-node\[aria-expanded="true"\]\)/);
+    expect(css).not.toMatch(/data-state/);
   });
 });

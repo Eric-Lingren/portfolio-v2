@@ -17,12 +17,17 @@ export function panelDistance(i: number, progress: number, count: number, cfg: F
  * Built amount in [0,1] from camera distance to the panel. 0 when far away,
  * 1 once within `wipeDone` of arrival (and after the camera passes). A pure
  * function of distance, so it is symmetric when scrolling in reverse.
+ *
+ * Spaced on a log scale: the camera closes a fixed fraction of the remaining
+ * distance per frame, so equal distance ratios take equal time and the sweep
+ * runs at a steady pace through the camera's ease-in instead of racing early.
  */
 export function builtAmount(distance: number, cfg: FlyConfig = FLY_CONFIG): number {
   const done = cfg.wipeDone * cfg.depth;
   const range = cfg.wipeRange * cfg.depth;
-  if (!(range > done)) return distance <= done ? 1 : 0;
-  return 1 - smoothstep((distance - done) / (range - done));
+  if (distance <= done) return 1;
+  if (!(range > done)) return 0;
+  return 1 - smoothstep(Math.log(distance / done) / Math.log(range / done));
 }
 
 const pct = (v: number) => `${Math.round(v * 1000) / 1000}%`;
@@ -57,11 +62,18 @@ export function findWipe(root: ParentNode): WipeTargets | null {
   };
 }
 
-/** Writes the wipe transforms. The edge is shown only while the wipe is mid-sweep. */
+/**
+ * Writes the wipe transforms. The edge is shown only while the wipe is mid-sweep.
+ * A fully built panel hides the sketch box outright: its clip edge sits on the
+ * panel's bottom border, and at fractional scales a sliver of the dashed sketch
+ * border would otherwise show through.
+ */
 export function applyWipe(t: WipeTargets, built: number): void {
   const s = wipeTransforms(built);
   t.outer.style.transform = s.outer;
   t.inner.style.transform = s.inner;
+  const sketch = built < 0.998 ? "visible" : "hidden";
+  if (t.outer.style.visibility !== sketch) t.outer.style.visibility = sketch;
   if (t.edge) {
     t.edge.style.transform = s.edge;
     const visible = built > 0.002 && built < 0.998 ? "visible" : "hidden";

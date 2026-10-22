@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Hero } from "./Hero";
@@ -17,6 +18,31 @@ describe("Hero", () => {
       "href",
       "mailto:ericlingren@gmail.com?subject=Hello%20from%20ericlingren.com",
     );
+  });
+
+  it("gives each CTA a decorative arrow that stays out of its accessible name", () => {
+    render(<Hero />);
+    const arrow = (name: string) => screen.getByRole("link", { name }).querySelector(".btn-arrow");
+    expect(arrow("View work")).toHaveTextContent("→");
+    expect(arrow("View work")).toHaveAttribute("aria-hidden", "true");
+    expect(arrow("Email me")).toHaveTextContent("↗");
+    expect(arrow("Email me")).toHaveClass("btn-arrow--out");
+    expect(arrow("Email me")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("glows every button and nudges its arrow on hover and keyboard focus, and holds still for reduced motion", () => {
+    const css = readFileSync("src/app/globals.css", "utf8");
+    expect(css).toMatch(/--coral-glow:\s*0 0 0 1px #ff5a36,\s*0 0 28px rgba\(255, 90, 54, 0\.45\)/);
+    const rule = (sel: RegExp) => new RegExp(sel.source + String.raw`\s*\{([^}]*)\}`).exec(css)?.[1] ?? "";
+    expect(rule(/\.btn-primary:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: var\(--coral-glow\)/);
+    expect(rule(/\.btn-outline:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: var\(--cyan-glow\)/);
+    expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow/)).toMatch(/transform: translateX\(4px\)/);
+    expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--out/)).toMatch(/transform: translate\(2px, -2px\)/);
+    expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--down/)).toMatch(/transform: translateY\(3px\)/);
+    expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--copy/)).toMatch(/transform: translateY\(-2px\)/);
+    // The sketch wireframe stays flat: no glow or tint bleeds onto it.
+    expect(rule(/\.panel-layer--sketch \.btn:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: none/);
+    expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{[^}]*\.btn-arrow[^{]*\{\s*transition: none/);
   });
 
   it("contains no photo", () => {

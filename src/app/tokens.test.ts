@@ -19,12 +19,13 @@ const EXPECTED_TOKENS: Record<string, string> = {
   "--accent": "#ff5a36",
   "--accent-2": "#06b6d4",
   "--on-accent": "#0c0a0e",
+  "--accent-fill": "#ff5a36",
+  "--on-accent-fill": "#ffffff",
   "--sk-bg": "#eff1f4",
   "--sk-line": "#1f2937",
   "--sk-ink": "#111827",
   "--sk-grid": "rgba(31, 41, 55, 0.11)",
   "--sk-hatch": "rgba(8, 145, 178, 0.28)",
-  "--accent-ink-sk": "#bd4328",
 };
 
 const normalize = (v: string | undefined) => v?.replace(/\s+/g, "").toLowerCase();
@@ -53,7 +54,6 @@ describe("accent text contrast (WCAG AA, 4.5:1)", () => {
     ["coral on gray-900", "--accent", "--po-surface"],
     ["cyan on obsidian", "--accent-2", "--po-bg"],
     ["cyan on gray-900", "--accent-2", "--po-surface"],
-    ["sketch coral ink on paper", "--accent-ink-sk", "--sk-bg"],
   ];
 
   it.each(cases)("%s", (_label, fg, bg) => {
@@ -63,6 +63,14 @@ describe("accent text contrast (WCAG AA, 4.5:1)", () => {
   it("computes known reference ratios", () => {
     expect(contrastRatio("#000000", "#ffffff")).toBeCloseTo(21, 1);
     expect(contrastRatio("#777777", "#777777")).toBeCloseTo(1, 5);
+  });
+});
+
+describe("filled CTAs", () => {
+  it("use the deeper fill with white text", () => {
+    const block = /\.btn-primary\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(normalize(block)).toContain("background:var(--accent-fill)");
+    expect(normalize(block)).toContain("color:var(--on-accent-fill)");
   });
 });
 

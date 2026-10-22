@@ -23,9 +23,9 @@ describe("registry", () => {
   it("has exactly 7 panels in seed order with the expected anchors", () => {
     expect(PANELS.map((p) => p.id)).toEqual([
       "hero",
-      "positioning",
-      "ai-toolkit",
+      "what-i-do",
       "work",
+      "ai-toolkit",
       "experience",
       "testimonials",
       "contact",

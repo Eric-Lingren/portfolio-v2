@@ -5,7 +5,13 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
-export const CARD_SLUGS = ["kpi-granularity", "investor-reports", "frontend-platform", "render-performance"];
+export const CARD_SLUGS = [
+  "kpi-granularity",
+  "investor-reports",
+  "metrics-tab-v2",
+  "frontend-platform",
+  "render-performance",
+];
 
 export function buildCards(root = process.cwd()) {
   return CARD_SLUGS.map((slug) => {

@@ -225,7 +225,7 @@ async function checkAxe(browser, base) {
       await page.waitForTimeout(600);
       const all = new Map();
       // Rest positions: land on each panel via the nav anchors (what a visitor does), then scan.
-      const targets = ["#positioning", "#ai-toolkit", "#work", "#experience", "#testimonials", "#contact"];
+      const targets = ["#what-i-do", "#work", "#ai-toolkit", "#experience", "#testimonials", "#contact"];
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       await page.waitForTimeout(900);
       // Scope: nav + footer + the panel the camera rests on. Panels further down the tunnel are
@@ -375,13 +375,13 @@ async function shots(browser, base, dir) {
   mkdirSync(dir, { recursive: true });
   const out = [];
   for (const [label, device] of [["desktop", DESKTOP], ["mobile", PHONE]]) {
-    // Interactive: top, mid (AI toolkit dwell), and bottom (footer + contact)
+    // Interactive: top, the two densest panels at rest, testimonials, and bottom (footer + contact)
     const { context, page } = await newPage(browser, base, device);
     await page.goto(`${base}/`, { waitUntil: "load" });
     await page.waitForSelector(".fly-stage", { timeout: 15000 });
     await page.waitForTimeout(800);
     const max = await scrollMax(page);
-    for (const [name, frac] of [["top", 0], ["ai-toolkit", 0.43], ["testimonials", 0.8], ["bottom", 1]]) {
+    for (const [name, frac] of [["top", 0], ["work", 2 / 6], ["ai-toolkit", 3 / 6], ["testimonials", 5 / 6], ["bottom", 1]]) {
       await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), max * frac);
       await settledPanelState(page);
       await page.waitForTimeout(400);

@@ -16,7 +16,7 @@ describe("render-performance case study", () => {
   it("has complete frontmatter", () => {
     for (const key of REQUIRED_FRONTMATTER) expect(parsed.data).toHaveProperty(key);
     expect(parsed.data.slug).toBe("render-performance");
-    expect(parsed.data.order).toBe(4);
+    expect(parsed.data.order).toBe(5);
     expect(parsed.data.cardNumber).toBeNull();
     expect(parsed.data.thumbnail).toMatch(/^\/work\/render-performance\//);
     expect(Array.isArray(parsed.data.stack)).toBe(true);

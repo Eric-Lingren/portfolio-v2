@@ -1,5 +1,5 @@
 import cards from "@/content/work-cards.json";
-import { Panel, Redline, type PanelLayers } from "@/components/Panel";
+import { Panel, type PanelLayers } from "@/components/Panel";
 import "./selected-work.css";
 
 export type WorkCard = {
@@ -49,9 +49,6 @@ export function SelectedWork({
                     <strong>{c.number}</strong> <span>{c.numberLabel}</span>
                   </p>
                 ) : null}
-                <Redline top={4} right={4}>
-                  thumbnail + outcome + number
-                </Redline>
               </a>
             </li>
           ))}

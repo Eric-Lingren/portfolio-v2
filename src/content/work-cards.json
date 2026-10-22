@@ -18,6 +18,15 @@
     "hasThumbnail": false
   },
   {
+    "slug": "metrics-tab-v2",
+    "title": "Spreadsheet-style editing in Metrics Tab v2",
+    "outcome": "The metrics grid now edits like a spreadsheet, with keyboard navigation and paste from Excel, live for all customers.",
+    "number": null,
+    "numberLabel": "",
+    "thumbnail": "/work/metrics-tab-v2/thumbnail.png",
+    "hasThumbnail": false
+  },
+  {
     "slug": "frontend-platform",
     "title": "Frontend platform re-architecture",
     "outcome": "Three competing UI folders became one component tree, with lint rules that keep it that way.",

@@ -1,8 +1,8 @@
 .ai-stats {
   width: 100%;
   max-width: 72rem;
-  margin: 0 0 1.25rem;
-  padding: 0.75rem 0;
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0;
   border-block: 1px solid currentColor;
 }
 
@@ -22,7 +22,7 @@
 .ai-stat-value {
   margin: 0;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .ai-stat-label {
@@ -31,7 +31,23 @@
 }
 
 .ai-stats-volume {
-  margin: 0.75rem 0 0;
+  margin: 0.5rem 0 0;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.8rem;
+}
+
+/* Phones in the fly-through: two columns, smaller labels (see ai-toolkit.css). */
+@media (max-width: 600px) {
+  .fly-panel .ai-stats-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1rem;
+  }
+
+  .fly-panel .ai-stat-value {
+    font-size: 0.85rem;
+  }
+
+  .fly-panel .ai-stat-label {
+    font-size: 0.7rem;
+  }
 }

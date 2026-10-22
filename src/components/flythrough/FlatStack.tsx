@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { setActiveSection } from "../active-section";
 import { RenderModeContext } from "./render-mode";
 import { PANELS } from "./registry";
 import "./flat.css";
@@ -10,6 +12,22 @@ import "./flat.css";
  * render mode. No stage, no sketch layer, no 3D.
  */
 export function FlatStack() {
+  // The section crossing the middle of the viewport is the active one.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActiveSection(e.target.id);
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    for (const p of PANELS) {
+      const el = document.getElementById(p.id);
+      if (el) io.observe(el);
+    }
+    return () => io.disconnect();
+  }, []);
+
   return (
     <RenderModeContext.Provider value="complete">
       <div className="stack stack--flat" data-testid="flat-stack">

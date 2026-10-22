@@ -29,7 +29,7 @@ describe("frontend-platform case study", () => {
   it("has complete, well-typed frontmatter", () => {
     for (const k of KEYS) expect(parsed.data, k).toHaveProperty(k);
     expect(parsed.data.slug).toBe("frontend-platform");
-    expect(parsed.data.order).toBe(3);
+    expect(parsed.data.order).toBe(4);
     expect(Array.isArray(parsed.data.stack)).toBe(true);
     expect(parsed.data.outcomes.length).toBeGreaterThan(0);
     expect(parsed.data.thumbnail).toMatch(/^\/work\/frontend-platform\//);

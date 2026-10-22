@@ -35,13 +35,17 @@ export function Panel({ name, z = 0, id, layers = "polished", children }: PanelP
     const layer = (kind: "sketch" | "polished") => (
       <div className={`panel-layer panel-layer--${kind}`} data-layer={kind}>
         <span className="panel-tag">{tag}</span>
-        {children}
+        {/* Panels share one box size in the stage; FlyStage scales this body down when its content runs taller. */}
+        <div className="panel-body" data-panel-body="">
+          {children}
+        </div>
       </div>
     );
     return (
       <section className="panel" id={id} data-panel={name}>
         {layer("polished")}
-        <div className="panel-wipe" data-wipe="">
+        {/* The sketch copy is visual only: hidden from assistive tech and keyboard focus. */}
+        <div className="panel-wipe" data-wipe="" aria-hidden="true" inert>
           <div className="panel-wipe-inner" data-wipe-inner="">
             {layer("sketch")}
           </div>
@@ -74,14 +78,5 @@ export function Panel({ name, z = 0, id, layers = "polished", children }: PanelP
         </div>
       ))}
     </section>
-  );
-}
-
-/** Sketch-only margin note. Absolutely positioned so it never affects layout. */
-export function Redline({ children, top = 0, right = 0 }: { children: ReactNode; top?: number; right?: number }) {
-  return (
-    <span className="redline" style={{ top, right }}>
-      {children}
-    </span>
   );
 }

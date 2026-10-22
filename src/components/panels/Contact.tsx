@@ -57,11 +57,17 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
           <div className="contact-cta">
             <p className="contact-email">{EMAIL}</p>
             <div className="contact-actions">
-              <button type="button" className="contact-btn" onClick={onCopy}>
+              <button type="button" className="btn btn-outline contact-btn" onClick={onCopy}>
                 Copy email
+                <span className="btn-arrow btn-arrow--copy" aria-hidden="true">
+                  ⧉
+                </span>
               </button>
-              <a className="contact-btn contact-btn--link" href={MAILTO_URL}>
+              <a className="btn btn-primary contact-btn contact-btn--link" href={MAILTO_URL}>
                 Send an email
+                <span className="btn-arrow btn-arrow--out" aria-hidden="true">
+                  ↗
+                </span>
               </a>
             </div>
             <p className="contact-status" role="status" aria-live="polite">

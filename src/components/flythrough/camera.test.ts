@@ -85,66 +85,97 @@ describe("camera math", () => {
   });
 });
 
-import { dwellProgressAt, panelScrollProgress, scrollToCamera } from "./camera";
+import { contentFit, fitScale, footerLift, panelHeight, panelScrollProgress } from "./camera";
 
-describe("scroll map with dwell", () => {
-  const cfg = { ...FLY_CONFIG, dwell: { 2: 3 } } as typeof FLY_CONFIG;
-  const none = { ...FLY_CONFIG, dwell: {} } as typeof FLY_CONFIG;
+describe("footerLift", () => {
+  const vh = 900;
+  const spacer = 8 * vh;
+  const footer = 120;
 
-  it("is the identity when no panel dwells", () => {
-    for (const p of [0, 0.2, 0.5, 1]) {
-      const m = scrollToCamera(p, N, none);
-      expect(m.cameraProgress).toBeCloseTo(p, 9);
-      expect(m.dwellProgress).toBe(0);
-      expect(m.dwellIndex).toBe(-1);
-    }
+  it("is 0 until the footer starts to show", () => {
+    expect(footerLift(0, vh, spacer, footer)).toBe(0);
+    expect(footerLift(spacer - vh, vh, spacer, footer)).toBe(0);
   });
 
-  it("holds the camera exactly on the panel during its dwell", () => {
-    const start = panelScrollProgress(2, N, cfg);
-    const end = start + 3 / (N - 1 + 3);
-    for (const f of [0.01, 0.3, 0.7, 0.99]) {
-      const m = scrollToCamera(start + (end - start) * f, N, cfg);
-      expect(m.cameraProgress).toBeCloseTo(2 / (N - 1), 9);
-      expect(m.dwellIndex).toBe(2);
-      expect(m.dwellProgress).toBeCloseTo(f, 6);
-    }
+  it("tracks half the visible footer, capped at half its height", () => {
+    expect(footerLift(spacer - vh + 60, vh, spacer, footer)).toBe(30);
+    expect(footerLift(spacer - vh + footer, vh, spacer, footer)).toBe(60);
+    expect(footerLift(spacer, vh, spacer, footer)).toBe(60);
+  });
+});
+
+describe("panel stops", () => {
+  it("places panel i at progress i/(n-1), clamped", () => {
+    for (let i = 0; i < N; i++) expect(panelScrollProgress(i, N)).toBeCloseTo(i / (N - 1), 9);
+    expect(panelScrollProgress(-2, N)).toBe(0);
+    expect(panelScrollProgress(N + 3, N)).toBe(1);
+    expect(panelScrollProgress(3, 1)).toBe(0);
   });
 
-  it("camera progress is monotonic non-decreasing and reaches 0 and 1", () => {
-    let prev = -1;
-    for (let k = 0; k <= 500; k++) {
-      const m = scrollToCamera(k / 500, N, cfg);
-      expect(m.cameraProgress).toBeGreaterThanOrEqual(prev);
-      prev = m.cameraProgress;
-    }
-    expect(scrollToCamera(0, N, cfg).cameraProgress).toBe(0);
-    expect(scrollToCamera(1, N, cfg).cameraProgress).toBe(1);
-    expect(scrollToCamera(-1, N, cfg).cameraProgress).toBe(0);
-    expect(scrollToCamera(2, N, cfg).cameraProgress).toBe(1);
+  it("ships no dwell: the scroll range is one even step per panel gap", () => {
+    expect(FLY_CONFIG).not.toHaveProperty("dwell");
+    expect(FLY_CONFIG.scrollLvh).toBe(800);
+  });
+});
+
+describe("fit scale", () => {
+  const NAV = 60;
+  const room = 900 - NAV - 2 * FLY_CONFIG.fitMargin;
+
+  it("leaves panels that already fit at 1", () => {
+    expect(fitScale(500, 900, NAV, wide)).toBe(1);
+    expect(fitScale(room, 900, NAV, wide)).toBe(1);
   });
 
-  it("inverse places the camera exactly at each panel", () => {
-    for (const c of [cfg, none]) {
-      for (let i = 0; i < N; i++) {
-        const m = scrollToCamera(panelScrollProgress(i, N, c), N, c);
-        expect(m.cameraProgress).toBeCloseTo(i / (N - 1), 9);
-      }
-    }
-    expect(panelScrollProgress(0, N, cfg)).toBe(0);
-    expect(panelScrollProgress(2, N, cfg)).toBeCloseTo(2 / (N - 1 + 3), 9);
-    expect(panelScrollProgress(3, N, cfg)).toBeCloseTo(6 / (N - 1 + 3), 9);
+  it("shrinks a tall panel to exactly the room below the nav", () => {
+    expect(fitScale(room * 2, 900, NAV, wide)).toBeCloseTo(0.5, 9);
   });
 
-  it("panel dwell progress is 0 before, 1 after, and 0 for panels without a dwell", () => {
-    expect(dwellProgressAt(0, N, 2, cfg)).toBe(0);
-    expect(dwellProgressAt(1, N, 2, cfg)).toBe(1);
-    expect(dwellProgressAt(0.5, N, 4, cfg)).toBe(0);
-    const mid = panelScrollProgress(2, N, cfg) + 1.5 / (N - 1 + 3);
-    expect(dwellProgressAt(mid, N, 2, cfg)).toBeCloseTo(0.5, 9);
+  it("accounts for the layout scale already applied", () => {
+    const half = { ...wide, scale: 0.5 };
+    expect(fitScale(room * 1.5, 900, NAV, half)).toBe(1);
+    expect(fitScale(room * 4, 900, NAV, half)).toBeCloseTo(0.5, 9);
   });
 
-  it("ships a dwell for the AI toolkit panel (index 2)", () => {
-    expect(FLY_CONFIG.dwell[2]).toBeGreaterThan(0);
+  it("leaves less room under a taller (wrapped) nav", () => {
+    expect(fitScale(room, 900, NAV + 100, wide)).toBeLessThan(1);
+  });
+
+  it("is 1 before the panel is measured", () => {
+    expect(fitScale(0, 900, NAV, wide)).toBe(1);
+  });
+});
+
+describe("shared panel box", () => {
+  const NAV = 60;
+  const room = 900 - NAV - 2 * FLY_CONFIG.fitMargin;
+
+  it("fills the room below the nav, before the layout scale", () => {
+    expect(panelHeight(900, NAV, wide)).toBe(room);
+    expect(panelHeight(900, NAV, { ...wide, scale: 0.5 })).toBe(room * 2);
+  });
+
+  it("rests at exactly fit 1, so no panel shrinks or grows at its stop", () => {
+    expect(fitScale(panelHeight(900, NAV, wide), 900, NAV, wide)).toBe(1);
+  });
+
+  it("is never negative on a tiny viewport", () => {
+    expect(panelHeight(50, NAV, wide)).toBe(0);
+  });
+});
+
+describe("content fit", () => {
+  it("leaves content that fits at 1", () => {
+    expect(contentFit(400, 600)).toBe(1);
+    expect(contentFit(600, 600)).toBe(1);
+  });
+
+  it("shrinks taller content to exactly the body room", () => {
+    expect(contentFit(800, 600)).toBeCloseTo(0.75, 9);
+  });
+
+  it("is 1 before content or room is measured", () => {
+    expect(contentFit(0, 600)).toBe(1);
+    expect(contentFit(800, 0)).toBe(1);
   });
 });

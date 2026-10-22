@@ -43,6 +43,20 @@ describe("Contact", () => {
     );
   });
 
+  it("gives Copy email a decorative copy glyph in the arrow slot", () => {
+    render(<Contact />);
+    const glyph = screen.getByRole("button", { name: "Copy email" }).querySelector(".btn-arrow--copy");
+    expect(glyph).toHaveTextContent("⧉");
+    expect(glyph).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("gives Send an email the shared decorative outbound arrow", () => {
+    render(<Contact />);
+    const arrow = screen.getByRole("link", { name: "Send an email" }).querySelector(".btn-arrow--out");
+    expect(arrow).toHaveTextContent("↗");
+    expect(arrow).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("links GitHub, LinkedIn and the resume", () => {
     render(<Contact />);
     expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://www.github.com/Eric-Lingren");

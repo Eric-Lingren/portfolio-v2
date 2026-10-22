@@ -96,77 +96,49 @@ export function scrollProgress(scrollY: number, lvhPx: number, cfg: FlyConfig = 
 export const lerpFactor = (dtMs: number, cfg: FlyConfig = FLY_CONFIG) =>
   1 - Math.pow(1 - cfg.lerp, dtMs / (1000 / 60));
 
-/** Sum of dwell weights for panels that exist (index < count). */
-function dwellWeights(count: number, cfg: FlyConfig): number[] {
-  return Array.from({ length: count }, (_, i) => Math.max(0, cfg.dwell[i] ?? 0));
-}
-
-export type ScrollMapping = {
-  /** Camera progress in [0,1] (what cameraZ and friends take). */
-  cameraProgress: number;
-  /** Progress through the active dwell in [0,1]; 0 when not dwelling. */
-  dwellProgress: number;
-  /** Panel index being dwelt on, or -1. */
-  dwellIndex: number;
-};
-
-/**
- * Pure scroll map with dwell. Scroll progress p in [0,1] covers travel (1 unit
- * per panel gap) plus each panel's dwell weight. During a dwell the camera sits
- * exactly on the panel and `dwellProgress` runs 0..1.
- */
-export function scrollToCamera(progress: number, count: number, cfg: FlyConfig = FLY_CONFIG): ScrollMapping {
-  if (count <= 1) return { cameraProgress: 0, dwellProgress: 0, dwellIndex: -1 };
-  const weights = dwellWeights(count, cfg);
-  const total = count - 1 + weights.reduce((a, b) => a + b, 0);
-  const u = clamp01(progress) * total;
-  let acc = 0;
-  for (let i = 0; i < count; i++) {
-    const w = weights[i];
-    if (w > 0) {
-      if (u <= acc + w && u > acc) {
-        return { cameraProgress: i / (count - 1), dwellProgress: (u - acc) / w, dwellIndex: i };
-      }
-      acc += w;
-    }
-    if (i < count - 1) {
-      if (u <= acc + 1) return { cameraProgress: (i + (u - acc)) / (count - 1), dwellProgress: 0, dwellIndex: -1 };
-      acc += 1;
-    }
-  }
-  return { cameraProgress: 1, dwellProgress: 0, dwellIndex: -1 };
-}
-
-/**
- * Inverse of the map: scroll progress that places the camera exactly on panel
- * `index`, at the start of that panel's dwell (the step-one view).
- */
-export function panelScrollProgress(index: number, count: number, cfg: FlyConfig = FLY_CONFIG): number {
+/** Scroll progress that places the camera exactly on panel `index`. */
+export function panelScrollProgress(index: number, count: number): number {
   if (count <= 1) return 0;
-  const weights = dwellWeights(count, cfg);
-  const total = count - 1 + weights.reduce((a, b) => a + b, 0);
-  const i = Math.min(count - 1, Math.max(0, Math.round(index)));
-  const before = weights.slice(0, i).reduce((a, b) => a + b, 0);
-  return clamp01((i + before) / total);
-}
-
-/**
- * Progress through panel `index`'s own dwell for scroll progress p:
- * 0 before it, 0..1 within it, 1 after it. 0 when the panel has no dwell.
- */
-export function dwellProgressAt(progress: number, count: number, index: number, cfg: FlyConfig = FLY_CONFIG): number {
-  const weights = dwellWeights(count, cfg);
-  const w = weights[index] ?? 0;
-  if (w <= 0) return 0;
-  const total = count - 1 + weights.reduce((a, b) => a + b, 0);
-  const start = index + weights.slice(0, index).reduce((a, b) => a + b, 0);
-  return clamp01((clamp01(progress) * total - start) / w);
+  return clamp01(Math.round(index) / (count - 1));
 }
 
 /**
  * Page scrollY (px) that puts the camera exactly on panel `index`. The single
- * source for anchor-click scrolling; inverse of scrollProgress + scrollToCamera.
+ * source for snap stops and anchor-click scrolling; inverse of scrollProgress.
  */
 export function panelScrollTop(index: number, count: number, lvhPx: number, cfg: FlyConfig = FLY_CONFIG): number {
-  return panelScrollProgress(index, count, cfg) * ((cfg.scrollLvh - 100) / 100) * lvhPx;
+  return panelScrollProgress(index, count) * ((cfg.scrollLvh - 100) / 100) * lvhPx;
+}
+
+/**
+ * Scale (<= 1) that fits a panel of layout height `heightPx` into the space
+ * below a `navPx`-tall nav at the resting position, on top of the layout scale.
+ */
+export function fitScale(heightPx: number, viewportPx: number, navPx: number, layout: Layout, cfg: FlyConfig = FLY_CONFIG): number {
+  const room = viewportPx - navPx - 2 * cfg.fitMargin;
+  const visual = heightPx * layout.scale;
+  return visual > 0 && room > 0 ? Math.min(1, room / visual) : 1;
+}
+
+/**
+ * Layout height (px) every resting panel shares: the room below a `navPx`-tall
+ * nav, before the layout scale. Panels all fill it, so they match in size.
+ */
+export function panelHeight(viewportPx: number, navPx: number, layout: Layout, cfg: FlyConfig = FLY_CONFIG): number {
+  return Math.max(0, viewportPx - navPx - 2 * cfg.fitMargin) / layout.scale;
+}
+
+/** Scale (<= 1) that shrinks content `contentPx` tall to fit a `roomPx`-tall panel body. */
+export function contentFit(contentPx: number, roomPx: number): number {
+  return contentPx > 0 && roomPx > 0 ? Math.min(1, roomPx / contentPx) : 1;
+}
+
+/**
+ * How far (px) the stage lifts as the page footer scrolls in below the scroll
+ * spacer. Half the visible footer height, so with the footer fully shown the
+ * last panel sits centered in the room between nav and footer.
+ */
+export function footerLift(scrollY: number, viewportPx: number, spacerPx: number, footerPx: number): number {
+  const shown = Math.min(footerPx, Math.max(0, scrollY + viewportPx - spacerPx));
+  return shown / 2;
 }

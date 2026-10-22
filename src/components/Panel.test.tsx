@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render } from "@testing-library/react";
-import { Panel, Redline } from "./Panel";
+import { Panel } from "./Panel";
 
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 
@@ -29,7 +29,7 @@ function geometry(el: Element) {
   return LAYOUT_PROPS.map((p) => `${p}:${cs.getPropertyValue(p)}`).join(";");
 }
 
-function setup(extra?: boolean) {
+function setup() {
   const style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
@@ -37,7 +37,6 @@ function setup(extra?: boolean) {
     <Panel name="Sample" layers="both">
       <p className="a">one</p>
       <p className="b">two</p>
-      {extra ? <Redline>note</Redline> : null}
     </Panel>,
   );
 }
@@ -70,15 +69,5 @@ describe("Panel", () => {
   it("shows the component tag with z position", () => {
     const { container } = setup();
     expect(container.querySelector(".panel-tag")!.textContent).toBe("<Sample /> z=0");
-  });
-
-  it("redline notes are absolutely positioned and do not change sibling layout", () => {
-    const first = setup();
-    const before = geometry(first.container.querySelector('[data-layer="sketch"] .b')!);
-    first.unmount();
-    const withNote = setup(true);
-    const note = withNote.container.querySelector(".redline")!;
-    expect(getComputedStyle(note).position).toBe("absolute");
-    expect(geometry(withNote.container.querySelector('[data-layer="sketch"] .b')!)).toBe(before);
   });
 });

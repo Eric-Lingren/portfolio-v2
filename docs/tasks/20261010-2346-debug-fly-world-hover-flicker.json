@@ -1,0 +1,80 @@
+{
+  "schema_version": "2",
+  "producer": "debug",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "generated_at": "2026-10-10T23:46:00-07:00",
+  "branching": {
+    "strategy": "single",
+    "branch": "feat/portfolio-v2-3d-rebuild"
+  },
+  "tasks": [
+    {
+      "id": "T-0036",
+      "title": "Stop .fly-world from winning 3D hit-tests so hover and cursor stay stable",
+      "type": "AFK",
+      "description": "Root cause: `.fly-world` (src/app/globals.css:244-249) is `transform-style: preserve-3d` and hit-testable (pointer-events defaults to auto). When the stage settles on a panel, that panel lies in the same plane as the `.fly-world` box. Mouse look-around (src/components/flythrough/look.ts:23 -> FlyStage.tsx:162-165 -> FlyStage.tsx:92, worldTransform in camera.ts:86, up to +/-2.5deg rotateX/rotateY) tilts that shared plane every frame while the mouse moves. The depth of the panel and the world box at the cursor then tie within float error, and Chrome's 3D hit-test alternates between the panel content (e.g. `A.btn`) and `DIV.fly-world` frame to frame. `:hover` and the computed cursor follow the hit-test, so the cursor flickers pointer/default and hover borders (globals.css:120 `.panel-layer--polished:hover`, `.btn` borders) flicker. Geometry is NOT the cause: across a 40px slow creep the button rect drifts only 0.2px while the cursor sits 14px inside it and the hit target still alternates. Ruled out: `.fly-panel` pointer-events toggling (FlyStage.tsx:102 stays `auto` for the whole run). Failing scenario: desktop 1280x800, home page at scroll 0, move the mouse 1px every 30ms from 40px left of the hero `.btn-outline` to 40px inside it; `:hover` flips 7-17 times and the hit cursor flips 39-86 times instead of once. With look-around disabled, or with `.fly-world { pointer-events: none }` injected, every target flips exactly once (3/3 runs). Test seam: real-browser hit-testing only (jsdom has no 3D hit-test), so the primary test is the Playwright script; a CSS-text unit test guards the rule. Failing test: scripts/hover-stability-check.mjs (run against a static export served at http://localhost:3000; `--no-look` is the differential control). Fix approach: add `pointer-events: none;` to the `.fly-world` rule in src/app/globals.css with a one-line comment saying the world box shares a plane with the settled panel and must not take hit-tests. Panels keep taking the pointer because FlyStage.tsx:102 sets an explicit inline `pointer-events: auto` on the nearest `.fly-panel`, which overrides the inherited `none`. Do not change look-around strength, panel depth, or the pointer-events logic in FlyStage.tsx.",
+      "acceptance_criteria": [
+        "Failing test exists at scripts/hover-stability-check.mjs that reproduces the bug before any fix is applied (run `npx next build && npx serve out` then `node scripts/hover-stability-check.mjs`; it reports FAIL with hover flips > 1 for the hero .btn-primary and .btn-outline on the unfixed build)",
+        "After the fix, `node scripts/hover-stability-check.mjs` against a fresh static export reports PASS (hover flips=1) for all three targets on 3 consecutive runs",
+        "`.fly-world` in src/app/globals.css declares `pointer-events: none`, and a vitest case that reads globals.css asserts the `.fly-world` rule contains `pointer-events: none` (fails if the declaration is removed)",
+        "The hover stability check is added as a step in scripts/perf-check.mjs (desktop context, reusing its static server) so `npm run perf:check` fails if hover flips more than once on the hero CTAs",
+        "Clicking the hero \"View work\" CTA still navigates to the work panel and the Contact copy button still fires, proving the nearest panel still receives pointer events through its inline `pointer-events: auto`",
+        "Panels other than the nearest one still never take hover (FlyStage.tsx:102 logic unchanged) and `npm run perf:check` keyboard, axe and reversal steps still pass",
+        "Full vitest suite passes with no new failures (baseline 304 passed, 0 failed)"
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "browser_verify": {
+        "role": "anonymous",
+        "viewports": [
+          "desktop"
+        ],
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "waitFor",
+            "condition": ".fly-stage"
+          },
+          {
+            "type": "expect",
+            "locator": "css=.fly-panel .btn-primary >> nth=0",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "hero-stage"
+          }
+        ],
+        "masks": []
+      },
+      "task_type": "code",
+      "deliverable": "code",
+      "summary": "Added pointer-events: none to .fly-world. Hover check RED before (flips 3/13), GREEN after (flips=1, 3 runs). CSS guard test added, hover step wired into perf:check. perf:check desktop axe fails on .site-nav__num contrast from uncommitted nav.css, unrelated to this fix.",
+      "files_touched": [
+        "src/app/globals.css",
+        "src/app/tokens.test.ts",
+        "scripts/hover-stability-check.mjs",
+        "scripts/perf-check.mjs"
+      ],
+      "tests": {
+        "passed": 305,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261010-2346-debug-fly-world-hover-flicker/T-0036.md",
+      "commit": "69bcaed488fdca2e4559ae1e42d2b14cafd46b0f"
+    }
+  ],
+  "follow_ups": []
+}

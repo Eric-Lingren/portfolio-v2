@@ -1,3 +1,4 @@
+/* Blueprint-style nav: mono labels, numbered sections, active section marked as you move. */
 .site-nav {
   position: fixed;
   inset: 0 0 auto 0;
@@ -5,30 +6,40 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem 1.5rem;
   padding: 0.6rem 1.25rem;
   background: color-mix(in srgb, var(--po-bg) 82%, transparent);
   border-bottom: 1px solid var(--po-border);
   backdrop-filter: blur(8px);
-  font-size: 0.875rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .site-nav a,
 .site-nav button {
-  color: var(--po-ink);
+  color: var(--po-muted);
   text-decoration: none;
   font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   border-radius: 6px;
-  padding: 0.3rem 0.6rem;
+  padding: 0.35rem 0.6rem;
 }
 .site-nav a:hover,
 .site-nav button:hover {
-  color: var(--accent-2);
+  color: var(--po-ink);
 }
 .site-nav a:focus-visible,
 .site-nav button:focus-visible {
   outline: 2px solid var(--accent-2);
   outline-offset: 2px;
+}
+.site-nav .site-nav__brand {
+  color: var(--po-ink);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  padding-left: 0;
 }
 .site-nav__links,
 .site-nav__right {
@@ -37,22 +48,95 @@
   align-items: center;
   gap: 0.25rem;
 }
-.site-nav__switch {
+.site-nav__links {
+  flex: 1;
+}
+.site-nav__links a {
+  position: relative;
+}
+.site-nav__num {
+  margin-right: 0.45em;
+  color: var(--accent-2);
+}
+.site-nav__links a[aria-current="location"] {
+  color: var(--po-ink);
+}
+/* Active marker: a short cyan rule under the label. */
+.site-nav__links a[aria-current="location"]::after {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: -0.15rem;
+  height: 2px;
+  background: var(--accent-2);
+}
+/* View switch: small and out of the way, pinned to the viewport's bottom-right corner. */
+.view-switch {
+  position: fixed;
+  right: 1rem;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 50;
   display: inline-flex;
+  padding: 2px;
   border: 1px solid var(--po-border-strong);
   border-radius: 8px;
-  padding: 2px;
+  background: color-mix(in srgb, var(--po-bg) 82%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
-.site-nav__switch button {
+.view-switch button {
   background: transparent;
   border: 0;
-  cursor: pointer;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
   color: var(--po-muted);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
 }
-.site-nav__switch button[aria-checked="true"] {
+.view-switch button:hover {
+  color: var(--po-ink);
+}
+.view-switch button[aria-checked="true"] {
   background: var(--po-ink);
   color: var(--po-bg);
 }
-.site-nav__resume {
-  border: 1px solid var(--po-border-strong);
+.view-switch button:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+/* Resume is the nav's call to action: filled like the hero's primary CTA. */
+.site-nav a.site-nav__resume,
+.site-nav a.site-nav__resume:hover {
+  background: var(--accent-fill);
+  border: 1.5px solid var(--accent-fill);
+  color: var(--on-accent-fill);
+  font-weight: 600;
+}
+
+.site-nav a.site-nav__resume {
+  transition: box-shadow 180ms ease;
+}
+.site-nav a.site-nav__resume:is(:hover, :focus-visible) {
+  box-shadow: var(--coral-glow);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a.site-nav__resume {
+    transition: none;
+  }
+}
+
+/* Phones: the hero already shows the name, and the bar must stay short. */
+@media (max-width: 600px) {
+  .site-nav__brand {
+    display: none;
+  }
+  .site-nav__num {
+    display: none;
+  }
 }

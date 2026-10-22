@@ -63,6 +63,15 @@ describe("Experience", () => {
   it("links the resume at the shared path", () => {
     render(<Experience />);
     expect(screen.getByRole("link", { name: "Download resume (PDF)" })).toHaveAttribute("href", RESUME_PATH);
+    // Filled accent like the hero's primary CTA, so it reads as an action.
+    expect(screen.getByRole("link", { name: "Download resume (PDF)" })).toHaveClass("btn", "btn-primary");
+  });
+
+  it("gives the resume button the shared decorative arrow, pointing down for a download", () => {
+    render(<Experience />);
+    const arrow = screen.getByRole("link", { name: "Download resume (PDF)" }).querySelector(".btn-arrow--down");
+    expect(arrow).toHaveTextContent("↓");
+    expect(arrow).toHaveAttribute("aria-hidden", "true");
   });
 
   it("ends with a single-line pre-engineering footnote", () => {

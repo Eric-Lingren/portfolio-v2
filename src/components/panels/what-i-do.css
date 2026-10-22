@@ -1,0 +1,561 @@
+/* What I do panel. Layout rules are layer-agnostic (parity); layers differ in color only. */
+.what-i-do {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-top: 1rem;
+  container-type: inline-size;
+}
+
+.wid-title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* Each card spans four rows of the shared grid (picture, head, sentence, outcome), so rows line up across cards. */
+.pillar {
+  --pillar-accent: var(--accent);
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  row-gap: 1.15rem;
+  padding: 1.5rem 1.25rem 1.75rem;
+  border: 1.5px solid transparent;
+  border-top-width: 3px;
+  border-radius: 0.5rem;
+}
+
+.pillar[data-viz="board"] {
+  --pillar-accent: var(--accent-2);
+}
+
+.pillar[data-viz="grid"] {
+  --pillar-accent: #86efac;
+}
+
+.pillar-title {
+  margin: 0.5rem 0 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.pillar-sentence,
+.pillar-outcome {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.pillar-outcome {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid transparent;
+  font-size: 0.9rem;
+}
+
+.pillar-outcome-label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ---- Pictures. Shared box, then one block per kind. ---- */
+.viz {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 7rem;
+  padding: 0.75rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+}
+
+/* Target: bars climb toward a dashed goal line; the line lights when the last bar reaches it. */
+.viz-chart {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6%;
+  width: 100%;
+  height: 100%;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid transparent;
+}
+
+.viz-bar {
+  flex: 1;
+  height: calc(var(--h) * 100%);
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom;
+}
+
+/* Sits at the top of the tallest bar (82%). */
+.viz-target {
+  position: absolute;
+  top: 18%;
+  right: 0;
+  left: 0;
+  border-top: 1.5px dashed transparent;
+}
+
+.viz-target::after {
+  content: "";
+  position: absolute;
+  top: -1.5px;
+  right: 0;
+  left: 0;
+  height: 1.5px;
+  opacity: 0;
+}
+
+/*
+ * Board: one ticket with one owner moves open -> doing -> done and gets checked off.
+ * The same owner stays on it the whole way; nothing is handed off or left in a column.
+ */
+.viz-board {
+  --lane: 1.7rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  height: 100%;
+}
+
+.viz-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  padding: 0 0.4rem;
+  border-left: 1px dashed transparent;
+}
+
+.viz-col-label {
+  height: 1rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Background tickets sit below the lane the moving ticket travels in. */
+.viz-ghost {
+  flex: 0 1 1.2rem;
+  min-height: 0;
+  margin-top: calc(var(--lane) + 0.35rem);
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+/* One column wide, so translate percentages step one column at a time. */
+.viz-ticket-track {
+  position: absolute;
+  top: 1.35rem;
+  left: 0;
+  width: calc(100% / 3);
+  height: var(--lane);
+  padding: 0 0.4rem;
+}
+
+.viz-ticket {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 100%;
+  padding: 0 0.4rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+/* Tints the ticket once it lands in done. */
+.viz-ticket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.viz-owner,
+.viz-check {
+  position: relative;
+  flex: none;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+.viz-ticket-lines {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.viz-check {
+  opacity: 0;
+}
+
+.viz-check::after {
+  content: "";
+  position: absolute;
+  top: 0.1rem;
+  left: 0.21rem;
+  width: 0.18rem;
+  height: 0.32rem;
+  border-right: 1.5px solid transparent;
+  border-bottom: 1.5px solid transparent;
+  transform: rotate(45deg);
+}
+
+/* Grid: a cursor moves smoothly across cells, then a paste fills in cleanly. */
+.viz-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  height: 100%;
+  border: 1px solid transparent;
+}
+
+.viz-cell {
+  position: relative;
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+/* A short value bar in each cell; widths vary so the grid reads as data. */
+.viz-cell::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 18%;
+  width: 45%;
+  height: 3px;
+  border-radius: 2px;
+  translate: 0 -50%;
+}
+
+.viz-cell:nth-child(3n)::after {
+  width: 60%;
+}
+
+.viz-cell:nth-child(4n + 1)::after {
+  width: 30%;
+}
+
+.viz-cursor,
+.viz-paste {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Cursor is one cell big, so translate percentages step one cell at a time. */
+.viz-cursor {
+  top: 0;
+  left: 0;
+  width: 25%;
+  height: calc(100% / 3);
+  border: 2px solid transparent;
+}
+
+.viz-paste {
+  top: calc(100% / 3);
+  left: 50%;
+  width: 50%;
+  height: calc(200% / 3);
+  opacity: 0;
+}
+
+/* ---- Polished layer: color and motion. ---- */
+.panel-layer--polished .pillar {
+  background: var(--po-surface);
+  border-color: var(--po-border);
+  border-top-color: var(--pillar-accent);
+}
+
+.panel-layer--polished .pillar-outcome-label {
+  color: var(--pillar-accent);
+}
+
+.panel-layer--polished .pillar-outcome {
+  border-top-color: var(--po-border);
+}
+
+.panel-layer--polished .viz {
+  background: var(--po-bg);
+  border-color: var(--po-border);
+}
+
+.panel-layer--polished .viz-chart {
+  border-bottom-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-bar {
+  background: var(--po-border-strong);
+  animation: viz-grow 4.8s ease-out infinite;
+  animation-delay: calc(var(--i) * 0.12s - 4.8s);
+}
+
+.panel-layer--polished .viz-bar:last-child {
+  background: var(--pillar-accent);
+}
+
+.panel-layer--polished .viz-target {
+  border-top-color: var(--po-muted);
+}
+
+/* The last bar tops out about 2.5s into the cycle; the goal line lights then. */
+.panel-layer--polished .viz-target::after {
+  background: var(--pillar-accent);
+  box-shadow: 0 0 10px var(--pillar-accent);
+  animation: viz-hit 4.8s ease-out infinite;
+}
+
+.panel-layer--polished .viz-col + .viz-col {
+  border-left-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-col-label {
+  color: var(--po-muted);
+}
+
+.panel-layer--polished .viz-ghost {
+  background: var(--po-surface);
+  border-color: var(--po-border);
+}
+
+.panel-layer--polished .viz-ticket-track {
+  animation: viz-carry 6s ease-in-out infinite;
+}
+
+.panel-layer--polished .viz-ticket {
+  background: var(--po-surface);
+  border-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-ticket::before {
+  background: color-mix(in srgb, var(--pillar-accent) 18%, transparent);
+  animation: viz-done 6s ease-out infinite;
+}
+
+.panel-layer--polished .viz-owner {
+  background: var(--pillar-accent);
+  box-shadow: 0 0 8px var(--pillar-accent);
+}
+
+.panel-layer--polished .viz-ticket-lines {
+  background: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-check {
+  background: var(--pillar-accent);
+  animation: viz-done 6s ease-out infinite;
+}
+
+.panel-layer--polished .viz-check::after {
+  border-color: var(--po-bg);
+}
+
+.panel-layer--polished .viz-grid,
+.panel-layer--polished .viz-cell {
+  border-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-cell::after {
+  background: var(--po-border-strong);
+}
+
+.panel-layer--polished .viz-cursor {
+  border-color: var(--pillar-accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--pillar-accent) 55%, transparent);
+  animation: viz-cursor 6s steps(1, end) infinite;
+}
+
+.panel-layer--polished .viz-paste {
+  background: color-mix(in srgb, var(--pillar-accent) 22%, transparent);
+  animation: viz-paste 6s ease-out infinite;
+}
+
+/* ---- Sketch layer: dashed wireframe of the same picture, no motion. ---- */
+.panel-layer--sketch .pillar {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--sketch .pillar-outcome {
+  border-top-color: var(--sk-line);
+  border-top-style: dashed;
+}
+
+.panel-layer--sketch .viz {
+  background: repeating-linear-gradient(45deg, var(--sk-hatch) 0 1px, transparent 1px 8px);
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--sketch .viz-bar,
+.panel-layer--sketch .viz-ghost,
+.panel-layer--sketch .viz-ticket,
+.panel-layer--sketch .viz-owner,
+.panel-layer--sketch .viz-grid,
+.panel-layer--sketch .viz-cell,
+.panel-layer--sketch .viz-cursor {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--sketch .viz-bar,
+.panel-layer--sketch .viz-ghost,
+.panel-layer--sketch .viz-ticket,
+.panel-layer--sketch .viz-grid {
+  background: var(--sk-bg);
+}
+
+.panel-layer--sketch .viz-chart,
+.panel-layer--sketch .viz-target,
+.panel-layer--sketch .viz-col + .viz-col {
+  border-color: var(--sk-line);
+}
+
+.panel-layer--sketch .viz-ticket-lines,
+.panel-layer--sketch .viz-cell::after {
+  background: var(--sk-line);
+}
+
+/* ---- Keyframes: transform and opacity only. ---- */
+@keyframes viz-grow {
+  0% {
+    transform: scaleY(0.12);
+  }
+  40%,
+  85% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes viz-hit {
+  0%,
+  46% {
+    opacity: 0;
+  }
+  54%,
+  84% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Open, then doing, then done; it fades out only after it has been checked off. */
+@keyframes viz-carry {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  5%,
+  22% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  36%,
+  50% {
+    transform: translateX(100%);
+  }
+  64%,
+  92% {
+    opacity: 1;
+    transform: translateX(200%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(200%);
+  }
+}
+
+@keyframes viz-done {
+  0%,
+  66% {
+    opacity: 0;
+  }
+  72%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes viz-cursor {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(100%, 0);
+  }
+  40% {
+    transform: translate(100%, 100%);
+  }
+  60%,
+  100% {
+    transform: translate(200%, 100%);
+  }
+}
+
+@keyframes viz-paste {
+  0%,
+  64% {
+    opacity: 0;
+  }
+  72%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .what-i-do .viz *,
+  .what-i-do .viz *::before,
+  .what-i-do .viz *::after {
+    animation: none !important;
+  }
+}
+
+@container (max-width: 640px) {
+  .pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .viz {
+    height: 5.5rem;
+  }
+}

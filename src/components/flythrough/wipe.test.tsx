@@ -17,6 +17,18 @@ describe("builtAmount", () => {
     expect(builtAmount(DEPTH * FLY_CONFIG.wipeRange)).toBe(0);
   });
 
+  it("has not started in the first half of the approach", () => {
+    // The sweep must play out close up, where it is readable.
+    expect(builtAmount(DEPTH)).toBe(0);
+    expect(builtAmount(DEPTH * 0.5)).toBe(0);
+    expect(builtAmount(DEPTH * 0.3)).toBeGreaterThan(0);
+  });
+
+  it("is half built at the geometric midpoint, so it runs evenly through the camera's ease-in", () => {
+    const mid = DEPTH * Math.sqrt(FLY_CONFIG.wipeRange * FLY_CONFIG.wipeDone);
+    expect(builtAmount(mid)).toBeCloseTo(0.5, 6);
+  });
+
   it("is 1 at arrival and after the camera passes", () => {
     expect(builtAmount(0)).toBe(1);
     expect(builtAmount(-DEPTH)).toBe(1);
@@ -58,6 +70,13 @@ function stagePanel() {
 }
 
 describe("wipe DOM", () => {
+  it("hides the sketch copy from assistive tech and keyboard focus", () => {
+    const { container } = stagePanel();
+    const wipe = container.querySelector("[data-wipe]")!;
+    expect(wipe).toHaveAttribute("aria-hidden", "true");
+    expect(wipe).toHaveAttribute("inert");
+  });
+
   it("renders both layers, the wipe box, and the edge only inside the stage", () => {
     const { container } = stagePanel();
     expect(container.querySelector("[data-wipe] [data-wipe-inner] [data-layer='sketch']")).not.toBeNull();
@@ -100,6 +119,17 @@ describe("wipe DOM", () => {
     applyWipe(t, 1);
     expect(t.edge!.style.visibility).toBe("hidden");
   });
+
+  it("hides the sketch box once fully built, so its dashed border cannot peek past the clip edge", () => {
+    const { container } = stagePanel();
+    const t = findWipe(container)!;
+    applyWipe(t, 0.5);
+    expect(t.outer.style.visibility).toBe("visible");
+    applyWipe(t, 1);
+    expect(t.outer.style.visibility).toBe("hidden");
+    applyWipe(t, 0);
+    expect(t.outer.style.visibility).toBe("visible");
+  });
 });
 
 function ruleBody(selector: string): string {
@@ -119,7 +149,7 @@ describe("wipe code guards", () => {
     }
   });
 
-  it("writes only transform (plus edge visibility) to element styles", () => {
+  it("writes only transform (plus edge and sketch visibility) to element styles", () => {
     const writes = [...wipeSource.matchAll(/\.style\.(\w+)\s*=/g)].map((m) => m[1]);
     expect(new Set(writes)).toEqual(new Set(["transform", "visibility"]));
   });

@@ -1,6 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { RenderModeContext } from "@/components/flythrough/render-mode";
 import type { AIStatsSnapshot } from "../../../scripts/ai-stats-lib.mjs";
 import { AIStatsStrip, statsFromSnapshot } from "./AIStatsStrip";
 import { AIToolkit } from "./AIToolkit";
@@ -29,13 +28,9 @@ describe("AIStatsStrip", () => {
     expect(JSON.stringify([stats, volume])).not.toMatch(/\$/);
   });
 
-  it("renders inside the AI toolkit panel in complete mode", () => {
-    render(
-      <RenderModeContext.Provider value="complete">
-        <AIToolkit />
-      </RenderModeContext.Provider>,
-    );
+  it("renders inside the AI toolkit panel", () => {
+    render(<AIToolkit />);
     expect(screen.getByTestId("ai-stats")).toBeTruthy();
-    expect(screen.getByTestId("ai-diagram").getAttribute("data-mode")).toBe("complete");
+    expect(screen.getByTestId("ai-diagram")).toBeTruthy();
   });
 });

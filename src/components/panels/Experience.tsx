@@ -27,8 +27,11 @@ export function Experience({ layers = "polished", z = 0, id }: { layers?: PanelL
             </li>
           ))}
         </ol>
-        <a className="btn btn-outline experience-resume" href={RESUME_PATH}>
+        <a className="btn btn-primary experience-resume" href={RESUME_PATH}>
           Download resume (PDF)
+          <span className="btn-arrow btn-arrow--down" aria-hidden="true">
+            ↓
+          </span>
         </a>
         <p className="experience-footnote">{PRE_ENGINEERING_FOOTNOTE}</p>
       </div>

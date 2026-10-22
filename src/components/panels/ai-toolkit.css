@@ -1,5 +1,5 @@
 .ai-heading {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.85rem;
   font-weight: 400;
@@ -8,12 +8,14 @@
 }
 
 .ai-intro {
-  max-width: 48rem;
-  margin: 0 0 1.25rem;
-  line-height: 1.5;
+  max-width: 56rem;
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .ai-diagram {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -29,7 +31,7 @@
 .ai-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.6rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -38,44 +40,38 @@
 .ai-step {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.75rem 0.9rem;
+  gap: 0.25rem;
+  padding: 0.6rem 0.8rem;
   border: 1.5px solid transparent;
   border-radius: 0.5rem;
-  transition: opacity 0.2s;
 }
 
-.ai-step--loop {
-  grid-column: 1 / -1;
-}
-
-.ai-step[data-state="upcoming"] {
-  /* 0.5 dropped tier and step-number text below WCAG AA contrast on the dark layer. */
-  opacity: 0.8;
+.ai-step--wide {
+  grid-column: span 2;
 }
 
 .ai-step-num {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .ai-step-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 
 .ai-step-blurb {
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  line-height: 1.35;
 }
 
 .ai-nodes {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.3rem;
   margin: 0.25rem 0 0;
   padding: 0;
   list-style: none;
@@ -84,14 +80,14 @@
 .ai-node {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.55rem;
+  gap: 0.4rem;
+  padding: 0.2rem 0.45rem;
   border: 1.5px solid transparent;
   border-radius: 0.35rem;
   background: transparent;
   color: inherit;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   cursor: pointer;
 }
 
@@ -106,7 +102,7 @@
   padding: 0 0.35rem;
   border: 1px solid currentColor;
   border-radius: 0.25rem;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -198,18 +194,38 @@
 }
 
 .ai-more {
-  margin-top: 1rem;
+  margin-top: 0.6rem;
+}
+
+/* In the fly-through the inspect card floats over the steps so opening it never pushes the panel past the fold. */
+.fly-panel .ai-inspect {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 2.5rem;
+  z-index: 2;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* Layer colors only. Geometry above is shared by sketch and polished. */
 .panel-layer--polished .ai-step {
   background: #111827;
   border-color: var(--po-border);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.panel-layer--polished .ai-step[data-state="active"] {
+/* Highlight matches the selected work cards: hover on desktop, focus for keyboards, the step whose node is open. */
+.panel-layer--polished .ai-step:focus-within,
+.panel-layer--polished .ai-step:has(.ai-node[aria-expanded="true"]) {
   border-color: var(--accent-2);
-  box-shadow: var(--cyan-glow);
+  box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .ai-step:hover {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35);
+  }
 }
 
 .panel-layer--polished .ai-step-num,
@@ -262,6 +278,10 @@
     grid-template-columns: 1fr;
   }
 
+  .ai-step--wide {
+    grid-column: auto;
+  }
+
   .ai-flow {
     padding-left: 1.75rem;
   }
@@ -271,7 +291,58 @@
     width: 0.9rem;
   }
 
+  .fly-panel .ai-inspect {
+    left: 1.75rem;
+  }
+
   .ai-inspect-io {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Phones in the fly-through: two-column steps without blurbs so the diagram rests on one screen.
+   Classic view keeps the full single-column layout. */
+@media (max-width: 600px) {
+  .fly-panel .ai-intro {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .fly-panel .ai-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .fly-panel .ai-step {
+    gap: 0.15rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .fly-panel .ai-step--wide {
+    grid-column: auto;
+  }
+
+  .fly-panel .ai-step--loop {
+    grid-column: 1 / -1;
+  }
+
+  .fly-panel .ai-step-title {
+    font-size: 0.9rem;
+  }
+
+  .fly-panel .ai-step-blurb {
+    display: none;
+  }
+
+  .fly-panel .ai-node {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    max-width: 100%;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.62rem;
+  }
+
+  .fly-panel .ai-node-name {
+    overflow-wrap: anywhere;
   }
 }

@@ -1,19 +1,23 @@
 import { readFileSync } from "node:fs";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { setActiveSection } from "@/components/active-section";
 import { RESUME_PATH } from "@/content/site";
 import { Nav, viewHref } from "./Nav";
 
-afterEach(() => window.history.replaceState({}, "", "/"));
+afterEach(() => {
+  window.history.replaceState({}, "", "/");
+  setActiveSection(null);
+});
 
 describe("Nav", () => {
   it("renders all anchors, the switch and the resume link", () => {
     render(<Nav navigate={() => {}} />);
     for (const [label, id] of [
-      ["Positioning", "positioning"],
-      ["AI toolkit", "ai-toolkit"],
+      ["What I do", "what-i-do"],
       ["Work", "work"],
+      ["AI toolkit", "ai-toolkit"],
       ["Experience", "experience"],
       ["Testimonials", "testimonials"],
       ["Contact", "contact"],
@@ -50,15 +54,16 @@ describe("Nav", () => {
     const user = userEvent.setup();
     render(<Nav navigate={() => {}} />);
     const order: [string, string][] = [
-      ["link", "Positioning"],
-      ["link", "AI toolkit"],
+      ["link", "Eric Lingren"],
+      ["link", "What I do"],
       ["link", "Work"],
+      ["link", "AI toolkit"],
       ["link", "Experience"],
       ["link", "Testimonials"],
       ["link", "Contact"],
+      ["link", "Resume"],
       ["radio", "Interactive"],
       ["radio", "Classic"],
-      ["link", "Resume"],
     ];
     for (const [role, name] of order) {
       await user.tab();
@@ -66,10 +71,57 @@ describe("Nav", () => {
     }
   });
 
+  it("brand links home and section numbers stay out of link names", () => {
+    render(<Nav navigate={() => {}} />);
+    expect(screen.getByRole("link", { name: "Eric Lingren" })).toHaveAttribute("href", "#hero");
+    expect(screen.getByRole("link", { name: "Work" }).textContent).toBe("02Work");
+  });
+
+  it("marks the active section with aria-current and follows changes", () => {
+    render(<Nav navigate={() => {}} />);
+    expect(document.querySelector("[aria-current]")).toBeNull();
+    act(() => setActiveSection("work"));
+    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "location");
+    act(() => setActiveSection("contact"));
+    expect(screen.getByRole("link", { name: "Work" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("aria-current", "location");
+    act(() => setActiveSection("hero"));
+    expect(document.querySelector("[aria-current]")).toBeNull();
+  });
+
   it("styles a visible focus ring for nav controls", () => {
     const css = readFileSync("src/components/nav.css", "utf8");
     expect(css).toMatch(/\.site-nav a:focus-visible/);
     expect(css).toMatch(/\.site-nav button:focus-visible/);
     expect(css).toMatch(/outline: 2px solid/);
+  });
+
+  it("fills the resume link with the accent, hover included, like the hero's primary CTA", () => {
+    const css = readFileSync("src/components/nav.css", "utf8");
+    const block = /\.site-nav a\.site-nav__resume:hover\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(block).toMatch(/background: var\(--accent-fill\)/);
+    expect(block).toMatch(/color: var\(--on-accent-fill\)/);
+  });
+
+  it("gives Resume a decorative arrow and the hero CTA's coral glow on hover and focus", () => {
+    render(<Nav navigate={() => {}} />);
+    const arrow = screen.getByRole("link", { name: "Resume" }).querySelector(".btn-arrow--out");
+    expect(arrow).toHaveTextContent("↗");
+    expect(arrow).toHaveAttribute("aria-hidden", "true");
+    const css = readFileSync("src/components/nav.css", "utf8");
+    const block = /\.site-nav a\.site-nav__resume:is\(:hover, :focus-visible\)\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(block).toMatch(/box-shadow: var\(--coral-glow\)/);
+  });
+
+  it("keeps the view switch out of the top bar, pinned small to the viewport's bottom-right corner", () => {
+    render(<Nav navigate={() => {}} />);
+    expect(within(screen.getByRole("banner")).queryByRole("radiogroup")).toBeNull();
+    const css = readFileSync("src/components/nav.css", "utf8");
+    const block = /\.view-switch\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(block).toMatch(/position: fixed/);
+    expect(block).toMatch(/right: 1rem/);
+    expect(block).toMatch(/bottom: /);
+    expect(block).toMatch(/font-size: 0\.6875rem/);
+    expect(css).toMatch(/\.view-switch button:focus-visible/);
   });
 });

@@ -9,10 +9,10 @@ import { SelectedWork, type WorkCard } from "./SelectedWork";
 
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 const panelCss = readFileSync(join(process.cwd(), "src/components/panels/selected-work.css"), "utf8");
-const SLUGS = ["kpi-granularity", "investor-reports", "frontend-platform", "render-performance"];
+const SLUGS = ["kpi-granularity", "investor-reports", "metrics-tab-v2", "frontend-platform", "render-performance"];
 
 describe("SelectedWork", () => {
-  it("renders exactly 4 cards in order, each linking to its route", () => {
+  it("renders exactly 5 cards in order, each linking to its route", () => {
     const { container } = render(<SelectedWork />);
     const links = Array.from(container.querySelectorAll("a.work-card"));
     expect(links.map((a) => a.getAttribute("data-card"))).toEqual(SLUGS);
@@ -55,7 +55,7 @@ describe("SelectedWork", () => {
     const { container } = render(<SelectedWork />);
     const missing = (cards as WorkCard[]).filter((c) => !c.hasThumbnail).length;
     expect(container.querySelectorAll(".work-thumb-missing")).toHaveLength(missing);
-    expect(container.querySelectorAll("img")).toHaveLength(4 - missing);
+    expect(container.querySelectorAll("img")).toHaveLength(SLUGS.length - missing);
   });
 
   it("shows no PR, file or line counts", () => {
