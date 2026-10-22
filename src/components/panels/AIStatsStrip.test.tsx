@@ -2,7 +2,6 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { AIStatsSnapshot } from "../../../scripts/ai-stats-lib.mjs";
 import { AIStatsStrip, statsFromSnapshot } from "./AIStatsStrip";
-import { AIToolkit } from "./AIToolkit";
 
 const SNAP: AIStatsSnapshot = {
   generatedAt: "2026-03-01T00:00:00.000Z",
@@ -26,11 +25,5 @@ describe("AIStatsStrip", () => {
   it("shows no dollar figures", () => {
     const { stats, volume } = statsFromSnapshot(SNAP);
     expect(JSON.stringify([stats, volume])).not.toMatch(/\$/);
-  });
-
-  it("renders inside the AI toolkit panel", () => {
-    render(<AIToolkit />);
-    expect(screen.getByTestId("ai-stats")).toBeTruthy();
-    expect(screen.getByTestId("ai-diagram")).toBeTruthy();
   });
 });

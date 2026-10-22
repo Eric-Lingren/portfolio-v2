@@ -1,0 +1,214 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "title": "AI toolkit panel rebuild: interactive guided run and slimmer detail page",
+  "slug": "ai-panel-stepper-rebuild",
+  "created": "2026-10-19T07:21:17Z",
+  "iteration": 1,
+  "summary": "The AI toolkit panel (#3 on the portfolio) is too dense and does not build on one takeaway. The rebuild replaces the 16-node pipeline diagram, inspect aside and stats strip with a hybrid guided stepper over a 3D diagram that walks a real, anonymized bug through five steps (Plan, Build, Catch, Learn, Improve). The takeaway is trustworthy AI output, with the self-improving loop as proof. The reader is the hiring engineering lead first, with a short skim layer for HR. The detail page at /work/ai-toolkit becomes a lean 500 to 600 word page with five sections and no summary box, reachable only from the panel. Scene tech and layout are chosen by prototyping a 2x2 with a lede on/off switch.",
+  "problem_statement": "The AI toolkit panel shows 234 words by default (63-word intro, 4 sample-data stats, 7 steps, 16 node buttons with model tiers). It is accurate but dense, shows how the system is built instead of what it does, and hides all 16 dotfiles links behind node clicks. The detail page is about 876 words in case-study form with 8 unfinished [ERIC: ...] markers rendering as literal text and invented-sounding impact percentages. Many engineers now build with AI, so the page does not make the value of the dotfiles system clear to an engineering lead or to HR.",
+  "solution": "Panel: plain H2 label, an optional one-sentence lede, and an interactive guided stepper over a 3D diagram. A pinned card beside the scene shows only what happened in one real run. The scene shows the system's agents and judges, each labeled by the plain question it answers. Detail page: lean five-section page that carries the depth. Flat 2D stepper on phones, keyboard and reduced motion.",
+  "decisions": [
+    "Primary reader is the hiring engineering lead. A short skim layer serves HR and recruiters.",
+    "Takeaway is trustworthy output: ships fast with AI and has guardrails that make it safe at team scale. Proof is the self-improving loop, where mistakes become permanent rules.",
+    "Team claim is influence, not adoption: Eric presented the approach to the team and engineers integrated pieces into their own workflows. Nobody runs Eric's exact system.",
+    "The panel is a hook plus a demonstration. Story-level narrative, presentation headlines and slogans are not used on the panel. Depth lives on the detail page.",
+    "The panel H2 is a plain section label in the same register as the other panels (What I do, Selected work, Experience). The nav label stays 'AI toolkit'.",
+    "The panel has an optional one-sentence lede of about 20 words or fewer that orients without selling. It is A/B tested in the prototype as lede on versus lede off.",
+    "The detail page /work/ai-toolkit stays reachable only from the AI panel. It is not added to Selected Work (CARD_SLUGS in scripts/generate-work-cards.mjs stays unchanged).",
+    "The demonstration is an interactive, non-autoplay guided stepper over a 3D diagram. There are Next and Back controls, stage chips and hover one-liners on nodes. The scene supports a small bounded tilt drag. There is no free orbit and the panel never captures the wheel or scroll.",
+    "The scene tech is open. CSS 3D (matching the fly-through) and three.js are both candidates, since the repo has no three.js dependency today.",
+    "The run has five steps: Plan, Build, Catch, Learn, Improve. Steps 3 to 5 carry the message and get the most visual weight. Steps 1 and 2 stay quick. The diagram nodes stay present in the scene and light up by cluster per step.",
+    "Each step is framed by a plain problem question or pain point from Eric's presentations: 'I read the whole codebase. (It didn't.)', 'Who's had an AI tell you it ran the tests when it didn't?', 'That looks great! (It doesn't.)', 'Same bug. Fixing it is not enough.', and 'A bug becomes a rule.'",
+    "Each judge or agent in the scene is labeled by the plain question it answers, for example 'Did the plan make anything up?', 'Is the quote real?', 'Did the tests actually run?', 'Is this evidence real?', 'Did the edit actually help?'.",
+    "Steps use two layers. A snippet card pinned beside the scene shows only what happened in this run, with true facts. The scene shows the agents and judges that run at that step in the system. Placing the card inside the 3D scene is rejected.",
+    "The scripted run is the real KEY-1879 portco topbar cutover story, anonymized. Plan: the ticket covered 8 route pages and the grill found a 9th (investment-details-beta) still on the legacy Company.tsx wrapper, so scope became 9 route flips, 4 guards, +1 container. Build: commit 833fda58a3 (2026-07-24) deleted Company.tsx and Layout.tsx and moved the pages to PortcoPageShell. Catch: the old wrapper carried key={firm-...-company-...} that forced a remount on company switch, the new shell dropped it, and state leaked across companies. Learn: pr-revise logged a learning on 2026-07-28 with cause requirement_never_elicited, improving grill-me. Improve: commit a1bce32 (2026-09-26) added grill-me rule 7, where a Haiku subagent inspects any deleted component for implicit behaviors such as a key= prop.",
+    "The Catch step says plainly that the system's own gates passed the bug and an outside reviewer (bugbot) caught it, and that the reviewer was not the author. It also makes clear the loop improves the system when it catches its own mistakes, for example pr-code-review and debug spawning attribution-tracer.",
+    "Snippets keep the real artifact format with cleaned content, trimmed to 2 or 3 lines. Internal firm and company slugs and ticket IDs are anonymized. Component names such as Company.tsx may stay. No invented facts. Where no artifact survives, the snippet is reconstructed in the true shape and Eric signs off that it matches what happened.",
+    "Eric is comfortable showing this employer bug publicly once anonymized.",
+    "The Learn step claims only what the record shows: the cause label requirement_never_elicited and routing to the grill. It does not claim attribution-tracer or artifact-grounding-judge ran on this bug. Those agents appear only in the scene layer as part of how the system works.",
+    "The Improve step shows the new rule (grill-me rule 7), not a score. No grill benchmark exists. A number appears inside a step only if it is real.",
+    "The stats strip is removed from the panel. The whole stats chain is deleted: AIStatsStrip.tsx and its test, ai-stats.css, src/content/ai-stats.json, scripts/ai-stats-snapshot.mjs, scripts/ai-stats-lib.mjs and .d.mts, scripts/ai-stats.test.mjs, scripts/fixtures/ai-stats/, the stats:snapshot npm script (package.json:14), and the ai-stats string at scripts/check-content.test.mjs:186.",
+    "Each step has one inline text link to the source file that did that step's work, plus a 'Browse the toolkit on GitHub' button beside the detail-page CTA. The GitHub button and the detail CTA share one button look and hover. Hover tooltips carry one-liners only, never links.",
+    "Phones, keyboard-only and reduced motion get a flat 2D stepper with the same five steps, snippets, links and pacing. The 3D layer and tilt drop out, and the diagram becomes a 2D strip of five stages that light up per step. Visitors advance by swipe or buttons. Keyboard works on every version through Next and Back buttons, with focus moving to the active step's heading.",
+    "Step state is lifted above both Panel render copies so the polished body and the sketch copy in the fly-through show the same step and the wipe never jumps back to step 1.",
+    "Carry-forward from the replaced component (per the hidden-behavior audit): keep the #ai-toolkit anchor and Panel contract (data-panel-body, data-wipe attributes); keep hover styles only under (hover: hover) and (pointer: fine); keep target=_blank rel=\"noopener noreferrer\" on GitHub links; keep a data-testid hook on the stepper buttons group so perf-check.mjs focus-ring audit (lines 269 and 291, keyed to ai-diagram today) still covers it. Drop Escape-to-close on purpose, since nothing opens.",
+    "The detail page drops the case-study label and retitles to something like 'How I build with AI'. Target length is 500 to 600 words with five sections: (1) the run in full with room for precise details, (2) the rules behind it, (3) the full map with the 16-node diagram and per-node file links moved here, (4) influence, (5) what's next and current limits.",
+    "The rules section holds 3 or 4 short points: never let the author grade its own work; one agent, one job, with typed handoffs; require evidence, not claims; bugs become rules.",
+    "The influence section includes one honest dated line: building with AI daily since 2025, and turning it into a shared toolkit in 2026. Dates are year-level only. The panel carries no dates.",
+    "'This site was built with the toolkit' is kept as a single line in the run or influence section.",
+    "The detail page drops the CaseStudyView summary box (Role, Timeline, Stack, Outcomes) for this slug only, through an opt-out. Other case studies keep it and work.test.tsx stays valid.",
+    "The Impact section with unmeasured percentages and the 350-word Key decisions block are removed. The invented speed or cycle-time numbers are not used unless measured.",
+    "The prototype compares a 2x2: CSS 3D versus three.js, and a straight track versus a ring that closes back to Plan. A lede on/off switch applies across all four. Snippet card placement is locked as pinned beside the scene.",
+    "Design constraints from prior memory apply: static first paint (no autoplay on load); the step script only moves on visitor input; every button shares one look and hover (glow plus arrow nudge); coral CTA look unchanged; no cursor-following overlays.",
+    "Final user-facing copy is drafted during the prototype. Structure is locked here; wording is not."
+  ],
+  "open_threads": [],
+  "disposed_threads": [
+    {
+      "id": "dt-001",
+      "text": "Write a full mistake-to-fix user story on the panel",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-002",
+      "text": "Use presentation headlines (show-of-hands question, junior dev with root access) as the panel headline",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-003",
+      "text": "Keep the stats strip on the panel, with real data",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-004",
+      "text": "Add the AI detail page as a card in Selected Work",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-005",
+      "text": "Free-orbit explore as the navigation model",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-006",
+      "text": "Stacked cards or scaled-down 3D for phones instead of a flat stepper",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-007",
+      "text": "Per-node hover links to dotfiles on the panel",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-008",
+      "text": "Swap the story for a bug the system's own review caught",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-009",
+      "text": "Keep the CaseStudyView summary box on the AI detail page",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-010",
+      "text": "Illustrative or loosely based snippets instead of real-shape snippets",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-011",
+      "text": "Keep the ai-stats snapshot script and library after removing the UI",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-012",
+      "text": "Final scene tech and layout pick (CSS 3D versus three.js, track versus ring)",
+      "disposition": "deferred",
+      "iteration": 1
+    }
+  ],
+  "deferred": [
+    {
+      "text": "Pick the scene tech (CSS 3D or three.js) and layout (track or ring) after trying all four prototype variants on the :3000 static build, and pick lede on or off.",
+      "rationale": "These are feel calls Eric can only judge by using them. three.js has a bundle-size cost against the perf:check budgets.",
+      "context": "Feel is judged on the :3000 static build (serve out), rebuilt before each review.",
+      "source_seed": "ai-panel-stepper-rebuild"
+    },
+    {
+      "text": "Write the final panel H2 label (How I build with AI versus AI toolkit), the lede sentence, the step problem lines, snippet text and the detail page title and prose.",
+      "rationale": "Eric's copy is a high-miss area. Structure is locked, wording gets drafted and reviewed in the prototype.",
+      "context": "Candidate lede in spirit: a walkthrough of how agents check each other's work, using a real bug from a day job.",
+      "source_seed": "ai-panel-stepper-rebuild"
+    },
+    {
+      "text": "Show a real before and after benchmark number in the Improve step.",
+      "rationale": "No eval or benchmark exists for grill-me or grill-with-docs. Revisit only if one is created and hand-checked.",
+      "context": "Until then step 5 shows the rule text and source link only.",
+      "source_seed": "ai-panel-stepper-rebuild"
+    }
+  ],
+  "out_of_scope": [
+    {
+      "text": "A made-up or unmeasured speed, cycle-time or review-comment percentage anywhere on the panel or detail page",
+      "rationale": "Invented-sounding numbers damage credibility with engineering leads. Numbers appear only if real."
+    },
+    {
+      "text": "Model-tier or model-mix framing (Haiku/Sonnet/Opus split) as a headline or panel stat",
+      "rationale": "Cost and tiering is a footnote at most, not the takeaway."
+    },
+    {
+      "text": "Text rendered in 3D space for snippets",
+      "rationale": "Blurs and is hard to make accessible. The card is pinned beside the scene."
+    },
+    {
+      "text": "Changing other case studies, Selected Work cards or the CaseStudyView summary box for other slugs",
+      "rationale": "The opt-out is scoped to the AI page."
+    }
+  ],
+  "evidence": "Inventory of the current panel and detail page by Haiku subagent (234 default panel words, 876 detail page words, 8 visible [ERIC:] markers, stats values flagged sample:true, 16 dotfiles links only reachable by node click). Presentation framings from ~/.dotfiles/claude-code-shared/agents_presentation.html and ai_architecture_presentation.html. Story artifacts: Quaestor-Web docs/handoffs/20260715-1234-key-1879-topbar-cutover-grill.md lines 9, 20, 68; docs/tasks/20260728-0930-portco-cutover-bugbot-escapes.json lines 67 to 110; commits 833fda58a3, 1f7325714d, 95c0ba47bc; ~/.dotfiles/claude-code-shared/learnings/unified-learnings.jsonl line 17 (id 18bc42e9-f2d4-4e91-b912-1545ce585111); ~/.dotfiles commit a1bce32e57851af13cb5b3da24affec29eb1d58f and grill-me SKILL.md line 46. Dotfiles history: first commit 2026-04-27, first claude-code-shared commit 2026-05-02.",
+  "implementation_decisions": [
+    "Replace the internals of src/components/panels/AIToolkit.tsx. Remove the Inspect aside, node-toggle state and the AIStatsStrip mount. Move NODES and fileUrl data use to the detail page's full-map section. Reuse the existing diagram component for that section if feasible.",
+    "Create a CaseStudyView opt-out (for example a frontmatter flag read in src/app/work/[slug]/page.tsx) so ai-toolkit omits the summary aside. CaseStudyView is shared by all slugs and tested via work.test.tsx fixtures.",
+    "Remove role, timeline, stack and outcomes placeholders from content/work/ai-toolkit.mdx frontmatter for this page, which removes the two frontmatter [ERIC:] markers. Rewrite the body to the five-section outline so the six body [ERIC:] markers disappear.",
+    "The step 5 inline source link should point at grill-me/SKILL.md (rule 7 is at line 46), since grill-with-docs has no such rule. Current NODES data links the Grill step to grill-with-docs, so the link target must be chosen per step on purpose.",
+    "Flat stepper reuses the same step data and components as the 3D version, with the 3D layer and tilt omitted under touch, narrow screens and prefers-reduced-motion. The diagram becomes a simple 2D strip of the five stages that light up per step. Visitors advance by swipe or by the Next and Back buttons. This matches how FlatStack degrades the fly-through.",
+    "Lift step state into one hook or context above both Panel layers so the sketch copy mirrors the polished copy. Fallback if mirroring the 3D scene is expensive in the prototype: render the sketch copy as a static wireframe outline.",
+    "Move the dotfiles links to per-step inline links plus one repo button. Keep target=_blank rel=\"noopener noreferrer\"."
+  ],
+  "testing_decisions": [
+    "Update src/app/work/ai-toolkit.test.ts: the word gate (600 to 900 at lines 48 to 52) and the required sections (lines 37 to 42) must match the new 500 to 600 word, five-section page. Frontmatter and thumbnail assertions at lines 29 to 34 must be reviewed against removed fields.",
+    "Rewrite src/components/panels/AIToolkit.test.tsx (13 cases) for the stepper. Delete the Inspect, Escape, aria-expanded node-toggle and ai-diagram cases. Keep or port the 'Read the case study' link test and the CSS regex test for hover under (hover: hover) and (pointer: fine). Keep the complete versus staged render-mode test (no data-state, same [data-step] count).",
+    "Delete AIStatsStrip.test.tsx and scripts/ai-stats.test.mjs with the chain. Update scripts/check-content.test.mjs line 186 so it does not reference ai-stats.json.",
+    "Update perf-check.mjs lines 269 and 291 so the focus-ring audit finds the new stepper buttons through the new data-testid.",
+    "Add tests for: step order and content integrity (five steps, one source link per step, link targets exist in ~/.dotfiles when present), keyboard Next and Back with focus moving to the step heading, reduced-motion and flat fallback rendering, sketch copy mirroring the polished copy's step, and CaseStudyView summary opt-out (ai-toolkit omits it, fixtures still render it).",
+    "Keep flythrough.test.tsx registry order and id assertions (ai-toolkit stays 3rd in order) and Nav.test.tsx label/href passing."
+  ],
+  "risks_and_tradeoffs": [
+    "Anonymization: the story comes from employer code. Firm and company slugs, ticket ID KEY-1879, repo name and any internal paths must be removed from snippets. Eric reviews every reconstructed snippet before publish.",
+    "Source seed files cited by the learning (docs/seeds/20260715-1528-key-1879-portco-topbar-full-cutover.json, docs/seeds/20260728-0929-portco-cutover-bugbot-escapes.json) are missing from Quaestor-Web. The Plan step snippet must come from the handoff doc, and the Catch step from the bugbot escapes task file, not from the missing seeds.",
+    "The learning record (line 17) fixed grill-me with a plain checklist item. The Haiku subagent wording came from the commit a1bce32 on 2026-09-26, about 60 days after the learning on 2026-07-28. Copy must not imply the fix was instant or that the learning itself named a Haiku agent.",
+    "The learning schema has no stage-attribution field, and attribution-tracer and artifact-grounding-judge did not run on this record. The scene may show them as how the system works, but the Learn step card must not claim they handled this bug.",
+    "The 'ticket said 8 pages to move to the new header' wording from the talk does not match the artifacts. The real incident is KEY-1879 'portco topbar' cutover. Copy uses the artifact wording.",
+    "Step-level dates in snippets are not decided. Year-level dates are the rule for the experience claim. Eric should decide whether snippet dates (2026-07-24, 2026-07-28, 2026-09-26) appear at all.",
+    "Whether the seed critics and judge panel actually ran on the original July grill seed cannot be verified because that seed file is gone. Seed critics and judges appear in the scene layer only, not as claims about this run.",
+    "three.js adds bundle weight against perf:check LCP and scroll budgets and may fight hit-test handling set up in commit 69bcaed (.fly-world pointer-events: none). Any interactive 3D must opt into pointer events locally and be checked by scripts/hover-stability-check.mjs.",
+    "The panel body renders twice inside the fly-through (polished and sketch), so any heavy 3D scene would mount twice unless the sketch copy is static or shares one instance.",
+    "Detail page thumbnail /work/ai-toolkit/pipeline.png (frontmatter) points at a file that does not exist (public/work/ai-toolkit/ is absent). The new page needs a real asset or the field removed, and the ai-toolkit.test.ts thumbnail assertion updated."
+  ],
+  "further_notes": [
+    "Tone for copy: Eric rejects slogans, vanity metrics (PR or file counts) and the trucking hook. Business outcomes come before features.",
+    "Eric's own account of the original talk: the story got missed in places and was ad-libbed because he was busy with ticket work. The panel version needs to be precise and accurate.",
+    "AI panel facts for copy: the toolkit has 38 skills and 34 agents in ~/.dotfiles/claude-code-shared (counts not used as panel stats).",
+    "The user asked to mark each judge or agent by questions like 'Is this correct?' and 'Is this accurate?' so non-engineers see what the agents are for."
+  ],
+  "next_action": "Run /prototype to build the four scene variants (CSS 3D or three.js, track or ring) with a lede on/off switch, judged by feel on the :3000 static build, then continue to /to-tasks or /to-spec.",
+  "status": "ready",
+  "verification": {
+    "iteration": 1,
+    "personas": [
+      "grounding",
+      "accuracy",
+      "completeness",
+      "coherence"
+    ],
+    "refutations_upheld": 3,
+    "refutations_screened": 4,
+    "clean": false,
+    "status": "verified"
+  }
+}

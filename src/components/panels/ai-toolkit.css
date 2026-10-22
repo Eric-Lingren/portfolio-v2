@@ -1,3 +1,8 @@
+.ai-root {
+  width: 100%;
+  max-width: 76rem;
+}
+
 .ai-heading {
   margin: 0 0 0.5rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -7,342 +12,357 @@
   letter-spacing: 0.08em;
 }
 
-.ai-intro {
-  max-width: 56rem;
-  margin: 0 0 0.9rem;
-  font-size: 0.95rem;
-  line-height: 1.45;
+.ai-stage-num {
+  display: inline-block;
+  min-width: 1.2em;
+  text-align: center;
 }
 
-.ai-diagram {
+/* ---- 3D scene ---- */
+.ai-scene {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  max-width: 72rem;
-}
-
-.ai-flow {
-  position: relative;
-  padding-left: 2.5rem;
-}
-
-.ai-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ai-step {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.6rem 0.8rem;
+  height: 21rem;
+  overflow: hidden;
   border: 1.5px solid transparent;
   border-radius: 0.5rem;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.ai-step--wide {
-  grid-column: span 2;
+.ai-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.ai-step-num {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.ai-step-title {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.ai-step-blurb {
-  margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-.ai-nodes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin: 0.25rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ai-node {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.2rem 0.45rem;
+.ai-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10.5rem;
+  padding: 0.4rem;
   border: 1.5px solid transparent;
-  border-radius: 0.35rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: opacity 250ms, border-color 250ms, box-shadow 250ms;
+}
+
+/* Projected labels stay hidden until the scene places them. */
+.ai-scene--three:not([data-ready]) .ai-stage {
+  visibility: hidden;
+}
+
+.ai-stage[data-active="false"] {
+  opacity: 0.62;
+}
+
+.ai-stage[data-active="true"] {
+  z-index: 5;
+}
+
+.ai-stage:hover {
+  z-index: 10;
+  opacity: 1;
+}
+
+/* Sketch layer: the same labels in a plain row, no WebGL. */
+.ai-scene--sketch {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem 4rem;
+}
+
+.ai-scene--sketch .ai-stage {
+  position: static;
+  flex: 1 1 0;
+  width: auto;
+}
+
+.ai-stage-title {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.3rem;
+  padding: 0;
+  border: 0;
   background: transparent;
   color: inherit;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.72rem;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 
-.ai-node:focus-visible,
-.ai-inspect-close:focus-visible,
-.ai-inspect-link:focus-visible {
-  outline: 2px solid var(--accent-2);
-  outline-offset: 2px;
+.ai-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.ai-tier {
-  padding: 0 0.35rem;
-  border: 1px solid currentColor;
-  border-radius: 0.25rem;
+.ai-skill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem 0.4rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.35rem;
+  font-size: 0.66rem;
+  line-height: 1.2;
+}
+
+.ai-q {
+  font-weight: 600;
+}
+
+.ai-name {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  opacity: 0.75;
 }
 
-/* Feedback edge: a dashed rail down the left side with an arrowhead into the first step. */
-.ai-feedback {
-  position: absolute;
-  top: 2rem;
-  bottom: 2rem;
-  left: 0.6rem;
-  width: 1.4rem;
-  border-left: 2px dashed currentColor;
-  border-top: 2px dashed currentColor;
-  border-bottom: 2px dashed currentColor;
-  pointer-events: none;
+/* Hover one-liners. They open below so the top row never clips against the scene edge. */
+@media (hover: hover) and (pointer: fine) {
+  .ai-skill[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    top: calc(100% + 0.3rem);
+    left: 50%;
+    z-index: 5;
+    width: max-content;
+    max-width: 14rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.3rem;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.3;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
 }
 
-.ai-feedback::after {
-  content: "";
-  position: absolute;
-  top: -7px;
-  right: -9px;
-  border-left: 9px solid currentColor;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
+/* ---- flat strip (narrow, touch, reduced motion, no WebGL) ---- */
+.ai-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
-.ai-feedback-label {
-  display: none;
+.ai-strip-stage {
+  flex: 1 1 0;
+  min-width: 4.5rem;
+  padding: 0.4rem 0.5rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
 }
 
-.ai-inspect {
-  padding: 1rem 1.1rem;
+/* ---- stage card + controls ---- */
+.ai-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.ai-card {
+  padding: 0.7rem 0.8rem;
   border: 1.5px solid transparent;
   border-radius: 0.5rem;
 }
 
-.ai-inspect-head {
+.ai-card-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+}
+
+.ai-summary {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.ai-skill-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.4rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-skill-list li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.ai-skill-name {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.ai-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.ai-inspect-title {
+.ai-controls .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.ai-controls .btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.ai-chips {
+  display: flex;
+  gap: 0.25rem;
   margin: 0;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 1rem;
+  padding: 0;
+  list-style: none;
 }
 
-.ai-inspect-close {
-  margin-left: auto;
-  padding: 0.2rem 0.6rem;
+.ai-chip {
+  min-width: 1.9rem;
+  padding: 0.25rem 0.4rem;
   border: 1.5px solid transparent;
   border-radius: 0.3rem;
   background: transparent;
   color: inherit;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
   cursor: pointer;
 }
 
-.ai-inspect-excerpt {
-  margin: 0.6rem 0;
-  line-height: 1.5;
-}
-
-.ai-inspect-io {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.ai-ctas {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
-  font-size: 0.85rem;
+  margin-top: 1.2rem;
 }
 
-.ai-inspect-io h4 {
-  margin: 0 0 0.25rem;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.ai-inspect-io ul {
-  margin: 0;
-  padding-left: 1.1rem;
-}
-
-.ai-inspect-link,
-.ai-more {
-  display: inline-block;
-  margin: 0.75rem 0 0;
+.ai-ctas .btn {
+  padding: 0.55rem 1.1rem;
   font-size: 0.9rem;
 }
 
-.ai-more {
-  margin-top: 0.6rem;
+.ai-stage-title:focus-visible,
+.ai-strip-stage:focus-visible,
+.ai-chip:focus-visible,
+.ai-skill-name:focus-visible,
+.ai-card-title:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
 }
 
-/* In the fly-through the inspect card floats over the steps so opening it never pushes the panel past the fold. */
-.fly-panel .ai-inspect {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 2.5rem;
-  z-index: 2;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-}
-
-/* Layer colors only. Geometry above is shared by sketch and polished. */
-.panel-layer--polished .ai-step {
-  background: #111827;
+/* ---- polished layer colors ---- */
+.panel-layer--polished .ai-scene,
+.panel-layer--polished .ai-card {
+  background: #0b1220;
   border-color: var(--po-border);
-  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* Highlight matches the selected work cards: hover on desktop, focus for keyboards, the step whose node is open. */
-.panel-layer--polished .ai-step:focus-within,
-.panel-layer--polished .ai-step:has(.ai-node[aria-expanded="true"]) {
-  border-color: var(--accent-2);
-  box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .panel-layer--polished .ai-step:hover {
-    border-color: var(--accent-2);
-    box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35);
-  }
-}
-
-.panel-layer--polished .ai-step-num,
-.panel-layer--polished .ai-feedback,
-.panel-layer--polished .ai-inspect-link,
-.panel-layer--polished .ai-more a {
-  color: var(--accent-2);
-}
-
-.panel-layer--polished .ai-node,
-.panel-layer--polished .ai-inspect-close {
+.panel-layer--polished .ai-stage {
+  background: rgba(11, 18, 32, 0.88);
   border-color: var(--po-border-strong);
 }
 
-.panel-layer--polished .ai-node[aria-expanded="true"] {
+.panel-layer--polished .ai-stage[data-active="true"] {
   border-color: var(--accent-2);
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.25);
 }
 
-.panel-layer--polished .ai-tier--haiku {
-  color: #86efac;
-}
-
-.panel-layer--polished .ai-tier--sonnet {
-  color: #93c5fd;
-}
-
-.panel-layer--polished .ai-tier--opus {
-  color: #fdba74;
-}
-
-.panel-layer--polished .ai-inspect {
+.panel-layer--polished .ai-skill {
   background: #111827;
+  border-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .ai-stage[data-active="true"] .ai-skill {
   border-color: var(--accent-2);
 }
 
-.panel-layer--sketch .ai-step,
-.panel-layer--sketch .ai-inspect,
-.panel-layer--sketch .ai-node,
-.panel-layer--sketch .ai-inspect-close {
+.panel-layer--polished .ai-skill[data-tip]:hover::after {
+  background: #1f2937;
+  border: 1px solid var(--accent-2);
+}
+
+.panel-layer--polished .ai-stage-num,
+.panel-layer--polished a.ai-skill-name {
+  color: var(--accent-2);
+}
+
+.panel-layer--polished .ai-skill-tip {
+  color: #cbd5e1;
+}
+
+.panel-layer--polished .ai-chip,
+.panel-layer--polished .ai-strip-stage {
+  border-color: var(--po-border-strong);
+}
+
+.panel-layer--polished .ai-chip[aria-current="step"],
+.panel-layer--polished .ai-strip-stage[aria-current="step"] {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .ai-chip:hover,
+  .panel-layer--polished .ai-strip-stage:hover {
+    border-color: var(--accent-2);
+  }
+}
+
+/* ---- sketch layer: geometry shared, color dashed only ---- */
+.panel-layer--sketch .ai-scene,
+.panel-layer--sketch .ai-card,
+.panel-layer--sketch .ai-stage,
+.panel-layer--sketch .ai-skill,
+.panel-layer--sketch .ai-chip,
+.panel-layer--sketch .ai-strip-stage {
   border-color: var(--sk-line);
   border-style: dashed;
 }
 
-.panel-layer--sketch .ai-feedback {
-  color: var(--sk-line);
-}
-
 @media (max-width: 800px) {
-  .ai-steps {
+  .ai-row {
     grid-template-columns: 1fr;
   }
 
-  .ai-step--wide {
-    grid-column: auto;
-  }
-
-  .ai-flow {
-    padding-left: 1.75rem;
-  }
-
-  .ai-feedback {
-    left: 0.35rem;
-    width: 0.9rem;
-  }
-
-  .fly-panel .ai-inspect {
-    left: 1.75rem;
-  }
-
-  .ai-inspect-io {
+  .ai-skill-list {
     grid-template-columns: 1fr;
+  }
+
+  .ai-skill-list li {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
   }
 }
 
-/* Phones in the fly-through: two-column steps without blurbs so the diagram rests on one screen.
-   Classic view keeps the full single-column layout. */
-@media (max-width: 600px) {
-  .fly-panel .ai-intro {
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .fly-panel .ai-steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem;
-  }
-
-  .fly-panel .ai-step {
-    gap: 0.15rem;
-    padding: 0.45rem 0.5rem;
-  }
-
-  .fly-panel .ai-step--wide {
-    grid-column: auto;
-  }
-
-  .fly-panel .ai-step--loop {
-    grid-column: 1 / -1;
-  }
-
-  .fly-panel .ai-step-title {
-    font-size: 0.9rem;
-  }
-
-  .fly-panel .ai-step-blurb {
-    display: none;
-  }
-
-  .fly-panel .ai-node {
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    max-width: 100%;
-    padding: 0.15rem 0.3rem;
-    font-size: 0.62rem;
-  }
-
-  .fly-panel .ai-node-name {
-    overflow-wrap: anywhere;
+@media (prefers-reduced-motion: reduce) {
+  .ai-stage {
+    transition: none;
   }
 }

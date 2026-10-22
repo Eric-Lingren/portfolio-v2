@@ -1,111 +1,132 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ALL_STEPS, FEEDBACK_EDGE, INTRO, fileUrl, nodeById, type ToolkitNode } from "@/content/ai-toolkit";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type TouchEvent } from "react";
+import { HEADING, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
 import { Panel, type PanelLayers } from "../Panel";
-import { AIStatsStrip } from "./AIStatsStrip";
+import { AIToolkitScene } from "./AIToolkitScene";
 import "./ai-toolkit.css";
 
-/** Steps with more nodes than this span two grid columns so their chips sit side by side. */
-const WIDE_STEP_NODES = 3;
+/** Any of these swaps the 3D scene for the flat stage strip. */
+export const FLAT_QUERY = "(max-width: 700px), (prefers-reduced-motion: reduce), (pointer: coarse)";
 
-function Inspect({ node, onClose }: { node: ToolkitNode; onClose: () => void }) {
+const subscribeFlat = (cb: () => void) => {
+  if (typeof window.matchMedia !== "function") return () => {};
+  const mq = window.matchMedia(FLAT_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+// No matchMedia (old browsers, tests) means no 3D either.
+const flatSnap = () => typeof window.matchMedia !== "function" || window.matchMedia(FLAT_QUERY).matches;
+const useFlat = () => useSyncExternalStore(subscribeFlat, flatSnap, () => false);
+
+const SWIPE_PX = 48;
+
+function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void }) {
+  const [glFailed, setGlFailed] = useState(false);
+  const onUnsupported = useCallback(() => setGlFailed(true), []);
+  const flat = useFlat() || glFailed;
+  const last = STAGES.length - 1;
+  const s = STAGES[step];
+
+  // Focus moves to the stage card heading after a visitor action, never on mount.
+  const heading = useRef<HTMLHeadingElement>(null);
+  const moved = useRef(false);
+  useEffect(() => {
+    if (moved.current) heading.current?.focus();
+  }, [step]);
+  const go = useCallback(
+    (n: number) => {
+      moved.current = true;
+      setStep(Math.max(0, Math.min(last, n)));
+    },
+    [setStep, last],
+  );
+
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) > SWIPE_PX) go(step + (dx < 0 ? 1 : -1));
+  };
+
   return (
-    <aside
-      className="ai-inspect"
-      role="region"
-      aria-label={`${node.name} details`}
-      data-testid="ai-inspect"
-      onKeyDown={(e) => {
-        if (e.key === "Escape") onClose();
-      }}
-    >
-      <div className="ai-inspect-head">
-        <h3 className="ai-inspect-title">{node.name}</h3>
-        <span className={`ai-tier ai-tier--${node.tier.toLowerCase()}`}>{node.tier}</span>
-        <button type="button" className="ai-inspect-close" onClick={onClose}>
-          Close
-        </button>
-      </div>
-      <p className="ai-inspect-excerpt">{node.excerpt}</p>
-      <div className="ai-inspect-io">
-        <div>
-          <h4>Inputs</h4>
-          <ul>
-            {node.inputs.map((x) => (
-              <li key={x}>{x}</li>
+    <div className="ai-root" data-testid="ai-diagram">
+      <h2 className="ai-heading">{HEADING}</h2>
+      {flat ? (
+        <div className="ai-strip" data-testid="ai-strip">
+          {STAGES.map((x, i) => (
+            <button key={x.id} type="button" className="ai-strip-stage" aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
+              <span className="ai-stage-num">{i + 1}</span> {x.title}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <AIToolkitScene step={step} onPick={go} onUnsupported={onUnsupported} />
+      )}
+      <div className="ai-row" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <article className="ai-card" aria-live="polite" data-stage={s.id}>
+          <h3 className="ai-card-title" tabIndex={-1} ref={heading}>
+            <span className="ai-stage-num">{step + 1}</span> {s.title}
+          </h3>
+          <p className="ai-summary">{s.summary}</p>
+          <ul className="ai-skill-list">
+            {s.skills.map((k) => (
+              <li key={k.id}>
+                {k.path ? (
+                  <a className="ai-skill-name" href={fileUrl(k.path)} target="_blank" rel="noopener noreferrer">
+                    {k.name} ↗
+                  </a>
+                ) : (
+                  <span className="ai-skill-name">{k.name}</span>
+                )}
+                <span className="ai-skill-tip">{k.tip}</span>
+              </li>
             ))}
           </ul>
-        </div>
-        <div>
-          <h4>Outputs</h4>
-          <ul>
-            {node.outputs.map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
+        </article>
+        <div className="ai-side">
+          <div className="ai-controls">
+            <button type="button" className="btn btn-outline" onClick={() => go(step - 1)} disabled={step === 0}>
+              <span className="btn-arrow btn-arrow--back" aria-hidden="true">←</span> Back
+            </button>
+            <ol className="ai-chips" aria-label="Stages">
+              {STAGES.map((x, i) => (
+                <li key={x.id}>
+                  <button type="button" className="ai-chip" aria-label={`${i + 1}: ${x.title}`} aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ol>
+            <button type="button" className="btn btn-outline" onClick={() => go(step + 1)} disabled={step === last}>
+              Next <span className="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div className="ai-ctas">
+            <Link className="btn btn-primary" href="/work/ai-toolkit">
+              Read the case study <span className="btn-arrow" aria-hidden="true">→</span>
+            </Link>
+            <a className="btn btn-outline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
+              Browse the toolkit on GitHub <span className="btn-arrow btn-arrow--out" aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
       </div>
-      <a className="ai-inspect-link" href={fileUrl(node.path)} target="_blank" rel="noopener noreferrer">
-        View the {node.kind} file on GitHub
-      </a>
-    </aside>
+    </div>
   );
 }
 
 export function AIToolkit({ layers = "polished", z = 0, id }: { layers?: PanelLayers; z?: number; id?: string }) {
-  const [openId, setOpenId] = useState<string | null>(null);
-  const open = openId ? nodeById(openId) : null;
-
+  // Step lives above Panel so the polished and sketch copies show the same stage.
+  const [step, setStep] = useState(0);
   return (
     <Panel name="AIToolkit" z={z} id={id} layers={layers}>
-      <h2 className="ai-heading">AI toolkit</h2>
-      <p className="ai-intro">{INTRO}</p>
-      <AIStatsStrip />
-      <div className="ai-diagram" data-testid="ai-diagram">
-        <div className="ai-flow">
-        <div className="ai-feedback" data-testid="ai-feedback-edge" data-from={FEEDBACK_EDGE.from} data-to={FEEDBACK_EDGE.to} aria-hidden="true">
-          <span className="ai-feedback-label">{FEEDBACK_EDGE.label}</span>
-        </div>
-        <ol className="ai-steps">
-          {ALL_STEPS.map((step, i) => (
-            <li
-              key={step.id}
-              className={`ai-step${step.id === FEEDBACK_EDGE.from ? " ai-step--loop" : ""}${step.nodes.length > WIDE_STEP_NODES ? " ai-step--wide" : ""}`}
-              data-step={step.id}
-            >
-              <span className="ai-step-num">{step.id === FEEDBACK_EDGE.from ? "Loop" : `Step ${i + 1}`}</span>
-              <h3 className="ai-step-title">{step.title}</h3>
-              <p className="ai-step-blurb">{step.blurb}</p>
-              <ul className="ai-nodes">
-                {step.nodes.map((nid) => {
-                  const node = nodeById(nid);
-                  return (
-                    <li key={nid}>
-                      <button
-                        type="button"
-                        className="ai-node"
-                        data-node={nid}
-                        aria-expanded={openId === nid}
-                        onClick={() => setOpenId(openId === nid ? null : nid)}
-                      >
-                        <span className="ai-node-name">{node.name}</span>
-                        <span className={`ai-tier ai-tier--${node.tier.toLowerCase()}`}>{node.tier}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </li>
-          ))}
-        </ol>
-        </div>
-        {open ? <Inspect node={open} onClose={() => setOpenId(null)} /> : null}
-      </div>
-      <p className="ai-more">
-        <Link href="/work/ai-toolkit">Read the case study</Link>
-      </p>
+      <Stepper step={step} setStep={setStep} />
     </Panel>
   );
 }
