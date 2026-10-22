@@ -1,43 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type TouchEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type RefObject, type TouchEvent } from "react";
 import { HEADING, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
 import { Panel, type PanelLayers } from "../Panel";
-import { AIToolkitScene } from "./AIToolkitScene";
 import "./ai-toolkit.css";
-
-/** Any of these swaps the 3D scene for the flat stage strip. */
-export const FLAT_QUERY = "(max-width: 700px), (prefers-reduced-motion: reduce), (pointer: coarse)";
-
-const subscribeFlat = (cb: () => void) => {
-  if (typeof window.matchMedia !== "function") return () => {};
-  const mq = window.matchMedia(FLAT_QUERY);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-};
-// No matchMedia (old browsers, tests) means no 3D either.
-const flatSnap = () => typeof window.matchMedia !== "function" || window.matchMedia(FLAT_QUERY).matches;
-const useFlat = () => useSyncExternalStore(subscribeFlat, flatSnap, () => false);
 
 const SWIPE_PX = 48;
 
+type Stage = (typeof STAGES)[number];
+
+function CardBody({ stage, num, headingRef }: { stage: Stage; num: number; headingRef?: RefObject<HTMLHeadingElement | null> }) {
+  return (
+    <>
+      <h3 className="ai-card-title" tabIndex={-1} ref={headingRef}>
+        <span className="ai-stage-num">{num}</span> {stage.title}
+      </h3>
+      <p className="ai-summary">{stage.summary}</p>
+      <ul className="ai-skill-list">
+        {stage.skills.map((k, j) => (
+          <li key={k.id} style={{ "--j": j } as CSSProperties}>
+            <a className="ai-skill-name" href={fileUrl(k.path)} target="_blank" rel="noopener noreferrer">
+              {k.name} ↗
+            </a>
+            <span className="ai-skill-tip">{k.tip}</span>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
 function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void }) {
-  const [glFailed, setGlFailed] = useState(false);
-  const onUnsupported = useCallback(() => setGlFailed(true), []);
-  const flat = useFlat() || glFailed;
   const last = STAGES.length - 1;
   const s = STAGES[step];
 
   // Focus moves to the stage card heading after a visitor action, never on mount.
   const heading = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+  // Step-change motion waits for the first visitor action so the first paint stays still.
+  const [stepped, setStepped] = useState(false);
   useEffect(() => {
-    if (moved.current) heading.current?.focus();
+    if (moved.current) heading.current?.focus({ preventScroll: true });
   }, [step]);
   const go = useCallback(
     (n: number) => {
       moved.current = true;
+      setStepped(true);
       setStep(Math.max(0, Math.min(last, n)));
     },
     [setStep, last],
@@ -55,40 +64,46 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
   };
 
   return (
-    <div className="ai-root" data-testid="ai-diagram">
+    <div className="ai-root" data-testid="ai-diagram" data-stepped={stepped || undefined}>
       <h2 className="ai-heading">{HEADING}</h2>
-      {flat ? (
-        <div className="ai-strip" data-testid="ai-strip">
-          {STAGES.map((x, i) => (
-            <button key={x.id} type="button" className="ai-strip-stage" aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
+      {/* Wide screens show every stage at once. Narrow screens swap in the compact strip (CSS). */}
+      <div className="ai-track">
+        {STAGES.map((x, i) => (
+          <div key={x.id} className="ai-stage" data-active={i === step} style={{ "--i": i } as CSSProperties} onClick={() => go(i)}>
+            <button type="button" className="ai-stage-title" aria-current={i === step ? "step" : undefined}>
               <span className="ai-stage-num">{i + 1}</span> {x.title}
             </button>
-          ))}
-        </div>
-      ) : (
-        <AIToolkitScene step={step} onPick={go} onUnsupported={onUnsupported} />
-      )}
+            <ul className="ai-skills">
+              {x.skills.map((k, j) => (
+                <li key={k.id} className="ai-skill" data-name={k.name} data-tip={k.tip} style={{ "--j": j } as CSSProperties}>
+                  {k.question}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="ai-strip" data-testid="ai-strip">
+        {STAGES.map((x, i) => (
+          <button key={x.id} type="button" className="ai-strip-stage" aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
+            <span className="ai-stage-num">{i + 1}</span> {x.title}
+          </button>
+        ))}
+      </div>
       <div className="ai-row" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-        <article className="ai-card" aria-live="polite" data-stage={s.id}>
-          <h3 className="ai-card-title" tabIndex={-1} ref={heading}>
-            <span className="ai-stage-num">{step + 1}</span> {s.title}
-          </h3>
-          <p className="ai-summary">{s.summary}</p>
-          <ul className="ai-skill-list">
-            {s.skills.map((k) => (
-              <li key={k.id}>
-                {k.path ? (
-                  <a className="ai-skill-name" href={fileUrl(k.path)} target="_blank" rel="noopener noreferrer">
-                    {k.name} ↗
-                  </a>
-                ) : (
-                  <span className="ai-skill-name">{k.name}</span>
-                )}
-                <span className="ai-skill-tip">{k.tip}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
+        <div className="ai-card-stack">
+          {STAGES.map((x, i) => (
+            <div key={x.id} className="ai-card ai-card-ghost" aria-hidden="true" inert>
+              <CardBody stage={x} num={i + 1} />
+            </div>
+          ))}
+          <article className="ai-card" aria-live="polite" data-stage={s.id}>
+            {/* Keyed so the entrance replays per step; the live region itself stays mounted. */}
+            <div key={s.id} className="ai-card-body">
+              <CardBody stage={s} num={step + 1} headingRef={heading} />
+            </div>
+          </article>
+        </div>
         <div className="ai-side">
           <div className="ai-controls">
             <button type="button" className="btn btn-outline" onClick={() => go(step - 1)} disabled={step === 0}>

@@ -4,12 +4,9 @@
 }
 
 .ai-heading {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.85rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
 }
 
 .ai-stage-num {
@@ -18,49 +15,36 @@
   text-align: center;
 }
 
-/* ---- 3D scene ---- */
-.ai-scene {
-  position: relative;
-  height: 21rem;
-  overflow: hidden;
-  border: 1.5px solid transparent;
-  border-radius: 0.5rem;
-  cursor: grab;
-  touch-action: pan-y;
-  user-select: none;
-}
-
-.ai-canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
+/* ---- stage track: all five stages at once, wide screens ---- */
+.ai-track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
 }
 
 .ai-stage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 10.5rem;
-  padding: 0.4rem;
+  position: relative;
+  padding: 0.9rem 0.8rem;
   border: 1.5px solid transparent;
   border-radius: 0.4rem;
   cursor: pointer;
-  transition: opacity 250ms, border-color 250ms, box-shadow 250ms;
+  transition: opacity 250ms, border-color 250ms, box-shadow 250ms, transform 250ms;
 }
 
-/* Projected labels stay hidden until the scene places them. */
-.ai-scene--three:not([data-ready]) .ai-stage {
-  visibility: hidden;
+/* Arrow into the next stage, centred in the gap. */
+.ai-stage:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  top: 0.85rem;
+  right: -1.25rem;
+  width: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  pointer-events: none;
 }
 
 .ai-stage[data-active="false"] {
   opacity: 0.62;
-}
-
-.ai-stage[data-active="true"] {
-  z-index: 5;
 }
 
 .ai-stage:hover {
@@ -68,30 +52,16 @@
   opacity: 1;
 }
 
-/* Sketch layer: the same labels in a plain row, no WebGL. */
-.ai-scene--sketch {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.5rem;
-  padding: 1rem 0.75rem 4rem;
-}
-
-.ai-scene--sketch .ai-stage {
-  position: static;
-  flex: 1 1 0;
-  width: auto;
-}
-
 .ai-stage-title {
   display: block;
   width: 100%;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -101,7 +71,7 @@
 .ai-skills {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -109,49 +79,80 @@
 
 .ai-skill {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem 0.4rem;
-  border: 1.5px solid transparent;
+  margin: 0 -0.35rem;
+  padding: 0.5rem 0.35rem;
   border-radius: 0.35rem;
-  font-size: 0.66rem;
-  line-height: 1.2;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
-.ai-q {
-  font-weight: 600;
+/* Thin rule between items instead of a box around each. */
+.ai-skill + .ai-skill {
+  border-top: 1px solid transparent;
 }
 
-.ai-name {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6rem;
-  opacity: 0.75;
-}
-
-/* Hover one-liners. They open below so the top row never clips against the scene edge. */
+/* Hover one-liners. They open below so the top row never clips. The end columns pin to their
+   outer edge so a tip never runs past the panel. */
 @media (hover: hover) and (pointer: fine) {
+  /* Skill name on the first line, then what it does. */
   .ai-skill[data-tip]:hover::after {
-    content: attr(data-tip);
+    content: attr(data-name) "\A" attr(data-tip);
+    white-space: pre-line;
     position: absolute;
-    top: calc(100% + 0.3rem);
+    top: calc(100% + 0.6rem);
     left: 50%;
-    z-index: 5;
+    z-index: 20;
     width: max-content;
-    max-width: 14rem;
-    padding: 0.35rem 0.5rem;
-    border-radius: 0.3rem;
+    max-width: 16rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.45rem;
     font-family: inherit;
-    font-size: 0.7rem;
-    font-weight: 400;
-    line-height: 1.3;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.4;
     transform: translateX(-50%);
     pointer-events: none;
   }
+
+  /* Caret pointing at the hovered item. */
+  .ai-skill[data-tip]:hover::before {
+    content: "";
+    position: absolute;
+    top: calc(100% + 0.1rem);
+    left: 50%;
+    z-index: 21;
+    border: 0.5rem solid transparent;
+    border-top-width: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .ai-stage:first-child .ai-skill[data-tip]:hover::after {
+    left: 0;
+    transform: none;
+  }
+
+  .ai-stage:first-child .ai-skill[data-tip]:hover::before {
+    left: 1.25rem;
+  }
+
+  .ai-stage:last-child .ai-skill[data-tip]:hover::after {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  .ai-stage:last-child .ai-skill[data-tip]:hover::before {
+    left: auto;
+    right: 0.75rem;
+    transform: none;
+  }
 }
 
-/* ---- flat strip (narrow, touch, reduced motion, no WebGL) ---- */
+/* ---- flat strip: replaces the track on narrow screens ---- */
 .ai-strip {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
@@ -171,34 +172,56 @@
 }
 
 /* ---- stage card + controls ---- */
+/* Card full width so each tip fits one line, then one bar for stepping and the CTAs. */
 .ai-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.ai-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.ai-card-stack {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 1.5rem;
-  margin-top: 1rem;
+}
+
+/* Every stage's card sits in one cell. Hidden copies hold the cell at the tallest stage, so stepping never resizes the row. */
+.ai-card-stack > * {
+  grid-area: 1 / 1;
+}
+
+.ai-card-ghost {
+  visibility: hidden;
 }
 
 .ai-card {
-  padding: 0.7rem 0.8rem;
+  padding: 1rem 1.3rem;
   border: 1.5px solid transparent;
   border-radius: 0.5rem;
 }
 
 .ai-card-title {
-  margin: 0 0 0.4rem;
-  font-size: 0.9rem;
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
 }
 
 .ai-summary {
-  margin: 0 0 0.6rem;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .ai-skill-list {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
-  gap: 0.4rem 0.9rem;
+  gap: 0.5rem 1.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -209,20 +232,19 @@
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   align-items: baseline;
-  font-size: 0.8rem;
-  line-height: 1.35;
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .ai-skill-name {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
 }
 
 .ai-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .ai-controls .btn {
@@ -259,7 +281,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1.2rem;
 }
 
 .ai-ctas .btn {
@@ -277,7 +298,6 @@
 }
 
 /* ---- polished layer colors ---- */
-.panel-layer--polished .ai-scene,
 .panel-layer--polished .ai-card {
   background: #0b1220;
   border-color: var(--po-border);
@@ -293,18 +313,31 @@
   box-shadow: 0 0 24px rgba(6, 182, 212, 0.25);
 }
 
-.panel-layer--polished .ai-skill {
-  background: #111827;
-  border-color: var(--po-border-strong);
+.panel-layer--polished .ai-skill + .ai-skill {
+  border-top-color: var(--po-border);
 }
 
-.panel-layer--polished .ai-stage[data-active="true"] .ai-skill {
-  border-color: var(--accent-2);
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .ai-skill:hover {
+    background: rgba(6, 182, 212, 0.1);
+  }
 }
 
+/* Raised slate surface, solid cyan edge and a deep shadow so the tip's edge is obvious on the dark page. */
 .panel-layer--polished .ai-skill[data-tip]:hover::after {
-  background: #1f2937;
-  border: 1px solid var(--accent-2);
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1.5px solid var(--accent-2);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 18px rgba(6, 182, 212, 0.25);
+}
+
+.panel-layer--polished .ai-skill[data-tip]:hover::before {
+  border-bottom-color: var(--accent-2);
+}
+
+.panel-layer--polished .ai-stage:not(:last-child)::after {
+  color: var(--accent-2);
+  opacity: 0.6;
 }
 
 .panel-layer--polished .ai-stage-num,
@@ -335,22 +368,242 @@
   }
 }
 
+/* ---- polished motion: transform, opacity and shadows only, layout never moves ----
+   One 8s loop: a pulse lights each stage in turn (column glow, then its questions one by one,
+   then the arrow), and a dot carries the result from Improve back to Plan. */
+
+/* Column glow as the pulse passes. */
+.panel-layer--polished .ai-stage::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border: 1.5px solid var(--accent-2);
+  border-radius: inherit;
+  box-shadow: 0 0 26px rgba(6, 182, 212, 0.5), inset 0 0 22px rgba(6, 182, 212, 0.14);
+  opacity: 0;
+  animation: ai-lit 8s ease-out infinite;
+  animation-delay: calc(var(--i) * 1.2s);
+  pointer-events: none;
+}
+
+/* Each question pings in sequence while its column is lit. */
+.panel-layer--polished .ai-skill {
+  animation: ai-ping 8s ease-out infinite;
+  animation-delay: calc(var(--i) * 1.2s + var(--j) * 0.18s + 0.1s);
+}
+
+/* The arrow shoots forward once the column is done. */
+.panel-layer--polished .ai-stage:not(:last-child)::after {
+  animation: ai-flow 8s ease-out infinite;
+  animation-delay: calc(var(--i) * 1.2s + 0.8s);
+}
+
+/* The selected column breathes. */
+.panel-layer--polished .ai-stage[data-active="true"] {
+  animation: ai-breathe 2.8s ease-in-out infinite;
+}
+
+/* Hovering a column lifts it. */
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .ai-stage:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Feedback loop: a dashed path from Improve back to Plan through the gap under the track. */
+.ai-track {
+  position: relative;
+}
+
+.panel-layer--polished .ai-track::before,
+.panel-layer--polished .ai-track::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc((100% - 6rem) / 10);
+  right: calc((100% - 6rem) / 10);
+  pointer-events: none;
+}
+
+.panel-layer--polished .ai-track::before {
+  height: 0.65rem;
+  border: 1.5px dashed var(--accent-2);
+  border-top: 0;
+  border-radius: 0 0 0.4rem 0.4rem;
+  opacity: 0.3;
+  animation: ai-path 8s ease-in-out infinite;
+}
+
+/* The dot sits at the right end of a full-width strip; sliding the strip left carries it back to Plan. */
+.panel-layer--polished .ai-track::after {
+  top: calc(100% + 0.65rem - 4.75px);
+  height: 8px;
+  background: radial-gradient(circle at calc(100% - 4px) 50%, #a5f3fc 0 2px, var(--accent-2) 2.5px 4px, transparent 4.5px);
+  filter: drop-shadow(0 0 6px var(--accent-2)) drop-shadow(0 0 12px var(--accent-2));
+  opacity: 0;
+  animation: ai-return 8s ease-in-out infinite;
+}
+
+/* The current chip pulses a ring. */
+.panel-layer--polished .ai-chip[aria-current="step"] {
+  animation: ai-ring 2.8s ease-in-out infinite;
+}
+
+/* After a visitor steps: the card content rises in, its rows follow, and the active column's questions drop in. */
+.panel-layer--polished .ai-root[data-stepped] .ai-card-body {
+  animation: ai-rise 380ms ease-out both;
+}
+
+.panel-layer--polished .ai-root[data-stepped] .ai-card-body .ai-skill-list li {
+  animation: ai-rise 380ms ease-out both;
+  animation-delay: calc(var(--j) * 80ms + 120ms);
+}
+
+.panel-layer--polished .ai-root[data-stepped] .ai-stage[data-active="true"] .ai-skill {
+  animation: ai-rise 420ms ease-out both, ai-ping 8s ease-out infinite;
+  animation-delay: calc(var(--j) * 80ms), calc(var(--i) * 1.2s + var(--j) * 0.18s + 0.1s);
+}
+
+@keyframes ai-lit {
+  0% {
+    opacity: 0;
+  }
+  4%,
+  12% {
+    opacity: 1;
+  }
+  22%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ai-ping {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 100px rgba(6, 182, 212, 0);
+  }
+  3% {
+    box-shadow: inset 3px 0 0 0 var(--accent-2), inset 0 0 0 100px rgba(6, 182, 212, 0.16);
+  }
+  12% {
+    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 100px rgba(6, 182, 212, 0);
+  }
+}
+
+@keyframes ai-flow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateX(0) scale(1);
+  }
+  3% {
+    opacity: 1;
+    transform: translateX(7px) scale(1.35);
+  }
+  10% {
+    opacity: 0.6;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes ai-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(6, 182, 212, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 34px rgba(6, 182, 212, 0.45);
+  }
+}
+
+@keyframes ai-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.45), 0 0 12px rgba(6, 182, 212, 0.3);
+  }
+  60% {
+    box-shadow: 0 0 0 6px rgba(6, 182, 212, 0), 0 0 12px rgba(6, 182, 212, 0.3);
+  }
+}
+
+@keyframes ai-path {
+  0%,
+  72%,
+  100% {
+    opacity: 0.3;
+  }
+  78%,
+  94% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes ai-return {
+  0%,
+  74% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  77% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  96% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  99%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes ai-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ---- sketch layer: geometry shared, color dashed only ---- */
-.panel-layer--sketch .ai-scene,
 .panel-layer--sketch .ai-card,
 .panel-layer--sketch .ai-stage,
-.panel-layer--sketch .ai-skill,
 .panel-layer--sketch .ai-chip,
 .panel-layer--sketch .ai-strip-stage {
   border-color: var(--sk-line);
   border-style: dashed;
 }
 
-@media (max-width: 800px) {
-  .ai-row {
-    grid-template-columns: 1fr;
+.panel-layer--sketch .ai-skill + .ai-skill {
+  border-top: 1px dashed var(--sk-line);
+}
+
+.panel-layer--sketch .ai-skill[data-tip]:hover::after {
+  background: var(--sk-bg);
+  border: 1.5px dashed var(--sk-line);
+}
+
+.panel-layer--sketch .ai-skill[data-tip]:hover::before {
+  border-bottom-color: var(--sk-line);
+}
+
+@media (max-width: 700px) {
+  .ai-track {
+    display: none;
   }
 
+  .ai-strip {
+    display: flex;
+  }
+}
+
+@media (max-width: 800px) {
   .ai-skill-list {
     grid-template-columns: 1fr;
   }
@@ -364,5 +617,11 @@
 @media (prefers-reduced-motion: reduce) {
   .ai-stage {
     transition: none;
+  }
+
+  .ai-root *,
+  .ai-root *::before,
+  .ai-root *::after {
+    animation: none !important;
   }
 }

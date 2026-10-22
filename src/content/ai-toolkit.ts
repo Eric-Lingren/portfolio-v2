@@ -6,8 +6,8 @@ export type ToolkitSkill = {
   name: string;
   /** One-line description. Hover tip on the scene, and the stage card text. */
   tip: string;
-  /** Path inside the dotfiles repo, when the skill has its own file. */
-  path?: string;
+  /** Path inside the dotfiles repo. A trailing slash links the folder. */
+  path: string;
 };
 
 export type ToolkitStage = {
@@ -18,8 +18,8 @@ export type ToolkitStage = {
   skills: readonly ToolkitSkill[];
 };
 
-export const DOTFILES_BASE = "https://github.com/Eric-Lingren/dotfiles/blob/main/";
-export const fileUrl = (path: string) => `${DOTFILES_BASE}${path}`;
+export const DOTFILES_BASE = "https://github.com/Eric-Lingren/dotfiles/";
+export const fileUrl = (path: string) => `${DOTFILES_BASE}${path.endsWith("/") ? "tree" : "blob"}/main/${path}`;
 export const REPO_URL = "https://github.com/Eric-Lingren/dotfiles/tree/main/claude-code-shared";
 
 export const HEADING = "How I build with AI";
@@ -35,8 +35,8 @@ export const STAGES: readonly ToolkitStage[] = [
     summary: "Settle the plan before any code, then check the written plan against what was actually said.",
     skills: [
       { id: "grill", question: "Is the plan settled?", name: "grill-with-docs", tip: "Interviews me about the plan until every branch is decided.", path: `${SK}grill-with-docs/SKILL.md` },
-      { id: "critics", question: "Did the plan make anything up?", name: "seed critics", tip: "Adversary agents try to refute the written plan against the transcript." },
-      { id: "judges", question: "Is the quote real?", name: "judge panel", tip: "Rules on each refutation using only the transcript as evidence." },
+      { id: "critics", question: "Did the plan make anything up?", name: "seed critics", tip: "Adversary agents try to refute the written plan against the transcript.", path: `${AG}seed-review/` },
+      { id: "judges", question: "Is the quote real?", name: "judge panel", tip: "Rules on each refutation using only the transcript as evidence.", path: `${AG}seed-review/persona-judge.md` },
     ],
   },
   {
@@ -51,13 +51,12 @@ export const STAGES: readonly ToolkitStage[] = [
     ],
   },
   {
-    id: "catch",
-    title: "Catch",
+    id: "review",
+    title: "Review",
     summary: "Read the diff before a person does, then check each reviewer comment against the code.",
     skills: [
       { id: "review", question: "Does the diff match the plan?", name: "pr-code-review", tip: "Reads the diff before a person does.", path: `${SK}pr-code-review/SKILL.md` },
-      { id: "outside", question: "Would a second reader catch it?", name: "outside reviewer", tip: "A reviewer that is not the author, like a review bot or a teammate." },
-      { id: "revise", question: "Is this comment real?", name: "pr-revise", tip: "Triages reviewer comments and confirms each against the code.", path: `${SK}pr-revise/SKILL.md` },
+      { id: "revise", question: "Is this comment real?", name: "pr-revise", tip: "Triages comments from review bots and teammates, then confirms each against the code.", path: `${SK}pr-revise/SKILL.md` },
     ],
   },
   {
