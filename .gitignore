@@ -18,3 +18,15 @@ npm-debug.log*
 
 # private research material (employer screenshots, internal links). never commit.
 /docs/private/
+
+# Claude Code agent worktrees (each is its own git repo)
+/.claude/worktrees/
+
+# stray Claude Code config dir from an unexpanded "$HOME" path. Holds account config, never commit.
+/$HOME/
+
+# local agent notes and workflow output (perf screenshots, handoffs, PR snippets)
+/AGENTS.md
+/docs/browser-checks/
+/docs/handoffs/
+/docs/visual-changes/
