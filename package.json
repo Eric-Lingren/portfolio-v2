@@ -11,7 +11,6 @@
     "test": "vitest run",
     "content:check": "node scripts/check-content.mjs",
     "content:check:strict": "node scripts/check-content.mjs --strict",
-    "stats:snapshot": "node scripts/ai-stats-snapshot.mjs",
     "testimonials:redact": "node scripts/redact-testimonials.mjs",
     "perf:check": "node scripts/perf-check.mjs",
     "resume:pdf": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-resume.mjs"

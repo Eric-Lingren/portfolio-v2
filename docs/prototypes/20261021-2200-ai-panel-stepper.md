@@ -42,4 +42,3 @@ Seed `ai-panel-stepper-rebuild` asked for a 2x2 of scene tech (CSS 3D vs three.j
 
 - Below about 1200px wide (but above the 700px flat cutoff), labels start to crowd.
 - On a phone, the Back and Next labels wrap to two lines.
-- The AI stats strip was dropped from the panel. The component and its snapshot script still exist, unused.

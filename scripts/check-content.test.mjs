@@ -183,7 +183,7 @@ describe("strict launch gate", () => {
   });
 
   it.each([
-    ["eric marker in json", { "src/content/ai-stats.json": '{"note":"[ERIC: run npm run stats:snapshot before launch]","sample":true}' }, "eric-marker"],
+    ["eric marker in json", { "src/content/work-cards.json": '{"note":"[ERIC: confirm card copy]"}' }, "eric-marker"],
     ["panel component marker", { "src/components/panels/X.tsx": "<p>[ERIC: fix]</p>" }, "eric-marker"],
     ["resume marker", { "content/resume/resume.mdx": "- Cut render time on [ERIC: what]." }, "eric-marker"],
     ["placeholder testimonials", { "src/content/testimonials.json": "[]" }, "testimonials-placeholder"],
