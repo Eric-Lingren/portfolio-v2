@@ -142,6 +142,28 @@ describe("AIToolkit", () => {
     expect(css).toMatch(/prefers-reduced-motion: reduce\)[\s\S]*\.ai-root \*::after \{\s*animation: none !important;/);
   });
 
+  it("hides the animated title copy from assistive tech", () => {
+    const { container } = render(<AIToolkit />);
+    const heroes = container.querySelectorAll(".ai-stage-hero");
+    expect(heroes).toHaveLength(STAGES.length);
+    heroes.forEach((h) => expect(h.getAttribute("aria-hidden")).toBe("true"));
+  });
+
+  it("still shows every question when reduced motion stops the build-up loop", () => {
+    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
+    expect(css).toMatch(/prefers-reduced-motion: reduce\)[\s\S]*\.ai-root \.ai-skill \{\s*opacity: 1 !important;/);
+    // Without the loop, the column and its title fall back to fully shown.
+    expect(css).toMatch(/@property --ai-in \{[^}]*initial-value: 1;/);
+    expect(css).toMatch(/@property --ai-title \{[^}]*initial-value: 1;/);
+  });
+
+  it("starts the build-up loop inside the full-board hold so the first paint shows every stage", () => {
+    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
+    const delays = [...css.matchAll(/animation: ai-build-\d [\d.]+s linear (-?[\d.]+)s infinite;/g)].map((m) => Number(m[1]));
+    expect(delays).toHaveLength(STAGES.length);
+    delays.forEach((d) => expect(d).toBeLessThan(0));
+  });
+
   it("pins the end columns' tips to their outer edge so they stay inside the panel", () => {
     const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
     expect(css).toMatch(/\.ai-stage:first-child \.ai-skill\[data-tip\]:hover::after \{\s*left: 0;/);

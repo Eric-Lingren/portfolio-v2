@@ -73,6 +73,12 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
             <button type="button" className="ai-stage-title" aria-current={i === step ? "step" : undefined}>
               <span className="ai-stage-num">{i + 1}</span> {x.title}
             </button>
+            {/* Big copy of the title that starts centred and slides up onto the real one (CSS). */}
+            <span className="ai-stage-hero" aria-hidden="true">
+              <span className="ai-stage-hero-text">
+                <span className="ai-stage-num">{i + 1}</span> {x.title}
+              </span>
+            </span>
             <ul className="ai-skills">
               {x.skills.map((k, j) => (
                 <li key={k.id} className="ai-skill" data-name={k.name} data-tip={k.tip} style={{ "--j": j } as CSSProperties}>

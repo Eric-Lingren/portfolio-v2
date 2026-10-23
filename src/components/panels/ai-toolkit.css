@@ -52,20 +52,27 @@
   opacity: 1;
 }
 
+/* The small bottom margin pays for the larger title, so the panel stays inside its fit budget. */
 .ai-stage-title {
+  position: relative;
   display: block;
   width: 100%;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   cursor: pointer;
+}
+
+/* Title copy that animates in the polished layer only. */
+.ai-stage-hero {
+  display: none;
 }
 
 .ai-skills {
@@ -368,49 +375,129 @@
   }
 }
 
-/* ---- polished motion: transform, opacity and shadows only, layout never moves ----
-   One 8s loop: a pulse lights each stage in turn (column glow, then its questions one by one,
-   then the arrow), and a dot carries the result from Improve back to Plan. */
+/* ---- polished motion: transform, opacity, clip and shadows only, layout never moves ----
+   One 17.8s build-up loop. The board starts empty. Each stage appears with a big title centred in
+   its column, the title slides up into place, then its questions appear and highlight one at a
+   time and the stage gets a check. When Improve is done the return path draws in, the board
+   holds, and a dot runs the path back to Plan, erasing it and clearing each stage as it passes.
+   The loop starts inside the hold (13.8s in) so the first paint shows every stage.
+   Each column animates four registered numbers that its children read:
+   --ai-in (column shown), --ai-title (title slid up), --ai-rows (questions shown), --ai-done. */
+@property --ai-in {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
 
-/* Column glow as the pulse passes. */
+@property --ai-title {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --ai-rows {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --ai-done {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.panel-layer--polished .ai-stage {
+  /* The real title takes over from the hero copy once it lands. */
+  --ai-title-set: clamp(0, calc((var(--ai-title) - 0.98) * 50), 1);
+  opacity: var(--ai-in);
+  transform: translateY(calc((1 - var(--ai-in)) * 10px)) scale(calc(0.97 + 0.03 * var(--ai-in)));
+  transition:
+    border-color 250ms,
+    box-shadow 250ms;
+}
+
+.panel-layer--polished .ai-stage-title {
+  opacity: var(--ai-title-set);
+}
+
+/* Hero copy of the title: starts centred in the column at 1.4x, slides up and shrinks onto the
+   real title. The wrapper moves by a share of the column; the text recentres on itself. */
+.panel-layer--polished .ai-stage-hero {
+  display: block;
+  position: absolute;
+  inset: 0;
+  padding: 0.9rem 0.8rem;
+  opacity: calc(1 - var(--ai-title-set));
+  transform: translate(calc((1 - var(--ai-title)) * (50% - 0.8rem)), calc((1 - var(--ai-title)) * (50% - 0.9rem)));
+  pointer-events: none;
+}
+
+.panel-layer--polished .ai-stage-hero-text {
+  display: block;
+  width: max-content;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transform: translate(calc((1 - var(--ai-title)) * -50%), calc((1 - var(--ai-title)) * -50%)) scale(calc(1 + (1 - var(--ai-title)) * 0.4));
+}
+
+/* Each question appears in the first half of its turn and highlights in the second. */
+.panel-layer--polished .ai-skill {
+  --ai-row-in: clamp(0, calc((var(--ai-rows) - var(--j)) * 2), 1);
+  --ai-row-fill: clamp(0, calc((var(--ai-rows) - var(--j)) * 2 - 1), 1);
+  opacity: var(--ai-row-in);
+  transform: translateY(calc((1 - var(--ai-row-in)) * 6px));
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.07)) no-repeat 0 0 / calc(var(--ai-row-fill) * 100%) 100%;
+  box-shadow: inset calc(var(--ai-row-fill) * 3px) 0 0 0 var(--accent-2);
+}
+
+/* A hidden stage comes back whole on hover or focus, so its tips and button stay usable. */
+.panel-layer--polished .ai-stage:hover,
+.panel-layer--polished .ai-stage:focus-within {
+  opacity: 1 !important;
+  transform: translateY(-4px) !important;
+}
+
+.panel-layer--polished .ai-stage:hover .ai-stage-hero,
+.panel-layer--polished .ai-stage:focus-within .ai-stage-hero {
+  opacity: 0 !important;
+}
+
+.panel-layer--polished .ai-stage:hover .ai-stage-title,
+.panel-layer--polished .ai-stage:focus-within .ai-stage-title,
+.panel-layer--polished .ai-stage:hover .ai-skill,
+.panel-layer--polished .ai-stage:focus-within .ai-skill {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Done glow and check. */
 .panel-layer--polished .ai-stage::before {
   content: "";
   position: absolute;
   inset: -1.5px;
   border: 1.5px solid var(--accent-2);
   border-radius: inherit;
-  box-shadow: 0 0 26px rgba(6, 182, 212, 0.5), inset 0 0 22px rgba(6, 182, 212, 0.14);
-  opacity: 0;
-  animation: ai-lit 8s ease-out infinite;
-  animation-delay: calc(var(--i) * 1.2s);
+  box-shadow: 0 0 22px rgba(6, 182, 212, 0.4);
+  opacity: var(--ai-done);
   pointer-events: none;
 }
 
-/* Each question pings in sequence while its column is lit. */
-.panel-layer--polished .ai-skill {
-  animation: ai-ping 8s ease-out infinite;
-  animation-delay: calc(var(--i) * 1.2s + var(--j) * 0.18s + 0.1s);
+.panel-layer--polished .ai-stage-title::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  right: 0.1rem;
+  color: var(--accent-2);
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: var(--ai-done);
+  transform: translateY(-50%) scale(calc(0.5 + 0.5 * var(--ai-done)));
 }
 
-/* The arrow shoots forward once the column is done. */
-.panel-layer--polished .ai-stage:not(:last-child)::after {
-  animation: ai-flow 8s ease-out infinite;
-  animation-delay: calc(var(--i) * 1.2s + 0.8s);
-}
-
-/* The selected column breathes. */
-.panel-layer--polished .ai-stage[data-active="true"] {
-  animation: ai-breathe 2.8s ease-in-out infinite;
-}
-
-/* Hovering a column lifts it. */
-@media (hover: hover) and (pointer: fine) {
-  .panel-layer--polished .ai-stage:hover {
-    transform: translateY(-4px);
-  }
-}
-
-/* Feedback loop: a dashed path from Improve back to Plan through the gap under the track. */
+/* Return path: draws in right to left once Improve is done, then the dot erases it. */
 .ai-track {
   position: relative;
 }
@@ -430,8 +517,8 @@
   border: 1.5px dashed var(--accent-2);
   border-top: 0;
   border-radius: 0 0 0.4rem 0.4rem;
-  opacity: 0.3;
-  animation: ai-path 8s ease-in-out infinite;
+  opacity: 0;
+  animation: ai-return-path 17.8s linear -13.8s infinite;
 }
 
 /* The dot sits at the right end of a full-width strip; sliding the strip left carries it back to Plan. */
@@ -441,7 +528,7 @@
   background: radial-gradient(circle at calc(100% - 4px) 50%, #a5f3fc 0 2px, var(--accent-2) 2.5px 4px, transparent 4.5px);
   filter: drop-shadow(0 0 6px var(--accent-2)) drop-shadow(0 0 12px var(--accent-2));
   opacity: 0;
-  animation: ai-return 8s ease-in-out infinite;
+  animation: ai-return-dot 17.8s linear -13.8s infinite;
 }
 
 /* The current chip pulses a ring. */
@@ -449,7 +536,7 @@
   animation: ai-ring 2.8s ease-in-out infinite;
 }
 
-/* After a visitor steps: the card content rises in, its rows follow, and the active column's questions drop in. */
+/* After a visitor steps: the card content rises in and its rows follow. */
 .panel-layer--polished .ai-root[data-stepped] .ai-card-body {
   animation: ai-rise 380ms ease-out both;
 }
@@ -459,35 +546,316 @@
   animation-delay: calc(var(--j) * 80ms + 120ms);
 }
 
-.panel-layer--polished .ai-root[data-stepped] .ai-stage[data-active="true"] .ai-skill {
-  animation: ai-rise 420ms ease-out both, ai-ping 8s ease-out infinite;
-  animation-delay: calc(var(--j) * 80ms), calc(var(--i) * 1.2s + var(--j) * 0.18s + 0.1s);
+.panel-layer--polished .ai-stage:nth-child(1) {
+  animation: ai-build-1 17.8s linear -13.8s infinite;
 }
 
-@keyframes ai-lit {
+.panel-layer--polished .ai-stage:nth-child(1)::after {
+  animation: ai-flow 17.8s ease-out -11.35s infinite;
+}
+
+/* Hero title at 0s, slides up 0.75s to 1.2s, questions 1.35s to 2.4s, checked at 2.55s, cleared at 16.7s. */
+@keyframes ai-build-1 {
   0% {
-    opacity: 0;
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
   }
-  4%,
-  12% {
-    opacity: 1;
+  1.97% {
+    --ai-in: 1;
   }
-  22%,
+  4.21% {
+    --ai-title: 0;
+    animation-timing-function: ease-in-out;
+  }
+  6.74%,
+  7.58% {
+    --ai-title: 1;
+    --ai-rows: 0;
+  }
+  13.48% {
+    --ai-rows: 3;
+    --ai-done: 0;
+  }
+  14.33%,
+  93.82% {
+    --ai-in: 1;
+    --ai-rows: 3;
+    --ai-done: 1;
+  }
+  95.51% {
+    --ai-in: 0;
+    --ai-title: 1;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  95.62%,
   100% {
-    opacity: 0;
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
   }
 }
 
-@keyframes ai-ping {
+.panel-layer--polished .ai-stage:nth-child(2) {
+  animation: ai-build-2 17.8s linear -13.8s infinite;
+}
+
+.panel-layer--polished .ai-stage:nth-child(2)::after {
+  animation: ai-flow 17.8s ease-out -8.35s infinite;
+}
+
+/* Hero title at 2.65s, slides up 3.4s to 3.85s, questions 4s to 5.4s, checked at 5.55s, cleared at 16.35s. */
+@keyframes ai-build-2 {
   0%,
+  14.89% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  16.85% {
+    --ai-in: 1;
+  }
+  19.1% {
+    --ai-title: 0;
+    animation-timing-function: ease-in-out;
+  }
+  21.63%,
+  22.47% {
+    --ai-title: 1;
+    --ai-rows: 0;
+  }
+  30.34% {
+    --ai-rows: 4;
+    --ai-done: 0;
+  }
+  31.18%,
+  91.85% {
+    --ai-in: 1;
+    --ai-rows: 4;
+    --ai-done: 1;
+  }
+  93.54% {
+    --ai-in: 0;
+    --ai-title: 1;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  93.65%,
   100% {
-    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 100px rgba(6, 182, 212, 0);
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
   }
-  3% {
-    box-shadow: inset 3px 0 0 0 var(--accent-2), inset 0 0 0 100px rgba(6, 182, 212, 0.16);
+}
+
+.panel-layer--polished .ai-stage:nth-child(3) {
+  animation: ai-build-3 17.8s linear -13.8s infinite;
+}
+
+.panel-layer--polished .ai-stage:nth-child(3)::after {
+  animation: ai-flow 17.8s ease-out -6.05s infinite;
+}
+
+/* Hero title at 5.65s, slides up 6.4s to 6.85s, questions 7s to 7.7s, checked at 7.85s, cleared at 16s. */
+@keyframes ai-build-3 {
+  0%,
+  31.74% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
   }
-  12% {
-    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 100px rgba(6, 182, 212, 0);
+  33.71% {
+    --ai-in: 1;
+  }
+  35.96% {
+    --ai-title: 0;
+    animation-timing-function: ease-in-out;
+  }
+  38.48%,
+  39.33% {
+    --ai-title: 1;
+    --ai-rows: 0;
+  }
+  43.26% {
+    --ai-rows: 2;
+    --ai-done: 0;
+  }
+  44.1%,
+  89.89% {
+    --ai-in: 1;
+    --ai-rows: 2;
+    --ai-done: 1;
+  }
+  91.57% {
+    --ai-in: 0;
+    --ai-title: 1;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  91.69%,
+  100% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+}
+
+.panel-layer--polished .ai-stage:nth-child(4) {
+  animation: ai-build-4 17.8s linear -13.8s infinite;
+}
+
+.panel-layer--polished .ai-stage:nth-child(4)::after {
+  animation: ai-flow 17.8s ease-out -3.4s infinite;
+}
+
+/* Hero title at 7.95s, slides up 8.7s to 9.15s, questions 9.3s to 10.35s, checked at 10.5s, cleared at 15.65s. */
+@keyframes ai-build-4 {
+  0%,
+  44.66% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  46.63% {
+    --ai-in: 1;
+  }
+  48.88% {
+    --ai-title: 0;
+    animation-timing-function: ease-in-out;
+  }
+  51.4%,
+  52.25% {
+    --ai-title: 1;
+    --ai-rows: 0;
+  }
+  58.15% {
+    --ai-rows: 3;
+    --ai-done: 0;
+  }
+  58.99%,
+  87.92% {
+    --ai-in: 1;
+    --ai-rows: 3;
+    --ai-done: 1;
+  }
+  89.61% {
+    --ai-in: 0;
+    --ai-title: 1;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  89.72%,
+  100% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+}
+
+.panel-layer--polished .ai-stage:nth-child(5) {
+  animation: ai-build-5 17.8s linear -13.8s infinite;
+}
+
+/* Hero title at 10.6s, slides up 11.35s to 11.8s, questions 11.95s to 12.65s, checked at 12.8s, cleared at 15.3s. */
+@keyframes ai-build-5 {
+  0%,
+  59.55% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  61.52% {
+    --ai-in: 1;
+  }
+  63.76% {
+    --ai-title: 0;
+    animation-timing-function: ease-in-out;
+  }
+  66.29%,
+  67.13% {
+    --ai-title: 1;
+    --ai-rows: 0;
+  }
+  71.07% {
+    --ai-rows: 2;
+    --ai-done: 0;
+  }
+  71.91%,
+  85.96% {
+    --ai-in: 1;
+    --ai-rows: 2;
+    --ai-done: 1;
+  }
+  87.64% {
+    --ai-in: 0;
+    --ai-title: 1;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+  87.75%,
+  100% {
+    --ai-in: 0;
+    --ai-title: 0;
+    --ai-rows: 0;
+    --ai-done: 0;
+  }
+}
+
+@keyframes ai-return-path {
+  0%,
+  73.03% {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+  }
+  73.31% {
+    opacity: 0.7;
+    clip-path: inset(0 0 0 100%);
+  }
+  76.4%,
+  85.96% {
+    opacity: 0.7;
+    clip-path: inset(0 0 0 0);
+  }
+  93.82% {
+    opacity: 0.7;
+    clip-path: inset(0 100% 0 0);
+  }
+  94.1%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* The dot leaves Improve at 15.3s and reaches Plan at 16.7s, matching each stage's clear time. */
+@keyframes ai-return-dot {
+  0%,
+  85.11% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  85.96% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  93.82% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  94.94%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
   }
 }
 
@@ -507,16 +875,6 @@
   }
 }
 
-@keyframes ai-breathe {
-  0%,
-  100% {
-    box-shadow: 0 0 18px rgba(6, 182, 212, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 34px rgba(6, 182, 212, 0.45);
-  }
-}
-
 @keyframes ai-ring {
   0%,
   100% {
@@ -524,39 +882,6 @@
   }
   60% {
     box-shadow: 0 0 0 6px rgba(6, 182, 212, 0), 0 0 12px rgba(6, 182, 212, 0.3);
-  }
-}
-
-@keyframes ai-path {
-  0%,
-  72%,
-  100% {
-    opacity: 0.3;
-  }
-  78%,
-  94% {
-    opacity: 0.85;
-  }
-}
-
-@keyframes ai-return {
-  0%,
-  74% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  77% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  96% {
-    opacity: 1;
-    transform: translateX(-100%);
-  }
-  99%,
-  100% {
-    opacity: 0;
-    transform: translateX(-100%);
   }
 }
 
@@ -623,5 +948,11 @@
   .ai-root *::before,
   .ai-root *::after {
     animation: none !important;
+  }
+
+  /* With the loop off, --ai-rows stays 0, so show every question outright. */
+  .ai-root .ai-skill {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
