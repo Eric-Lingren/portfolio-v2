@@ -16,14 +16,14 @@ export type Pillar = {
 
 export const PILLARS: readonly Pillar[] = [
   {
-    title: "Outcome-oriented",
+    title: "Outcome Oriented",
     sentence: "I understand the business problem and align on outcomes before anything gets built.",
     outcome: "Success measured by business objectives, not features shipped.",
     viz: "target",
     review: [],
   },
   {
-    title: "Extreme ownership",
+    title: "Extreme Ownership",
     sentence: "When I cause a problem, I own it. When someone needs help, I see it through.",
     outcome: "Problems get solved, not passed along.",
     viz: "board",

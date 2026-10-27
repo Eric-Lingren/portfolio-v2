@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { getActiveSection, subscribeActiveSection } from "@/components/active-section";
 import { isFlat, resolveMode } from "@/components/flythrough/mode";
 import { RESUME_PATH } from "@/content/site";
+import { BrandMark } from "@/components/BrandMark";
 import "./nav.css";
 
 export const NAV_LINKS = [
@@ -50,6 +51,7 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
     <>
       <header className="site-nav">
         <a className="site-nav__brand" href="#hero">
+          <BrandMark className="site-nav__mark" />
           Eric Lingren
         </a>
         <nav aria-label="Sections" className="site-nav__links">
@@ -63,10 +65,10 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
           ))}
         </nav>
         <div className="site-nav__right">
-          <a className="site-nav__resume" href={RESUME_PATH}>
+          <a className="btn btn-primary site-nav__resume" href={RESUME_PATH} download>
             Resume
-            <span className="btn-arrow btn-arrow--out" aria-hidden="true">
-              ↗
+            <span className="btn-arrow btn-arrow--down" aria-hidden="true">
+              ⤓
             </span>
           </a>
         </div>

@@ -25,8 +25,8 @@ export function SelectedWork({
 }) {
   return (
     <Panel name="SelectedWork" z={z} id={id} layers={layers}>
-      <div className="work">
-        <h2 className="work-title">Selected work</h2>
+      <div className="work section">
+        <h2 className="section-title">Selected work</h2>
         <ul className="work-grid">
           {items.map((c) => (
             <li key={c.slug} className="work-item">

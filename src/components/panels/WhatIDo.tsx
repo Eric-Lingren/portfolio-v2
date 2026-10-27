@@ -6,8 +6,8 @@ import "./what-i-do.css";
 export function WhatIDo({ layers = "polished", z = 0, id }: { layers?: PanelLayers; z?: number; id?: string }) {
   return (
     <Panel name="WhatIDo" z={z} id={id} layers={layers}>
-      <div className="what-i-do">
-        <h2 className="wid-title">What I do</h2>
+      <div className="what-i-do section">
+        <h2 className="section-title">What I do</h2>
         <div className="pillars">
           {PILLARS.map((p) => (
             <article className="pillar" data-viz={p.viz} key={p.title}>

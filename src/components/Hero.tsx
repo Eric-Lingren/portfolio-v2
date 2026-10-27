@@ -24,7 +24,7 @@ export function Hero({ layers = "polished", z = 0, id }: { layers?: PanelLayers;
             <span className="hero-redline__label">h1 / 600 / clamp(52px, 10vw, 136px)</span>
           </span>
         </div>
-        <div className="hero-ctas">
+        <div className="section-actions">
           <a className="btn btn-primary" href="#work">
             View work
             <span className="btn-arrow" aria-hidden="true">

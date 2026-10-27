@@ -36,10 +36,18 @@
   outline-offset: 2px;
 }
 .site-nav .site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   color: var(--po-ink);
   font-weight: 600;
   letter-spacing: 0.14em;
   padding-left: 0;
+}
+.site-nav__mark {
+  height: 1.375rem;
+  width: auto;
+  flex: none;
 }
 .site-nav__links,
 .site-nav__right {
@@ -110,25 +118,22 @@
   outline: 2px solid var(--accent-2);
   outline-offset: 2px;
 }
-/* Resume is the nav's call to action: filled like the hero's primary CTA. */
+/*
+ * Resume is the shared .btn-primary, the same button as the Experience panel's. Here it only
+ * undoes the nav's mono caps and muted link color, and stays compact to fit the bar.
+ */
 .site-nav a.site-nav__resume,
 .site-nav a.site-nav__resume:hover {
-  background: var(--accent-fill);
-  border: 1.5px solid var(--accent-fill);
   color: var(--on-accent-fill);
-  font-weight: 600;
 }
-
 .site-nav a.site-nav__resume {
-  transition: box-shadow 180ms ease;
-}
-.site-nav a.site-nav__resume:is(:hover, :focus-visible) {
-  box-shadow: var(--coral-glow);
-}
-@media (prefers-reduced-motion: reduce) {
-  .site-nav a.site-nav__resume {
-    transition: none;
-  }
+  padding: 0.4rem 1rem;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* Phones: the hero already shows the name, and the bar must stay short. */

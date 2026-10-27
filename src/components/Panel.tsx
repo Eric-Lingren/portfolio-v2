@@ -73,7 +73,8 @@ export function Panel({ name, z = 0, id, layers = "polished", children }: PanelP
               : undefined
           }
         >
-          <span className="panel-tag">{tag}</span>
+          {/* The z tag belongs to the 3D stage; the flat classic page shows only the content. */}
+          {layers !== "polished" && <span className="panel-tag">{tag}</span>}
           {children}
         </div>
       ))}

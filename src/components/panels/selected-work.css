@@ -1,41 +1,26 @@
 /* Selected work panel. Layout rules are layer-agnostic (parity); layers differ in color only. */
+/* Spacing and title come from .section (globals.css). */
 .work {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding-top: 1rem;
   container-type: inline-size;
 }
 
-.work-title {
-  margin: 0;
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 700;
-}
-
 .work-grid {
-  /* Three across, with a short last row centered so five cards read as 3 + 2. */
+  /* Two across, thumbnail beside the text, so five cards fit the panel at full size. A lone last card is centered. */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--block-gap);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .work-item {
-  flex: 0 0 calc((100% - 2rem) / 3);
+  flex: 0 0 calc((100% - var(--block-gap)) / 2);
 }
 
-/* Narrow panels: two across, then one. */
-@container (max-width: 640px) {
-  .work-item {
-    flex-basis: calc((100% - 1rem) / 2);
-  }
-}
-
-@container (max-width: 420px) {
+/* Narrow panels: one across. */
+@container (max-width: 560px) {
   .work-item {
     flex-basis: 100%;
   }
@@ -43,11 +28,12 @@
 
 .work-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  align-content: start;
+  gap: 0.35rem 1rem;
   height: 100%;
-  padding: 0.85rem;
+  padding: 0.875rem;
   border: 1.5px solid;
   color: inherit;
   text-decoration: none;
@@ -55,6 +41,8 @@
 
 .work-thumb {
   position: relative;
+  grid-row: span 3;
+  align-self: start;
   aspect-ratio: 16 / 10;
   overflow: hidden;
 }
@@ -98,28 +86,21 @@
 }
 
 .work-card-number strong {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-right: 0.35rem;
 }
 
-/* Phones: thumbnail beside the text so all the cards fit one screen. */
+/* Phones: smaller thumbnail and type so all the cards fit one screen. */
 @media (max-width: 600px) {
   .work-grid {
     gap: 0.6rem;
   }
 
   .work-card {
-    display: grid;
-    grid-template-columns: 5.5rem 1fr;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
     gap: 0.25rem 0.75rem;
-    align-content: start;
     padding: 0.7rem;
-  }
-
-  .work-thumb {
-    grid-row: span 3;
-    align-self: start;
   }
 
   .work-card-title {

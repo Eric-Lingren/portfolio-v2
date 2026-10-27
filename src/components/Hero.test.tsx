@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { StageContext } from "./flythrough/stage-context";
 import { Hero } from "./Hero";
 
 describe("Hero", () => {
@@ -32,7 +33,7 @@ describe("Hero", () => {
 
   it("glows every button and nudges its arrow on hover and keyboard focus, and holds still for reduced motion", () => {
     const css = readFileSync("src/app/globals.css", "utf8");
-    expect(css).toMatch(/--coral-glow:\s*0 0 0 1px #ff5a36,\s*0 0 28px rgba\(255, 90, 54, 0\.45\)/);
+    expect(css).toMatch(/--coral-glow:\s*0 0 0 1px #ff6b57,\s*0 0 28px rgba\(255, 107, 87, 0\.45\)/);
     const rule = (sel: RegExp) => new RegExp(sel.source + String.raw`\s*\{([^}]*)\}`).exec(css)?.[1] ?? "";
     expect(rule(/\.btn-primary:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: var\(--coral-glow\)/);
     expect(rule(/\.btn-outline:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: var\(--cyan-glow\)/);
@@ -51,9 +52,16 @@ describe("Hero", () => {
     expect(container.innerHTML).not.toMatch(/profile/i);
   });
 
-  it("shows the component tag", () => {
-    render(<Hero />);
-    expect(screen.getByText("<Hero /> z=0")).toBeInTheDocument();
+  it("shows the component tag in the 3D stage only", () => {
+    const { unmount } = render(<Hero />);
+    expect(screen.queryByText("<Hero /> z=0")).toBeNull();
+    unmount();
+    render(
+      <StageContext.Provider value={true}>
+        <Hero />
+      </StageContext.Provider>,
+    );
+    expect(screen.getAllByText("<Hero /> z=0").length).toBeGreaterThan(0);
   });
 
   it("is present in static HTML with no JS", () => {

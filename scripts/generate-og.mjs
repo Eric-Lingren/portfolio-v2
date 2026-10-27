@@ -15,7 +15,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
       <line x1="0" y1="0" x2="0" y2="10" stroke="#0891b2" stroke-opacity="0.28" stroke-width="2"/>
     </pattern>
     <linearGradient id="build" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ff5a36"/>
+      <stop offset="0" stop-color="#ff6b57"/>
       <stop offset="1" stop-color="#06b6d4"/>
     </linearGradient>
   </defs>
@@ -30,13 +30,13 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   </g>
   <rect x="640" y="80" width="160" height="150" rx="10" fill="#111827" stroke="#3a4150" stroke-width="2"/>
   <rect x="640" y="270" width="160" height="220" rx="10" fill="#111827" stroke="#3a4150" stroke-width="2"/>
-  <rect x="660" y="296" width="120" height="10" rx="5" fill="#ff5a36"/>
+  <rect x="660" y="296" width="120" height="10" rx="5" fill="#ff6b57"/>
   <rect x="660" y="326" width="80" height="10" rx="5" fill="#06b6d4"/>
   <rect x="660" y="110" width="90" height="14" rx="7" fill="#f9fafb" fill-opacity="0.85"/>
   <rect x="${SPLIT - 3}" y="0" width="6" height="${H}" fill="url(#build)"/>
   <text x="60" y="400" font-family="Helvetica, Arial, sans-serif" font-size="68" font-weight="700" fill="#111827">Eric</text>
   <text x="60" y="476" font-family="Helvetica, Arial, sans-serif" font-size="68" font-weight="700" fill="#111827">Lingren</text>
-  <text x="62" y="560" font-family="Courier, monospace" font-size="19" letter-spacing="1.5" fill="#bd4328">FRONTEND-FIRST FULL-STACK ENGINEER</text>
+  <text x="62" y="560" font-family="Courier, monospace" font-size="19" letter-spacing="1.5" fill="#bd3a28">FRONTEND-FIRST FULL-STACK ENGINEER</text>
 </svg>`;
 
 const out = fileURLToPath(new URL("../public/og.png", import.meta.url));

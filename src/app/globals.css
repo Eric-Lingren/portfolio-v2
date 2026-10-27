@@ -5,14 +5,24 @@
   --po-muted: #9ca3af;
   --po-border: #252a36;
   --po-border-strong: #3a4150;
-  --accent: #ff5a36;
+  --accent: #ff6b57;
   --accent-2: #06b6d4;
   --on-accent: #0c0a0e;
   /* Filled CTAs: the brand coral with white text. */
-  --accent-fill: #ff5a36;
+  --accent-fill: #ff6b57;
   --on-accent-fill: #ffffff;
   --cyan-glow: 0 0 0 1px #06b6d4, 0 0 28px rgba(6, 182, 212, 0.4);
-  --coral-glow: 0 0 0 1px #ff5a36, 0 0 28px rgba(255, 90, 54, 0.45);
+  --coral-glow: 0 0 0 1px #ff6b57, 0 0 28px rgba(255, 107, 87, 0.45);
+
+  /*
+   * Section rhythm, shared by every panel: heading block, then content, then actions,
+   * each separated by --section-gap. Content blocks inside a section use --block-gap.
+   */
+  --section-gap: clamp(2rem, 7vh, 4.5rem);
+  --section-max: 72rem;
+  --block-gap: 1.25rem;
+  --action-gap: 1rem;
+  --title-size: clamp(2rem, 4vw, 3rem);
 
   --sk-bg: #eff1f4;
   --sk-line: #1f2937;
@@ -21,6 +31,13 @@
   --sk-hatch: rgba(8, 145, 178, 0.28);
 
   color-scheme: dark;
+}
+
+/* Phones: same rhythm, tighter, so tall panels shrink less to fit. */
+@media (max-width: 600px) {
+  :root {
+    --section-gap: clamp(1.5rem, 4vh, 2.25rem);
+  }
 }
 
 *,
@@ -50,8 +67,8 @@ samp {
 /* Build line: coral to cyan wipe with a coral glow. */
 .build-line {
   height: 2px;
-  background: linear-gradient(90deg, #ff5a36, #06b6d4);
-  box-shadow: 0 0 18px 2px #ff5a36;
+  background: linear-gradient(90deg, #ff6b57, #06b6d4);
+  box-shadow: 0 0 18px 2px #ff6b57;
 }
 
 /*
@@ -105,23 +122,23 @@ samp {
 
 .dither-band--dense {
   top: 1px;
-  background: conic-gradient(#ff5a36 25%, transparent 0 50%, #ff5a36 0 75%, transparent 0) 0 0 / 4px 4px;
+  background: conic-gradient(#ff6b57 25%, transparent 0 50%, #ff6b57 0 75%, transparent 0) 0 0 / 4px 4px;
 }
 
 .dither-band--sparse {
   top: 5px;
-  background: radial-gradient(circle at 1px 1px, #ff5a36 0.9px, transparent 1.1px) 0 0 / 4px 4px;
+  background: radial-gradient(circle at 1px 1px, #ff6b57 0.9px, transparent 1.1px) 0 0 / 4px 4px;
 }
 
-/* Card hover glow: polished layer only, desktop hover only. */
+/* Card hover glow: 3D stage only (not the flat classic page), polished layer, desktop hover. */
 @media (hover: hover) and (pointer: fine) {
-  .panel-layer--polished {
+  .fly-panel .panel-layer--polished {
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
   }
 
-  .panel-layer--polished:hover {
+  .fly-panel .panel-layer--polished:hover {
     border-color: var(--accent-2);
     box-shadow: var(--cyan-glow);
   }
@@ -155,8 +172,13 @@ samp {
 .panel-layer--polished {
   background: var(--po-bg);
   color: var(--po-ink);
-  border-color: var(--po-border);
+  border-color: transparent;
   border-style: solid;
+}
+
+/* The card outline belongs to the 3D stage. On the flat classic page, stacked panels would draw lines between sections. */
+.fly-panel .panel-layer--polished {
+  border-color: var(--po-border);
 }
 
 .panel-layer--sketch {
@@ -179,6 +201,42 @@ samp {
   color: var(--accent-2);
 }
 
+/*
+ * Standard section layout. Every panel but the hero is a .section: a .section-head
+ * (title plus optional subline), its content, and an optional .section-actions row.
+ * Panels add only their own content styles, never their own outer spacing or title type.
+ */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  width: 100%;
+  max-width: var(--section-max);
+  margin-inline: auto;
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--title-size);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--action-gap);
+}
+
 /* Image placeholder: hatched box, sketch layer only. */
 .sketch-image {
   background: repeating-linear-gradient(45deg, var(--sk-hatch) 0 1px, transparent 1px 8px);
@@ -186,12 +244,15 @@ samp {
 }
 
 .hero {
-  --hero-gap: clamp(2rem, 7vh, 4.5rem);
+  --hero-gap: var(--section-gap);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--hero-gap);
+  width: 100%;
+  max-width: var(--section-max);
+  margin-inline: auto;
 }
 
 .hero-name-wrap {
@@ -342,12 +403,6 @@ samp {
   letter-spacing: -0.035em;
 }
 
-.hero-ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 /* Every CTA (hero, Experience, Contact, nav Resume) shares this shape: 6px corners, 1.5px border. */
 .btn {
   display: inline-block;
@@ -456,6 +511,26 @@ samp {
 .fly-panel .panel-layer {
   height: var(--panel-h, 70svh);
   min-height: 0;
+}
+
+/*
+ * Optical centering: spare room splits 2:3 above and below the content, so short panels sit a
+ * little above the middle and titles move less between panels than with true centering.
+ * Panels that fill the box get no spare room and sit at the top. The hero, the cover, stays centered.
+ */
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::before,
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::after {
+  content: "";
+  flex: 2 1 0;
+}
+
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::after {
+  flex-grow: 3;
+}
+
+/* Content that has to shrink (--content-fit below) shrinks toward the title, not the middle. */
+.fly-panel .panel:not([data-panel="Hero"]) .panel-body {
+  transform-origin: top center;
 }
 
 /* --content-fit (FlyStage) shrinks content taller than the box so the box itself never grows. */

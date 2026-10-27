@@ -24,7 +24,7 @@ function geometry(el: Element) {
 
 describe("WhatIDo", () => {
   it("has exactly 3 pillars with the given titles", () => {
-    expect(PILLARS.map((p) => p.title)).toEqual(["Outcome-oriented", "Extreme ownership", "Craftsmanship"]);
+    expect(PILLARS.map((p) => p.title)).toEqual(["Outcome Oriented", "Extreme Ownership", "Craftsmanship"]);
     const { container } = render(<WhatIDo />);
     expect(container.querySelectorAll(".pillar")).toHaveLength(3);
   });

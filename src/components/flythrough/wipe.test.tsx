@@ -176,8 +176,8 @@ describe("wipe code guards", () => {
 
   it("build line uses the coral-to-cyan gradient and coral glow", () => {
     const body = ruleBody(".build-line").replace(/\s+/g, " ");
-    expect(body).toContain("linear-gradient(90deg, #ff5a36, #06b6d4)");
-    expect(body).toContain("box-shadow: 0 0 18px 2px #ff5a36");
+    expect(body).toContain("linear-gradient(90deg, #ff6b57, #06b6d4)");
+    expect(body).toContain("box-shadow: 0 0 18px 2px #ff6b57");
   });
 
   it("card hover glow applies to the polished layer under desktop hover only", () => {

@@ -70,4 +70,23 @@ describe("Panel", () => {
     const { container } = setup();
     expect(container.querySelector(".panel-tag")!.textContent).toBe("<Sample /> z=0");
   });
+
+  it("leaves the z tag off the flat polished panel the classic page renders", () => {
+    const { container } = render(
+      <Panel name="Sample">
+        <p>content</p>
+      </Panel>,
+    );
+    expect(container.querySelector(".panel-tag")).toBeNull();
+  });
+
+  it("outlines polished panels only in the 3D stage, so the classic page has no lines between sections", () => {
+    expect(css).toMatch(/\.panel-layer--polished\s*\{[^}]*border-color: transparent/);
+    expect(css).toMatch(/\.fly-panel \.panel-layer--polished\s*\{[^}]*border-color: var\(--po-border\)/);
+  });
+
+  it("scopes the cyan hover glow to the 3D stage", () => {
+    expect(css).toMatch(/\.fly-panel \.panel-layer--polished:hover/);
+    expect(css).not.toMatch(/^\s*\.panel-layer--polished:hover/m);
+  });
 });

@@ -96,21 +96,24 @@ describe("Nav", () => {
     expect(css).toMatch(/outline: 2px solid/);
   });
 
-  it("fills the resume link with the accent, hover included, like the hero's primary CTA", () => {
+  it("makes Resume the shared primary button, undoing the nav's mono caps and muted link color", () => {
+    render(<Nav navigate={() => {}} />);
+    expect(screen.getByRole("link", { name: "Resume" })).toHaveClass("btn", "btn-primary");
     const css = readFileSync("src/components/nav.css", "utf8");
-    const block = /\.site-nav a\.site-nav__resume:hover\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
-    expect(block).toMatch(/background: var\(--accent-fill\)/);
-    expect(block).toMatch(/color: var\(--on-accent-fill\)/);
+    const color = /\.site-nav a\.site-nav__resume:hover\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(color).toMatch(/color: var\(--on-accent-fill\)/);
+    const type = /\.site-nav a\.site-nav__resume\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(type).toMatch(/text-transform: none/);
+    expect(type).toMatch(/letter-spacing: normal/);
   });
 
-  it("gives Resume a decorative arrow and the hero CTA's coral glow on hover and focus", () => {
+  it("marks Resume as a download with the shared decorative down arrow", () => {
     render(<Nav navigate={() => {}} />);
-    const arrow = screen.getByRole("link", { name: "Resume" }).querySelector(".btn-arrow--out");
-    expect(arrow).toHaveTextContent("↗");
+    const link = screen.getByRole("link", { name: "Resume" });
+    expect(link).toHaveAttribute("download");
+    const arrow = link.querySelector(".btn-arrow--down");
+    expect(arrow).toHaveTextContent("⤓");
     expect(arrow).toHaveAttribute("aria-hidden", "true");
-    const css = readFileSync("src/components/nav.css", "utf8");
-    const block = /\.site-nav a\.site-nav__resume:is\(:hover, :focus-visible\)\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
-    expect(block).toMatch(/box-shadow: var\(--coral-glow\)/);
   });
 
   it("keeps the view switch out of the top bar, pinned small to the viewport's bottom-right corner", () => {

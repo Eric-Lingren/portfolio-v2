@@ -51,38 +51,40 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
   };
 
   return (
-    <div className="ai-root" data-testid="ai-diagram">
-      <h2 className="ai-heading">{HEADING}</h2>
-      <ul className="ai-keywords" aria-label="Skills and tooling">
-        {KEYWORDS.map((w) => (
-          <li key={w}>{w}</li>
-        ))}
-      </ul>
-      {/* Wide screens show the five stages with arrows. Hover, focus or click picks the card below. */}
-      <div className="ai-track">
-        {STAGES.map((x, i) => (
-          <button
-            key={x.id}
-            type="button"
-            className="ai-stage"
-            aria-current={i === step ? "step" : undefined}
-            onMouseEnter={() => go(i)}
-            onFocus={() => go(i)}
-            onClick={() => go(i)}
-          >
-            <span className="ai-stage-num">{i + 1}</span> {x.title}
-          </button>
-        ))}
+    <div className="ai-root section" data-testid="ai-diagram">
+      <div className="section-head">
+        <h2 className="section-title">{HEADING}</h2>
+        <ul className="ai-keywords" aria-label="Skills and tooling">
+          {KEYWORDS.map((w) => (
+            <li key={w}>{w}</li>
+          ))}
+        </ul>
       </div>
-      {/* Narrow screens swap in the compact strip (CSS). */}
-      <div className="ai-strip" data-testid="ai-strip">
-        {STAGES.map((x, i) => (
-          <button key={x.id} type="button" className="ai-strip-stage" aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
-            <span className="ai-stage-num">{i + 1}</span> {x.title}
-          </button>
-        ))}
-      </div>
-      <div className="ai-row" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="ai-body" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        {/* Wide screens show the five stages with arrows. Hover, focus or click picks the card below. */}
+        <div className="ai-track">
+          {STAGES.map((x, i) => (
+            <button
+              key={x.id}
+              type="button"
+              className="ai-stage"
+              aria-current={i === step ? "step" : undefined}
+              onMouseEnter={() => go(i)}
+              onFocus={() => go(i)}
+              onClick={() => go(i)}
+            >
+              <span className="ai-stage-num">{i + 1}</span> {x.title}
+            </button>
+          ))}
+        </div>
+        {/* Narrow screens swap in the compact strip (CSS). */}
+        <div className="ai-strip" data-testid="ai-strip">
+          {STAGES.map((x, i) => (
+            <button key={x.id} type="button" className="ai-strip-stage" aria-current={i === step ? "step" : undefined} onClick={() => go(i)}>
+              <span className="ai-stage-num">{i + 1}</span> {x.title}
+            </button>
+          ))}
+        </div>
         <div className="ai-card-stack">
           {STAGES.map((x, i) => (
             <div key={x.id} className="ai-card ai-card-ghost" aria-hidden="true" inert>
@@ -93,14 +95,14 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
             <CardBody stage={s} num={step + 1} />
           </article>
         </div>
-        <div className="ai-ctas">
-          <Link className="btn btn-primary" href="/work/ai-toolkit">
-            Read the case study <span className="btn-arrow" aria-hidden="true">→</span>
-          </Link>
-          <a className="btn btn-outline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
-            Browse the toolkit on GitHub <span className="btn-arrow btn-arrow--out" aria-hidden="true">↗</span>
-          </a>
-        </div>
+      </div>
+      <div className="section-actions">
+        <Link className="btn btn-primary" href="/work/ai-toolkit">
+          Read the case study <span className="btn-arrow" aria-hidden="true">→</span>
+        </Link>
+        <a className="btn btn-outline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          Browse the toolkit on GitHub <span className="btn-arrow btn-arrow--out" aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   );

@@ -14,8 +14,8 @@ export function Testimonials({ layers = "polished", z = 0, id, manifest = TESTIM
   const empty = manifest.length === 0;
   return (
     <Panel name="Testimonials" z={z} id={id} layers={layers}>
-      <div className="testimonials">
-        <h2 className="testimonials-title">Testimonials</h2>
+      <div className="testimonials section">
+        <h2 className="section-title">Testimonials</h2>
         <ul className="testimonials-grid">
           {empty
             ? Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => (

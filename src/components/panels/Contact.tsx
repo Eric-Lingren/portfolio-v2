@@ -47,8 +47,8 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
 
   return (
     <Panel name="Contact" z={z} id={id} layers={layers}>
-      <div className="contact">
-        <h2 className="contact-title">Building something interesting? Let&apos;s talk.</h2>
+      <div className="contact section">
+        <h2 className="section-title">Building something interesting? Let&apos;s talk.</h2>
         <div className="contact-main">
           <div className="contact-photo" data-contact-photo>
             {/* eslint-disable-next-line @next/next/no-img-element -- static export */}
@@ -56,7 +56,7 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
           </div>
           <div className="contact-cta">
             <p className="contact-email">{EMAIL}</p>
-            <div className="contact-actions">
+            <div className="section-actions">
               <button type="button" className="btn btn-outline contact-btn" onClick={onCopy}>
                 Copy email
                 <span className="btn-arrow btn-arrow--copy" aria-hidden="true">

@@ -16,10 +16,10 @@ const EXPECTED_TOKENS: Record<string, string> = {
   "--po-muted": "#9ca3af",
   "--po-border": "#252a36",
   "--po-border-strong": "#3a4150",
-  "--accent": "#ff5a36",
+  "--accent": "#ff6b57",
   "--accent-2": "#06b6d4",
   "--on-accent": "#0c0a0e",
-  "--accent-fill": "#ff5a36",
+  "--accent-fill": "#ff6b57",
   "--on-accent-fill": "#ffffff",
   "--sk-bg": "#eff1f4",
   "--sk-line": "#1f2937",
@@ -37,8 +37,8 @@ describe("theme tokens", () => {
 
   it("declares the build-line utility with coral-to-cyan gradient and coral glow", () => {
     const block = /\.build-line\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
-    expect(normalize(block)).toContain("linear-gradient(90deg,#ff5a36,#06b6d4)");
-    expect(normalize(block)).toContain("box-shadow:0018px2px#ff5a36");
+    expect(normalize(block)).toContain("linear-gradient(90deg,#ff6b57,#06b6d4)");
+    expect(normalize(block)).toContain("box-shadow:0018px2px#ff6b57");
   });
 
   it("is dark only, with no theme toggle styles", () => {
