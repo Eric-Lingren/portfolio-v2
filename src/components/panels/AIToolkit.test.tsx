@@ -1,9 +1,10 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { HEADING, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
+import { HEADING, KEYWORDS, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
 import { AIToolkit } from "./AIToolkit";
 
 const skills = STAGES.flatMap((s) => s.skills);
@@ -23,30 +24,65 @@ describe("stage data", () => {
     }
   });
 
-  it("links every skill under the dotfiles repo, folders as trees", () => {
-    for (const k of skills) expect(fileUrl(k.path).startsWith("https://github.com/Eric-Lingren/dotfiles/")).toBe(true);
-    expect(fileUrl("a/b/")).toBe("https://github.com/Eric-Lingren/dotfiles/tree/main/a/b/");
-    expect(fileUrl("a/b.md")).toBe("https://github.com/Eric-Lingren/dotfiles/blob/main/a/b.md");
-    expect(REPO_URL.startsWith("https://github.com/Eric-Lingren/dotfiles/")).toBe(true);
+  it("links every skill under the public toolkit repo, folders as trees", () => {
+    expect(REPO_URL).toBe("https://github.com/Eric-Lingren/claude-code-toolkit");
+    for (const k of skills) expect(fileUrl(k.path).startsWith(`${REPO_URL}/`)).toBe(true);
+    expect(fileUrl("a/b/")).toBe(`${REPO_URL}/tree/main/a/b/`);
+    expect(fileUrl("a/b.md")).toBe(`${REPO_URL}/blob/main/a/b.md`);
   });
 
-  const dotfiles = join(homedir(), ".dotfiles");
-  it.skipIf(!existsSync(dotfiles))("points each link at a file that exists locally", () => {
-    for (const k of skills) expect(existsSync(join(dotfiles, k.path))).toBe(true);
+  // The toolkit source lives in the private dotfiles repo, and publish.json decides what goes public.
+  const dotfiles = join(homedir(), ".dotfiles", "claude-code-shared");
+  const publisher = join(dotfiles, "scripts", "publish", "publish-toolkit.py");
+  it.skipIf(!existsSync(dotfiles))("points each link at a file that exists in the toolkit source", () => {
+    for (const k of skills) expect(existsSync(join(dotfiles, k.path)), k.path).toBe(true);
+  });
+
+  it.skipIf(!existsSync(publisher))("only links files the publish manifest makes public", () => {
+    const published = execFileSync("python3", [publisher, "--list"], { encoding: "utf8" }).split("\n");
+    for (const k of skills) {
+      const ok = k.path.endsWith("/") ? published.some((f) => f.startsWith(k.path)) : published.includes(k.path);
+      expect(ok, k.path).toBe(true);
+    }
+  });
+
+  it.skipIf(!existsSync(dotfiles))("tags each skill with the model its file runs on", () => {
+    for (const k of skills.filter((x) => !x.path.endsWith("/"))) {
+      const model = readFileSync(join(dotfiles, k.path), "utf8").match(/^model: (\w+)$/m)?.[1];
+      expect(model, k.name).toBe(k.model.toLowerCase());
+    }
   });
 
   it("names no employer-specific terms", () => {
-    const text = JSON.stringify(STAGES).toLowerCase();
+    const text = JSON.stringify([STAGES, KEYWORDS]).toLowerCase();
     for (const w of ["standard metrics", "quaestor", "linear workspace", "portco", "bugbot"]) expect(text).not.toContain(w);
   });
 });
 
 describe("AIToolkit", () => {
+  const track = () => screen.getByTestId("ai-diagram").querySelector(".ai-track")!;
+  const stageButtons = () => within(track() as HTMLElement).getAllByRole("button");
+
   it("renders the heading and starts on Plan", () => {
     render(<AIToolkit />);
     expect(screen.getByRole("heading", { level: 2 }).textContent).toBe(HEADING);
     expect(card().getAttribute("data-stage")).toBe("plan");
     expect(within(card()).getByText(STAGES[0].summary)).toBeTruthy();
+  });
+
+  it("lists the toolkit keywords under the heading", () => {
+    render(<AIToolkit />);
+    const list = screen.getByRole("list", { name: /skills and tooling/i });
+    expect(within(list).getAllByRole("listitem").map((li) => li.textContent)).toEqual([...KEYWORDS]);
+  });
+
+  it("shows the model tag beside each skill in the stage card", () => {
+    render(<AIToolkit />);
+    for (const li of within(card()).getAllByRole("listitem")) {
+      const name = within(li).getByRole("link").textContent!.replace(" ↗", "");
+      const skill = STAGES[0].skills.find((k) => k.name === name)!;
+      expect(li.querySelector(".ai-skill-model")?.textContent).toBe(skill.model);
+    }
   });
 
   it("lists each skill of the stage with its tip, each linking to its file", () => {
@@ -57,34 +93,28 @@ describe("AIToolkit", () => {
     }
   });
 
-  it("steps with Next and Back and stops at both ends", () => {
+  it("shows the five stages in the track as title-only buttons", () => {
     render(<AIToolkit />);
-    const back = screen.getByRole("button", { name: /back/i });
-    const next = screen.getByRole("button", { name: /next/i });
-    expect(back).toBeDisabled();
-    for (let i = 1; i < STAGES.length; i++) {
-      fireEvent.click(next);
-      expect(card().getAttribute("data-stage")).toBe(STAGES[i].id);
-    }
-    expect(next).toBeDisabled();
-    fireEvent.click(back);
-    expect(card().getAttribute("data-stage")).toBe(STAGES.at(-2)!.id);
+    expect(stageButtons().map((b) => b.textContent?.trim())).toEqual(STAGES.map((s, i) => `${i + 1} ${s.title}`));
+    expect(stageButtons()[0].getAttribute("aria-current")).toBe("step");
   });
 
-  it("jumps with the numbered chips and marks the current one", () => {
+  it("switches the card when a stage is hovered, focused or clicked", () => {
     render(<AIToolkit />);
-    fireEvent.click(screen.getByRole("button", { name: "4: Learn" }));
+    fireEvent.mouseEnter(stageButtons()[1]);
+    expect(card().getAttribute("data-stage")).toBe("build");
+    fireEvent.focus(stageButtons()[3]);
     expect(card().getAttribute("data-stage")).toBe("learn");
-    expect(screen.getByRole("button", { name: "4: Learn" }).getAttribute("aria-current")).toBe("step");
+    fireEvent.click(stageButtons()[4]);
+    expect(card().getAttribute("data-stage")).toBe("improve");
+    expect(stageButtons()[4].getAttribute("aria-current")).toBe("step");
   });
 
-  it("shows every stage in the track, and clicking one jumps to it", () => {
-    const { container } = render(<AIToolkit />);
-    const stages = container.querySelectorAll(".ai-track > .ai-stage");
-    expect(stages).toHaveLength(STAGES.length);
-    fireEvent.click(stages[4]);
-    expect(card().getAttribute("data-stage")).toBe("improve");
-    expect(stages[4].getAttribute("data-active")).toBe("true");
+  it("keeps the last hovered stage when the pointer leaves", () => {
+    render(<AIToolkit />);
+    fireEvent.mouseEnter(stageButtons()[2]);
+    fireEvent.mouseLeave(stageButtons()[2]);
+    expect(card().getAttribute("data-stage")).toBe("review");
   });
 
   it("renders the compact strip for narrow screens, and the strip jumps too", () => {
@@ -95,15 +125,7 @@ describe("AIToolkit", () => {
     expect(card().getAttribute("data-stage")).toBe("review");
   });
 
-  it("moves focus to the stage heading after a visitor action, never on mount", () => {
-    render(<AIToolkit />);
-    const title = within(card()).getByRole("heading", { level: 3 });
-    expect(document.activeElement).not.toBe(title);
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    expect(document.activeElement).toBe(within(card()).getByRole("heading", { level: 3 }));
-  });
-
-  it("stacks a hidden copy of every stage behind the card so stepping never resizes it", () => {
+  it("stacks a hidden copy of every stage behind the card so switching never resizes it", () => {
     const { container } = render(<AIToolkit />);
     const ghosts = container.querySelectorAll(".ai-card-stack > .ai-card-ghost");
     expect([...ghosts].map((g) => g.querySelector(".ai-summary")?.textContent)).toEqual(STAGES.map((s) => s.summary));
@@ -124,49 +146,8 @@ describe("AIToolkit", () => {
     expect(within(screen.getByTestId("ai-diagram")).getAllByRole("button").length).toBeGreaterThanOrEqual(3);
   });
 
-  it("only shows hover tips on hover-capable pointers", () => {
+  it("runs no animations, so the panel holds still", () => {
     const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
-    expect(css).toMatch(/\(hover: hover\) and \(pointer: fine\)[\s\S]*\.ai-skill\[data-tip\]:hover::after/);
-  });
-
-  it("holds step-change motion until the visitor steps, keeping the first paint still", () => {
-    render(<AIToolkit />);
-    const root = screen.getByTestId("ai-diagram");
-    expect(root.hasAttribute("data-stepped")).toBe(false);
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    expect(root.hasAttribute("data-stepped")).toBe(true);
-  });
-
-  it("switches every animation off for reduced motion", () => {
-    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
-    expect(css).toMatch(/prefers-reduced-motion: reduce\)[\s\S]*\.ai-root \*::after \{\s*animation: none !important;/);
-  });
-
-  it("hides the animated title copy from assistive tech", () => {
-    const { container } = render(<AIToolkit />);
-    const heroes = container.querySelectorAll(".ai-stage-hero");
-    expect(heroes).toHaveLength(STAGES.length);
-    heroes.forEach((h) => expect(h.getAttribute("aria-hidden")).toBe("true"));
-  });
-
-  it("still shows every question when reduced motion stops the build-up loop", () => {
-    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
-    expect(css).toMatch(/prefers-reduced-motion: reduce\)[\s\S]*\.ai-root \.ai-skill \{\s*opacity: 1 !important;/);
-    // Without the loop, the column and its title fall back to fully shown.
-    expect(css).toMatch(/@property --ai-in \{[^}]*initial-value: 1;/);
-    expect(css).toMatch(/@property --ai-title \{[^}]*initial-value: 1;/);
-  });
-
-  it("starts the build-up loop inside the full-board hold so the first paint shows every stage", () => {
-    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
-    const delays = [...css.matchAll(/animation: ai-build-\d [\d.]+s linear (-?[\d.]+)s infinite;/g)].map((m) => Number(m[1]));
-    expect(delays).toHaveLength(STAGES.length);
-    delays.forEach((d) => expect(d).toBeLessThan(0));
-  });
-
-  it("pins the end columns' tips to their outer edge so they stay inside the panel", () => {
-    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
-    expect(css).toMatch(/\.ai-stage:first-child \.ai-skill\[data-tip\]:hover::after \{\s*left: 0;/);
-    expect(css).toMatch(/\.ai-stage:last-child \.ai-skill\[data-tip\]:hover::after \{\s*left: auto;\s*right: 0;/);
+    expect(css).not.toMatch(/@keyframes|animation:|transition:/);
   });
 });
