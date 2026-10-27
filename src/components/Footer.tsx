@@ -5,7 +5,7 @@ import "./footer.css";
 export function Footer() {
   return (
     <footer className="site-footer">
-      <p>Based near Seattle. Sailing, vintage games, 50+ countries.</p>
+      <p>Based near Seattle. Sailing, vintage video games, and travel (50+ countries).</p>
       <p>
         Built with Next.js and CSS 3D. <a href={GITHUB_REPO_URL}>Source on GitHub</a>.
       </p>

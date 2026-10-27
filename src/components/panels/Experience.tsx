@@ -1,5 +1,6 @@
 import { EXPERIENCE } from "@/content/experience";
 import { RESUME_PATH } from "@/content/site";
+import { FileIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./experience.css";
 
@@ -44,6 +45,7 @@ export function Experience({ layers = "polished", z = 0, id }: { layers?: PanelL
         </ol>
         <div className="section-actions">
           <a className="btn btn-primary experience-resume" href={RESUME_PATH} download>
+            <FileIcon />
             Resume
             <span className="btn-arrow btn-arrow--down" aria-hidden="true">
               ⤓

@@ -25,6 +25,27 @@ describe("Contact", () => {
     expect(writeText).toHaveBeenCalledWith("ericlingren@gmail.com");
   });
 
+  it("copies when the address itself is clicked", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    render(<Contact />);
+    fireEvent.click(screen.getByRole("button", { name: "ericlingren@gmail.com" }));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copied"));
+    expect(writeText).toHaveBeenCalledWith("ericlingren@gmail.com");
+  });
+
+  it("confirms a copy with the check icon only, then flips back", async () => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: vi.fn().mockResolvedValue(undefined) }, configurable: true });
+    render(<Contact />);
+    const button = screen.getByRole("button", { name: "Copy email" });
+    const before = button.innerHTML;
+    fireEvent.click(button);
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copied"));
+    expect(screen.getByRole("status")).toHaveClass("sr-only");
+    expect(button.innerHTML).not.toBe(before);
+    await waitFor(() => expect(button.innerHTML).toBe(before), { timeout: 3000 });
+  });
+
   it("falls back to execCommand when navigator.clipboard is missing", async () => {
     Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true });
     const exec = vi.fn().mockReturnValue(true);
@@ -43,33 +64,60 @@ describe("Contact", () => {
     );
   });
 
-  it("gives Copy email a decorative copy glyph in the arrow slot", () => {
+  it("gives Copy email a decorative copy icon that turns into a check once copied", async () => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: vi.fn().mockResolvedValue(undefined) }, configurable: true });
     render(<Contact />);
-    const glyph = screen.getByRole("button", { name: "Copy email" }).querySelector(".btn-arrow--copy");
-    expect(glyph).toHaveTextContent("⧉");
-    expect(glyph).toHaveAttribute("aria-hidden", "true");
+    const button = screen.getByRole("button", { name: "Copy email" });
+    const before = button.innerHTML;
+    expect(button.querySelector("svg.btn-icon")).toHaveAttribute("aria-hidden", "true");
+    fireEvent.click(button);
+    await waitFor(() => expect(button.innerHTML).not.toBe(before));
+    expect(button.querySelector("svg.btn-icon")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("gives Send an email the shared decorative outbound arrow", () => {
-    render(<Contact />);
-    const arrow = screen.getByRole("link", { name: "Send an email" }).querySelector(".btn-arrow--out");
-    expect(arrow).toHaveTextContent("↗");
-    expect(arrow).toHaveAttribute("aria-hidden", "true");
+  it("gives every Contact button a decorative icon first", () => {
+    const { container } = render(<Contact />);
+    const buttons = container.querySelectorAll(".contact :is(.btn, .icon-btn)");
+    expect(buttons).toHaveLength(5);
+    for (const b of buttons) {
+      expect(b.firstElementChild).toHaveClass("btn-icon");
+      expect(b.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    }
   });
 
-  it("links GitHub, LinkedIn and the resume", () => {
+  it("puts bare icon Copy email and Send an email buttons beside the address", () => {
+    const { container } = render(<Contact />);
+    const row = container.querySelector(".contact-email")!;
+    expect(row.querySelector(".contact-email__address")).toHaveTextContent("ericlingren@gmail.com");
+    for (const el of [
+      screen.getByRole("button", { name: "Copy email" }),
+      screen.getByRole("link", { name: "Send an email" }),
+    ]) {
+      expect(el.parentElement).toBe(row);
+      expect(el).toHaveClass("icon-btn");
+      expect(el).not.toHaveClass("btn");
+      expect(el.textContent).toBe("");
+    }
+  });
+
+  it("links GitHub, LinkedIn and the resume as shared buttons", () => {
     render(<Contact />);
+    for (const name of ["GitHub", "LinkedIn"]) {
+      expect(screen.getByRole("link", { name })).toHaveClass("btn", "btn-outline");
+    }
+    expect(screen.getByRole("link", { name: "Resume" })).toHaveClass("btn", "btn-primary");
     expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://www.github.com/Eric-Lingren");
     expect(screen.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", expect.stringContaining("linkedin.com"));
-    expect(screen.getByRole("link", { name: "Resume (PDF)" })).toHaveAttribute("href", "/eric-lingren-resume.pdf");
+    expect(screen.getByRole("link", { name: "Resume" })).toHaveAttribute("href", "/eric-lingren-resume.pdf");
+    expect(screen.getByRole("link", { name: "Resume" })).toHaveAttribute("download");
   });
 
-  it("shows the invitation line and the photo at 150px", () => {
+  it("shows the invitation line and the photo at 200px", () => {
     const { container } = render(<Contact />);
     expect(container.textContent).toContain("Building something interesting? Let's talk.");
     const img = container.querySelector("img")!;
-    expect(img).toHaveAttribute("width", "150");
-    expect(img).toHaveAttribute("height", "150");
+    expect(img).toHaveAttribute("width", "200");
+    expect(img).toHaveAttribute("height", "200");
   });
 
   it("contains no phone, Calendly, availability or role-fit text (whole page)", () => {
@@ -92,7 +140,7 @@ describe("Contact", () => {
     for (const sel of [".contact", ".contact-main", ".contact-photo", ".contact-cta", ".contact-links"]) {
       expect(geometry(sketch.querySelector(sel)!)).toBe(geometry(polished.querySelector(sel)!));
     }
-    expect(geometry(polished.querySelector(".contact-photo")!)).toContain("width:150px");
+    expect(geometry(polished.querySelector(".contact-photo")!)).toContain("width:200px");
   });
 });
 
@@ -100,7 +148,7 @@ describe("Footer", () => {
   it("has the exact text and repo link", () => {
     const { container } = render(<Footer />);
     expect(container.textContent).toBe(
-      "Based near Seattle. Sailing, vintage games, 50+ countries.Built with Next.js and CSS 3D. Source on GitHub.",
+      "Based near Seattle. Sailing, vintage video games, and travel (50+ countries).Built with Next.js and CSS 3D. Source on GitHub.",
     );
     expect(screen.getByRole("link", { name: "Source on GitHub" })).toHaveAttribute(
       "href",

@@ -40,7 +40,6 @@ describe("Hero", () => {
     expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow/)).toMatch(/transform: translateX\(4px\)/);
     expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--out/)).toMatch(/transform: translate\(2px, -2px\)/);
     expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--down/)).toMatch(/transform: translateY\(3px\)/);
-    expect(rule(/:is\(:hover, :focus-visible\) \.btn-arrow--copy/)).toMatch(/transform: translateY\(-2px\)/);
     // The sketch wireframe stays flat: no glow or tint bleeds onto it.
     expect(rule(/\.panel-layer--sketch \.btn:is\(:hover, :focus-visible\)/)).toMatch(/box-shadow: none/);
     expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{[^}]*\.btn-arrow[^{]*\{\s*transition: none/);

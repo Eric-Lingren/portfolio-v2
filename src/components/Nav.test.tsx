@@ -114,6 +114,8 @@ describe("Nav", () => {
     const arrow = link.querySelector(".btn-arrow--down");
     expect(arrow).toHaveTextContent("⤓");
     expect(arrow).toHaveAttribute("aria-hidden", "true");
+    expect(link.firstElementChild).toHaveClass("btn-icon");
+    expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");
   });
 
   it("keeps the view switch out of the top bar, pinned small to the viewport's bottom-right corner", () => {

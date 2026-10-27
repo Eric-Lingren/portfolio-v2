@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { getActiveSection, subscribeActiveSection } from "@/components/active-section";
 import { isFlat, resolveMode } from "@/components/flythrough/mode";
 import { RESUME_PATH } from "@/content/site";
+import { FileIcon } from "./icons";
 import { BrandMark } from "@/components/BrandMark";
 import "./nav.css";
 
@@ -66,6 +67,7 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
         </nav>
         <div className="site-nav__right">
           <a className="btn btn-primary site-nav__resume" href={RESUME_PATH} download>
+            <FileIcon />
             Resume
             <span className="btn-arrow btn-arrow--down" aria-hidden="true">
               ⤓

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, MAILTO_URL, PROFILE_IMAGE_PATH, RESUME_PATH } from "@/content/site";
+import { CheckIcon, CopyIcon, FileIcon, GitHubIcon, LinkedInIcon, MailIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./contact.css";
 
@@ -39,6 +40,14 @@ async function copyText(text: string): Promise<boolean> {
 
 export function Contact({ layers = "polished", z = 0, id }: Props) {
   const [status, setStatus] = useState("");
+  const copied = status === "Copied";
+
+  // The check icon is the visible confirmation; it flips back after a moment.
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setStatus(""), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   async function onCopy() {
     const ok = await copyText(EMAIL);
@@ -48,46 +57,66 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
   return (
     <Panel name="Contact" z={z} id={id} layers={layers}>
       <div className="contact section">
-        <h2 className="section-title">Building something interesting? Let&apos;s talk.</h2>
+        <h2 className="section-title">
+          Building something interesting?{" "}
+          <span className="contact-title__invite">Let&apos;s talk.</span>
+        </h2>
         <div className="contact-main">
           <div className="contact-photo" data-contact-photo>
             {/* eslint-disable-next-line @next/next/no-img-element -- static export */}
-            <img src={PROFILE_IMAGE_PATH} alt="Eric Lingren" width={150} height={150} decoding="async" />
+            <img src={PROFILE_IMAGE_PATH} alt="Eric Lingren" width={200} height={200} decoding="async" />
           </div>
           <div className="contact-cta">
-            <p className="contact-email">{EMAIL}</p>
-            <div className="section-actions">
-              <button type="button" className="btn btn-outline contact-btn" onClick={onCopy}>
-                Copy email
-                <span className="btn-arrow btn-arrow--copy" aria-hidden="true">
-                  ⧉
-                </span>
+            <div className="contact-email">
+              <button type="button" className="contact-email__address" title="Copy email" onClick={onCopy}>
+                {EMAIL}
               </button>
-              <a className="btn btn-primary contact-btn contact-btn--link" href={MAILTO_URL}>
-                Send an email
+              <button
+                type="button"
+                className="icon-btn contact-btn"
+                aria-label="Copy email"
+                title="Copy email"
+                onClick={onCopy}
+              >
+                {copied ? <CheckIcon /> : <CopyIcon />}
+              </button>
+              <a
+                className="icon-btn contact-btn contact-btn--link"
+                href={MAILTO_URL}
+                aria-label="Send an email"
+                title="Send an email"
+              >
+                <MailIcon />
+              </a>
+              <span className={`contact-status${status && !copied ? "" : " sr-only"}`} role="status" aria-live="polite">
+                {status}
+              </span>
+            </div>
+            <div className="contact-links section-actions">
+              <a className="btn btn-outline contact-btn" href={GITHUB_URL}>
+                <GitHubIcon />
+                GitHub
                 <span className="btn-arrow btn-arrow--out" aria-hidden="true">
                   ↗
                 </span>
               </a>
+              <a className="btn btn-outline contact-btn" href={LINKEDIN_URL}>
+                <LinkedInIcon />
+                LinkedIn
+                <span className="btn-arrow btn-arrow--out" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              <a className="btn btn-primary contact-btn" href={RESUME_PATH} download>
+                <FileIcon />
+                Resume
+                <span className="btn-arrow btn-arrow--down" aria-hidden="true">
+                  ⤓
+                </span>
+              </a>
             </div>
-            <p className="contact-status" role="status" aria-live="polite">
-              {status}
-            </p>
           </div>
         </div>
-        <ul className="contact-links">
-          <li>
-            <a href={GITHUB_URL}>GitHub</a>
-          </li>
-          <li>
-            <a href={LINKEDIN_URL}>LinkedIn</a>
-          </li>
-          <li>
-            <a href={RESUME_PATH} download>
-              Resume (PDF)
-            </a>
-          </li>
-        </ul>
       </div>
     </Panel>
   );

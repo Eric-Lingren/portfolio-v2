@@ -62,6 +62,8 @@ describe("Experience", () => {
     const arrow = link.querySelector(".btn-arrow--down");
     expect(arrow).toHaveTextContent("⤓");
     expect(arrow).toHaveAttribute("aria-hidden", "true");
+    expect(link.firstElementChild).toHaveClass("btn-icon");
+    expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");
   });
 
   it("ends with the resume button and no pre-engineering footnote", () => {
