@@ -70,27 +70,90 @@ describe("check-content rules", () => {
     expect(rules(root)).toContain(rule);
   });
 
-  describe("testimonials manifest", () => {
-    const card = (i) => `{ quote: "q", roleLabel: "Engineer", sourceType: "Slack", employer: "Acme", year: 2024, original: "t${i}" }`;
-    const manifestRoot = (entries) =>
-      project({ "src/content/testimonials.ts": `export const TESTIMONIALS = [${entries.join(",")}];` });
+  describe("testimonials cards", () => {
+    const mk = (i, over = {}) => ({
+      quote: "Fast and careful.",
+      roleLabel: "Engineering Manager",
+      sourceType: "Slack",
+      employer: "Acme",
+      year: 2024,
+      original: `t${i}`,
+      ...over,
+    });
+    const tRoot = (cards, extra = {}, pngs = cards.map((c) => c.original)) =>
+      project({
+        "src/content/testimonials.ts": `export const TESTIMONIALS = ${JSON.stringify(cards)};`,
+        ...Object.fromEntries(pngs.map((n) => [`public/testimonials/${n}.png`, "x"])),
+        ...extra,
+      });
+    const n = (k) => Array.from({ length: k }, (_, i) => mk(i + 1));
+    const strict = (root) => {
+      const r = checkContent({ root, strict: true });
+      return { rules: r.findings.filter((f) => f.severity === "error").map((f) => f.rule), exitCode: r.exitCode };
+    };
 
-    it("flags an empty manifest as a strict error", () => {
-      const root = manifestRoot([]);
-      const f = checkContent({ root, strict: true });
-      expect(f.findings.map((x) => x.rule)).toContain("testimonials-placeholder");
-      expect(f.exitCode).toBe(1);
+    it("passes 4 and 6 cards", () => {
+      expect(strict(tRoot(n(4)))).toEqual({ rules: [], exitCode: 0 });
+      expect(strict(tRoot(n(6)))).toEqual({ rules: [], exitCode: 0 });
     });
 
-    it("flags a manifest outside 4-6 cards", () => {
-      expect(rules(manifestRoot([card(1), card(2), card(3)]))).toContain("testimonials-placeholder");
-      expect(rules(manifestRoot([1, 2, 3, 4, 5, 6, 7].map(card)))).toContain("testimonials-placeholder");
+    it.each([0, 3, 5, 7])("fails %i cards", (k) => {
+      const r = strict(tRoot(n(k)));
+      expect(r.rules).toContain("testimonials-placeholder");
+      expect(r.exitCode).toBe(1);
     });
 
-    it("accepts 4-6 cards and ignores a missing manifest", () => {
-      const ok = manifestRoot([1, 2, 3, 4].map(card));
-      expect(checkContent({ root: ok, strict: true }).exitCode).toBe(0);
+    it("ignores a missing file and fails an unloadable one", () => {
       expect(rules(project({}))).not.toContain("testimonials-placeholder");
+      const bad = project({ "src/content/testimonials.ts": "export const TESTIMONIALS = ;;(" });
+      expect(strict(bad).rules).toContain("testimonials-placeholder");
+    });
+
+    it("fails an original with no PNG and an unused PNG", () => {
+      const cards = n(4);
+      expect(strict(tRoot(cards, {}, ["t1", "t2", "t3"])).rules).toContain("testimonials-card");
+      expect(strict(tRoot(cards, {}, ["t1", "t2", "t3", "t4", "stray"])).rules).toContain("testimonials-card");
+    });
+
+    it("enforces 30-word quotes", () => {
+      const words = (k) => Array(k).fill("w").join(" ");
+      const withQuote = (q) => [mk(1, { quote: q }), ...n(4).slice(1)];
+      expect(strict(tRoot(withQuote(words(30)))).rules).toEqual([]);
+      expect(strict(tRoot(withQuote(words(31)))).rules).toContain("testimonials-card");
+    });
+
+    it("fails empty fields, bad year and bad original", () => {
+      for (const over of [{ employer: "" }, { quote: " " }, { year: 2024.5 }, { year: "2024" }, { original: "a/b" }]) {
+        const cards = [mk(1, over), ...n(4).slice(1)];
+        expect(strict(tRoot(cards, {}, ["t1", "t2", "t3", "t4"])).rules).toContain("testimonials-card");
+      }
+    });
+
+    describe("name guard", () => {
+      const bl = { "docs/private/testimonials/name-blocklist.txt": "# names\nJane Doe\nEric\n" };
+      const withQuote = (q, over = {}) => [mk(1, { quote: q, ...over }), ...n(4).slice(1)];
+      it("fails blocklisted names and name-like roleLabels", () => {
+        expect(strict(tRoot(withQuote("Jane Doe was great"), bl)).rules).toContain("testimonials-name");
+        expect(strict(tRoot(withQuote("ok", { roleLabel: "Jane Doe" }), bl)).rules).toContain("testimonials-name");
+        expect(strict(tRoot(withQuote("ok", { roleLabel: "Jane Doe" }))).rules).toContain("testimonials-name");
+      });
+      it("allows the owner and digits", () => {
+        expect(strict(tRoot(withQuote("Eric shipped it, 2x faster"), bl))).toEqual({ rules: [], exitCode: 0 });
+        expect(strict(tRoot(withQuote("Eric Lingren shipped it"), bl))).toEqual({ rules: [], exitCode: 0 });
+      });
+      it("matches whole words only", () => {
+        expect(strict(tRoot(withQuote("Janet Doer"), bl)).rules).toEqual([]);
+      });
+      it.each(["mail a@b.com", "ping @someone", "see https://x.io/a", "see www.x.io"])("fails pattern %s", (q) => {
+        expect(strict(tRoot(withQuote(q))).rules).toContain("testimonials-name");
+      });
+      it("warns and skips terms when the blocklist is absent", () => {
+        const r = checkContent({ root: tRoot(withQuote("Jane Doe was great")), strict: true });
+        expect(r.exitCode).toBe(0);
+        const w = r.findings.find((f) => f.rule === "testimonials-name-blocklist-missing");
+        expect(w?.severity).toBe("warn");
+        expect(strict(tRoot(withQuote("mail a@b.com"))).exitCode).toBe(1);
+      });
     });
   });
 
@@ -173,8 +236,10 @@ describe("strict launch gate", () => {
   };
 
   it("passes a fully clean tree", () => {
-    const card = (i) => `{ original: "t${i}" }`;
+    const card = (i) =>
+      `{ quote: "q", roleLabel: "Engineer", sourceType: "Slack", employer: "Acme", year: 2024, original: "t${i}" }`;
     const r = strictRules({
+      ...Object.fromEntries([1, 2, 3, 4].map((i) => [`public/testimonials/t${i}.png`, "x"])),
       "content/work/a.mdx": FM + body(),
       "src/content/testimonials.ts": `export const TESTIMONIALS = [${[1, 2, 3, 4].map(card).join(",")}];`,
       "src/content/positioning.ts": 'export const A = "Plain sentence.";',
