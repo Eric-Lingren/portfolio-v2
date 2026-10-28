@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Redacts raw testimonial screenshots into uniform, publishable images.
+// Flattens raw testimonial screenshots into uniform, publishable PNGs.
 // Raw inputs live in docs/private/testimonials/ (ignored by version control, never committed).
-// regions.json there maps filename -> { regions: [{x,y,width,height}], roleLabel, alt }.
+// Optional regions.json there maps filename -> { regions: [{x,y,width,height}] }.
+// Files with no entry (or empty regions) are only flattened: one PNG, no alpha, no metadata.
 import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -10,22 +11,10 @@ import sharp from "sharp";
 
 export const BLOCK_COLOR = { r: 24, g: 24, b: 27 };
 const IMAGE_EXT = /\.(png|jpe?g|webp)$/i;
-const ROLE_WORDS =
-  /\b(engineer|developer|manager|director|lead|founder|cto|ceo|vp|head|architect|designer|analyst|recruiter|colleague|peer|mentor|teammate|principal|staff|senior|junior|intern|consultant|owner|product|engineering|executive|partner|client|customer|dispatcher)\b/i;
-
-export function looksLikePersonalName(label, blocklist = []) {
-  const text = String(label ?? "").trim();
-  if (!text) return true;
-  const lower = text.toLowerCase();
-  if (blocklist.some((n) => n && lower.includes(n.toLowerCase()))) return true;
-  if (/[@\d]/.test(text)) return true;
-  const namePattern = /^[A-Z][a-z'’-]+(\s+[A-Z]\.?)?(\s+[A-Z][a-z'’-]+){1,2}$/;
-  return namePattern.test(text) && !ROLE_WORDS.test(text);
-}
 
 function validateRegions(file, regions) {
-  if (!Array.isArray(regions) || regions.length === 0) {
-    throw new Error(`${file}: no redaction regions defined`);
+  if (!Array.isArray(regions)) {
+    throw new Error(`${file}: regions must be an array`);
   }
   for (const r of regions) {
     for (const k of ["x", "y", "width", "height"]) {
@@ -52,50 +41,34 @@ export async function redactImage(input, regions, color = BLOCK_COLOR) {
   return base.composite(overlays).png().toBuffer();
 }
 
-export async function redactTestimonials({ inputDir, outputDir, manifestPath, blocklist = [] }) {
+export async function redactTestimonials({ inputDir, outputDir }) {
   const regionsPath = path.join(inputDir, "regions.json");
-  if (!existsSync(regionsPath)) throw new Error(`missing ${regionsPath}`);
-  const config = JSON.parse(await readFile(regionsPath, "utf8"));
+  const config = existsSync(regionsPath) ? JSON.parse(await readFile(regionsPath, "utf8")) : {};
   const files = (await readdir(inputDir)).filter((f) => IMAGE_EXT.test(f)).sort();
   if (files.length === 0) throw new Error(`no images found in ${inputDir}`);
 
-  const entries = [];
+  const outputs = [];
   for (const file of files) {
-    const cfg = config[file];
-    if (!cfg) throw new Error(`${file}: no entry in regions.json`);
-    validateRegions(file, cfg.regions);
-    if (!cfg.alt || typeof cfg.alt !== "string") throw new Error(`${file}: missing alt text`);
-    if (looksLikePersonalName(cfg.roleLabel, blocklist)) {
-      throw new Error(`${file}: roleLabel "${cfg.roleLabel}" looks like a personal name`);
-    }
+    const regions = config[file]?.regions ?? [];
+    validateRegions(file, regions);
     const id = path.basename(file, path.extname(file));
-    const out = await redactImage(await readFile(path.join(inputDir, file)), cfg.regions);
-    entries.push({ id, image: `/testimonials/${id}.png`, roleLabel: cfg.roleLabel, alt: cfg.alt, out });
+    const out = await redactImage(await readFile(path.join(inputDir, file)), regions);
+    outputs.push({ id, out });
   }
 
   await mkdir(outputDir, { recursive: true });
-  for (const e of entries) await writeFile(path.join(outputDir, `${e.id}.png`), e.out);
-  await mkdir(path.dirname(manifestPath), { recursive: true });
-  const manifest = entries.map(({ id, image, roleLabel, alt }) => ({ id, image, roleLabel, alt }));
-  await writeFile(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
-  return manifest;
+  for (const e of outputs) await writeFile(path.join(outputDir, `${e.id}.png`), e.out);
+  return outputs.map(({ id }) => id);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = process.cwd();
-  const inputDir = path.join(root, "docs/private/testimonials");
-  const blocklistPath = path.join(inputDir, "name-blocklist.txt");
-  const blocklist = existsSync(blocklistPath)
-    ? (await readFile(blocklistPath, "utf8")).split("\n").map((s) => s.trim()).filter(Boolean)
-    : [];
   try {
-    const manifest = await redactTestimonials({
-      inputDir,
+    const ids = await redactTestimonials({
+      inputDir: path.join(root, "docs/private/testimonials"),
       outputDir: path.join(root, "public/testimonials"),
-      manifestPath: path.join(root, "src/content/testimonials.json"),
-      blocklist,
     });
-    console.log(`redacted ${manifest.length} testimonial(s)`);
+    console.log(`redacted ${ids.length} testimonial(s)`);
   } catch (err) {
     console.error(`testimonials:redact failed: ${err.message}`);
     process.exit(1);
