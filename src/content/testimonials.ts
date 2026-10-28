@@ -1,16 +1,12 @@
-import manifest from "./testimonials.json";
-
 export type Testimonial = {
-  id: string;
-  /** Redacted screenshot path under /testimonials/. */
-  image: string;
-  /** Role label only, never a personal name. */
+  quote: string;
   roleLabel: string;
-  alt: string;
+  sourceType: string;
+  employer: string;
+  year: number;
+  original: string;
 };
 
-/** Written by `npm run testimonials:redact`. Empty until real screenshots exist. */
-export const TESTIMONIALS: readonly Testimonial[] = manifest as Testimonial[];
-
-/** Cards shown as placeholders while the manifest is empty. */
-export const PLACEHOLDER_COUNT = 4;
+// Empty until Eric supplies the real quotes. Never invent entries.
+// `original` is the file basename (no extension) of a PNG in public/testimonials/.
+export const TESTIMONIALS: readonly Testimonial[] = [];

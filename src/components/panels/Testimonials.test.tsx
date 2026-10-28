@@ -11,55 +11,74 @@ const geometry = (el: Element) =>
 
 afterEach(() => document.head.querySelectorAll("style").forEach((s) => s.remove()));
 
-const LABELS = [
-  "Staff engineer, Standard Metrics",
-  "Product manager, Standard Metrics",
-  "Designer, Standard Metrics",
-  "Engineering manager, Standard Metrics",
-  "Lead developer, InsideOut Development",
-  "Student, teaching",
-];
 const fixture = (n: number): Testimonial[] =>
-  LABELS.slice(0, n).map((roleLabel, i) => ({
-    id: `t${i}`,
-    image: `/testimonials/t${i}.png`,
-    roleLabel,
-    alt: `Redacted praise from a ${roleLabel}`,
+  Array.from({ length: n }, (_, i) => ({
+    quote: `Quote number ${i}`,
+    roleLabel: `Role ${i}`,
+    sourceType: "Slack message",
+    employer: "Acme",
+    year: 2020 + i,
+    original: `shot-${i}`,
   }));
 
 describe("Testimonials", () => {
-  it.each([4, 5, 6])("renders %i uniform cards with role labels only", (n) => {
-    const { container } = render(<Testimonials manifest={fixture(n)} />);
-    const cards = [...container.querySelectorAll("[data-testimonial]")];
+  it.each([4, 6])("renders %i uniform excerpt cards with no images", (n) => {
+    const { container } = render(<Testimonials testimonials={fixture(n)} />);
+    const cards = [...container.querySelectorAll("li.testimonial-card")];
     expect(cards).toHaveLength(n);
     expect(new Set(cards.map((c) => c.className)).size).toBe(1);
-    expect(cards.map((c) => c.querySelector(".testimonial-role")!.textContent)).toEqual(LABELS.slice(0, n));
+    cards.forEach((c, i) => {
+      expect(c.querySelector("blockquote")!.textContent).toBe(`“Quote number ${i}”`);
+      expect(c.querySelector(".testimonial-source")!.textContent).toBe(`Role ${i} · Slack message · Acme · ${2020 + i}`);
+      expect(c.querySelector("img")).toBeNull();
+      const order = [...c.children].map((el) => el.tagName);
+      expect(order).toEqual(["BLOCKQUOTE", "P", "A"]);
+    });
     expect(container.querySelector("[data-testimonial-placeholder]")).toBeNull();
   });
 
-  it("gives every image alt text and lazy loading", () => {
-    const { container } = render(<Testimonials manifest={fixture(6)} />);
-    const imgs = [...container.querySelectorAll("img")];
-    expect(imgs).toHaveLength(6);
-    for (const img of imgs) {
-      expect(img.getAttribute("alt")?.trim()).toBeTruthy();
-      expect(img).toHaveAttribute("loading", "lazy");
-    }
+  it("links each card to its original screenshot with the shared button classes", () => {
+    const { container } = render(<Testimonials testimonials={fixture(4)} />);
+    const links = [...container.querySelectorAll<HTMLAnchorElement>("li.testimonial-card a")];
+    expect(links).toHaveLength(4);
+    const resumeClasses = ["btn", "btn-primary"];
+    links.forEach((a, i) => {
+      expect(a).toHaveAttribute("href", `/testimonials/shot-${i}.png`);
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveAttribute("aria-label", "View original screenshot");
+      expect(a.textContent).toContain("View original");
+      expect(a.firstElementChild).toBe(a.querySelector("svg.btn-icon"));
+      expect(a.className.split(" ")).toEqual(resumeClasses);
+    });
   });
 
-  it("renders marked placeholders for an empty manifest", () => {
-    const { container } = render(<Testimonials manifest={[]} />);
-    expect(container.querySelectorAll("[data-testimonial-placeholder]").length).toBeGreaterThanOrEqual(4);
-    expect(container.textContent).toContain("Placeholder");
+  it("renders 4 marked placeholder cards with the same structure and no link", () => {
+    const { container } = render(<Testimonials testimonials={[]} />);
+    const cards = container.querySelectorAll("li.testimonial-card[data-testimonial-placeholder]");
+    expect(cards).toHaveLength(4);
+    cards.forEach((c) => {
+      expect(c.querySelector("blockquote")).not.toBeNull();
+      expect(c.querySelector(".testimonial-source")).not.toBeNull();
+      expect(c.querySelector("a")).toBeNull();
+    });
+    expect(container.textContent).toContain("[ERIC:");
     expect(container.querySelector("img")).toBeNull();
+  });
+
+  it("uses the shared 600px breakpoint and no italics in the card CSS", () => {
+    const cardCss = readFileSync(join(process.cwd(), "src/components/panels/testimonials.css"), "utf8");
+    expect(cardCss).toMatch(/repeat\(2,/);
+    expect(cardCss).toMatch(/max-width: 600px/);
+    expect(cardCss).not.toMatch(/italic/);
+    expect(cardCss).not.toMatch(/testimonial-frame/);
   });
 
   it("keeps identical geometry in both layers", () => {
     const style = document.createElement("style");
     style.textContent = css + readFileSync(join(process.cwd(), "src/components/panels/testimonials.css"), "utf8");
     document.head.appendChild(style);
-    for (const manifest of [fixture(5), []]) {
-      const { container, unmount } = render(<Testimonials layers="both" manifest={manifest} />);
+    for (const manifest of [fixture(6), []]) {
+      const { container, unmount } = render(<Testimonials layers="both" testimonials={manifest} />);
       const sketch = container.querySelector('[data-layer="sketch"]')!;
       const polished = container.querySelector('[data-layer="polished"]')!;
       expect(geometry(sketch)).toBe(geometry(polished));

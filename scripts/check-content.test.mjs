@@ -71,9 +71,9 @@ describe("check-content rules", () => {
   });
 
   describe("testimonials manifest", () => {
-    const card = (i) => ({ id: `t${i}`, image: `/testimonials/t${i}.png`, roleLabel: "Engineer", alt: "a" });
+    const card = (i) => `{ quote: "q", roleLabel: "Engineer", sourceType: "Slack", employer: "Acme", year: 2024, original: "t${i}" }`;
     const manifestRoot = (entries) =>
-      project({ "src/content/testimonials.json": JSON.stringify(entries) });
+      project({ "src/content/testimonials.ts": `export const TESTIMONIALS = [${entries.join(",")}];` });
 
     it("flags an empty manifest as a strict error", () => {
       const root = manifestRoot([]);
@@ -173,10 +173,10 @@ describe("strict launch gate", () => {
   };
 
   it("passes a fully clean tree", () => {
-    const card = (i) => ({ id: `t${i}`, image: `/t${i}.png`, roleLabel: "E", alt: "a" });
+    const card = (i) => `{ original: "t${i}" }`;
     const r = strictRules({
       "content/work/a.mdx": FM + body(),
-      "src/content/testimonials.json": JSON.stringify([1, 2, 3, 4].map(card)),
+      "src/content/testimonials.ts": `export const TESTIMONIALS = [${[1, 2, 3, 4].map(card).join(",")}];`,
       "src/content/positioning.ts": 'export const A = "Plain sentence.";',
     });
     expect(r).toEqual({ rules: [], exitCode: 0 });
@@ -186,7 +186,7 @@ describe("strict launch gate", () => {
     ["eric marker in json", { "src/content/work-cards.json": '{"note":"[ERIC: confirm card copy]"}' }, "eric-marker"],
     ["panel component marker", { "src/components/panels/X.tsx": "<p>[ERIC: fix]</p>" }, "eric-marker"],
     ["resume marker", { "content/resume/resume.mdx": "- Cut render time on [ERIC: what]." }, "eric-marker"],
-    ["placeholder testimonials", { "src/content/testimonials.json": "[]" }, "testimonials-placeholder"],
+    ["placeholder testimonials", { "src/content/testimonials.ts": "export const TESTIMONIALS = [];" }, "testimonials-placeholder"],
     ["internal link", { "src/components/panels/X.tsx": '<a href="https://linear.app/x">x</a>' }, "internal-link"],
     ["phone", { "content/resume/resume.mdx": "Call (555) 123-4567" }, "phone"],
     ["count in positioning", { "src/content/positioning.ts": 'const a = "Merged 300 PRs";' }, "headline-count"],
