@@ -19,6 +19,7 @@ import {
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
 import { PANELS } from "./registry";
+import { divePull } from "./dive";
 import { attachPanelSnap } from "./snap";
 import { StageContext } from "./stage-context";
 import { applyWipe, builtAmount, findWipe, panelDistance, type WipeTargets } from "./wipe";
@@ -26,8 +27,9 @@ import { applyWipe, builtAmount, findWipe, panelDistance, type WipeTargets } fro
 const COUNT = PANELS.length;
 
 /**
- * Fixed 3D stage. Motion is a pure function of scroll position: the rAF loop
- * only eases the camera toward the scroll target and writes transforms.
+ * Fixed 3D stage. Motion is a pure function of scroll position, plus the
+ * pull-back of an anchor flight: the rAF loop only eases the camera toward
+ * its targets and writes transforms.
  * No layout is read on scroll or resize (innerWidth/innerHeight/scrollY only);
  * panel content heights for the content fit arrive through a ResizeObserver.
  */
@@ -47,6 +49,8 @@ export function FlyStage() {
     let lvh = window.innerHeight;
     let target = scrollProgress(window.scrollY, lvh);
     let current = target;
+    let pullTarget = 0;
+    let pull = 0;
     // Natural content height and available body height (layer content box) per panel.
     const bodyHeights: number[] = PANELS.map(() => 0);
     const roomHeights: number[] = PANELS.map(() => 0);
@@ -109,10 +113,10 @@ export function FlyStage() {
         stageRef.current.style.transform = lift ? `translate3d(0, ${-lift}px, 0)` : "";
         fitLast();
       }
-      world.style.transform = worldTransform(current, COUNT, layout, look);
+      world.style.transform = worldTransform(current, COUNT, layout, look, pull);
       panelRefs.current.forEach((el, i) => {
         if (!el) return;
-        const s = panelStyle(i, current, COUNT, layout);
+        const s = panelStyle(i, current, COUNT, layout, pull);
         el.style.transform = s.transform;
         el.style.opacity = String(s.opacity);
         el.style.visibility = s.opacity < 0.01 ? "hidden" : "visible";
@@ -130,15 +134,20 @@ export function FlyStage() {
       const k = reduced ? 1 : lerpFactor(Math.min(64, now - last || 16));
       last = now;
       current += (target - current) * k;
+      pull += (pullTarget - pull) * k;
       look = {
         x: look.x + (lookTarget.x - look.x) * k,
         y: look.y + (lookTarget.y - look.y) * k,
       };
       const settled =
         Math.abs(target - current) < 1e-4 &&
+        Math.abs(pullTarget - pull) < 1e-3 &&
         Math.abs(lookTarget.x - look.x) < 1e-3 &&
         Math.abs(lookTarget.y - look.y) < 1e-3;
-      if (settled) current = target;
+      if (settled) {
+        current = target;
+        pull = pullTarget;
+      }
       render();
       if (!settled) raf = requestAnimationFrame(tick);
     };
@@ -164,11 +173,16 @@ export function FlyStage() {
       applyFit();
       wake();
     };
+    // Pull-back rides the anchor flight's clock; a cancelled flight eases back in through the lerp.
+    const onFlight = (u: number | null) => {
+      pullTarget = u === null ? 0 : divePull(u);
+      wake();
+    };
     const snap = attachPanelSnap(
       window,
       () => PANELS.map((_, i) => panelScrollTop(i, COUNT, lvh)),
       FLY_CONFIG.snap,
-      { smooth: !reduced },
+      { smooth: !reduced, onFlight },
     );
     const onClick = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest?.('a[href^="#"]');

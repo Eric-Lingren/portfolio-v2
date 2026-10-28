@@ -85,6 +85,36 @@ describe("camera math", () => {
   });
 });
 
+describe("pull-back", () => {
+  const p = 1.5 / (N - 1); // between panels 1 and 2
+
+  it("leaves every transform untouched at zero pull", () => {
+    expect(worldTransform(p, N, wide, undefined, 0)).toBe(worldTransform(p, N, wide));
+    for (let i = 0; i < N; i++) expect(panelStyle(i, p, N, wide, 0)).toEqual(panelStyle(i, p, N, wide));
+  });
+
+  it("dollies the camera back and tilts it down in proportion to pull", () => {
+    const half = worldTransform(0, N, wide, undefined, 0.5);
+    expect(half).toContain(`translate3d(0, 0, ${-0.5 * FLY_CONFIG.dive.depth}px)`);
+    expect(half).toContain(`rotateX(${-0.5 * FLY_CONFIG.dive.tilt}deg)`);
+  });
+
+  it("flattens the weave at full pull", () => {
+    expect(panelYaw(1, 0, N, wide, 1)).toBe(0);
+    expect(worldTransform(p, N, wide, undefined, 1)).toMatch(/translate3d\(0px, 0, [-\d.]+px\)$/);
+  });
+
+  it("shows panels further down the stack while pulled back", () => {
+    expect(panelOpacity(6, 0, N)).toBe(0);
+    expect(panelOpacity(6, 0, N, 1)).toBeGreaterThan(0.5);
+  });
+
+  it("keeps a just-passed panel in view below the pulled-back camera", () => {
+    expect(panelOpacity(1, 1.5 / (N - 1), N)).toBe(0);
+    expect(panelOpacity(1, 1.5 / (N - 1), N, 1)).toBeGreaterThan(0.5);
+  });
+});
+
 import { contentFit, fitScale, footerLift, panelHeight, panelScrollProgress } from "./camera";
 
 describe("footerLift", () => {

@@ -14,10 +14,13 @@
  * Programmatic scrollTo calls, anchor navigation and scrollbar drags do not,
  * so camera motion stays a pure function of scroll position.
  *
- * Anchor navigation flies there on its own eased, frame-driven scroll rather
- * than native smooth scrolling, whose browser-chosen duration rushes through
- * several panels. Any user input mid-flight hands control back at once.
+ * Anchor navigation flies there on its own frame-driven scroll rather than
+ * native smooth scrolling, whose browser-chosen duration rushes through
+ * several panels. Every jump takes the same time, gliding along the
+ * pull-back-and-dive curve (dive.ts), and reports its clock so the caller can
+ * pull the camera back in step. Any user input mid-flight hands control back.
  */
+import { diveScroll } from "./dive";
 
 export type SnapConfig = {
   /** Minimum time (ms) a reached stop stays locked. */
@@ -34,10 +37,8 @@ export type SnapConfig = {
   idleMs: number;
   /** Resting within this fraction of a gap from a stop eases onto it; further out stays put. */
   pullRadius: number;
-  /** Anchor fly-through: time (ms) to ease up to cruise speed, and the same to ease back down. */
-  navRampMs: number;
-  /** Anchor fly-through cruise speed, in panel gaps per second. Long jumps take longer instead of going faster. */
-  navCruisePerSec: number;
+  /** Anchor fly-through duration (ms), whatever the distance. */
+  navMs: number;
 };
 
 /** Index of the first stop reached or crossed moving from `from` to `to`, else -1. Leaving a stop does not count. */
@@ -84,40 +85,6 @@ export function isFreshSwipe(prev: number, d: number, cfg: SnapConfig): boolean 
   return prev > 0 && d >= cfg.freshMinDelta && d >= prev * cfg.freshRatio;
 }
 
-/**
- * Speed profile of an anchor fly-through covering `steps` panel gaps: a
- * sine-shaped ramp up to cruise speed, a steady cruise, and a matching ramp
- * down. A hop too short to reach cruise speed peaks lower instead.
- */
-function flyProfile(steps: number, cfg: SnapConfig) {
-  const d = Math.abs(steps);
-  const r = cfg.navRampMs;
-  const v = Math.min(cfg.navCruisePerSec / 1000, d / r);
-  const cruise = v > 0 ? (d - v * r) / v : 0;
-  return { d, r, v, cruise, total: 2 * r + cruise };
-}
-
-/** Duration (ms) of an anchor fly-through that covers `steps` panel gaps. */
-export function flyDuration(steps: number, cfg: SnapConfig): number {
-  return flyProfile(steps, cfg).total;
-}
-
-/** Fraction (0..1) of the distance an anchor fly-through has covered `elapsed` ms in. */
-export function flyProgress(elapsed: number, steps: number, cfg: SnapConfig): number {
-  const { d, r, v, cruise, total } = flyProfile(steps, cfg);
-  if (d === 0 || elapsed >= total) return 1;
-  if (elapsed <= 0) return 0;
-  const k = r / (2 * Math.PI);
-  let s: number;
-  if (elapsed < r) s = v * (elapsed / 2 - k * Math.sin((Math.PI * elapsed) / r));
-  else if (elapsed < r + cruise) s = (v * r) / 2 + v * (elapsed - r);
-  else {
-    const u = elapsed - r - cruise;
-    s = (v * r) / 2 + v * cruise + v * (u / 2 + k * Math.sin((Math.PI * u) / r));
-  }
-  return Math.min(1, s / d);
-}
-
 type SnapWindow = Pick<Window, "addEventListener" | "removeEventListener" | "scrollTo" | "scrollY">;
 
 const SCROLL_KEYS = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", " ", "Home", "End"]);
@@ -141,6 +108,8 @@ export function attachPanelSnap(
     now?: () => number;
     raf?: (cb: FrameRequestCallback) => number;
     caf?: (id: number) => void;
+    /** Each frame of an anchor flight, with its normalized time u (0..1); null once it is cancelled. */
+    onFlight?: (u: number | null) => void;
   },
 ): PanelSnap {
   const now = opts.now ?? (() => performance.now());
@@ -162,8 +131,10 @@ export function attachPanelSnap(
   /** Pending frame of an anchor fly-through, 0 when none is running. */
   let fly = 0;
   const stopFly = () => {
-    if (fly) caf(fly);
+    if (!fly) return;
+    caf(fly);
     fly = 0;
+    opts.onFlight?.(null);
   };
 
   const locked = () => {
@@ -274,16 +245,13 @@ export function attachPanelSnap(
         win.scrollTo({ top, behavior });
         return;
       }
-      const stops = getStops();
-      const gap = stops.length > 1 ? (stops[stops.length - 1] - stops[0]) / (stops.length - 1) : 0;
-      const steps = gap > 0 ? (top - from) / gap : 1;
-      const duration = flyDuration(steps, cfg);
       const start = now();
-      nav = { top, until: start + duration + NAV_TIMEOUT_MS };
+      nav = { top, until: start + cfg.navMs + NAV_TIMEOUT_MS };
       const frame = () => {
-        const elapsed = now() - start;
-        fly = elapsed < duration ? raf(frame) : 0;
-        jump(from + (top - from) * flyProgress(elapsed, steps, cfg));
+        const u = Math.min(1, (now() - start) / cfg.navMs);
+        fly = u < 1 ? raf(frame) : 0;
+        jump(from + (top - from) * diveScroll(u));
+        opts.onFlight?.(u);
       };
       fly = raf(frame);
     },

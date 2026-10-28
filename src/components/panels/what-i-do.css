@@ -22,12 +22,9 @@
   border-radius: 0.5rem;
 }
 
+/* Brand colours only: coral, cyan, coral, so the outer cards match and the middle one stands out. */
 .pillar[data-viz="board"] {
   --pillar-accent: var(--accent-2);
-}
-
-.pillar[data-viz="grid"] {
-  --pillar-accent: #86efac;
 }
 
 .pillar-title {

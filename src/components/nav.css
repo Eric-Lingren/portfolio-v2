@@ -136,9 +136,44 @@
   text-transform: none;
 }
 
-/* Phones: the hero already shows the name, and the bar must stay short. */
+/*
+ * Below desktop the bar stays one line: the links become a single row that scrolls sideways
+ * (Nav keeps the active one in view and flags data-overflow) instead of wrapping.
+ */
+@media (max-width: 1100px) {
+  .site-nav {
+    flex-wrap: nowrap;
+  }
+  .site-nav__links {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  /* Fade the clipped edges, only when something is clipped, so they read as "more this way". */
+  .site-nav__links[data-overflow] {
+    mask-image: linear-gradient(to right, transparent, #000 0.75rem, #000 calc(100% - 1.25rem), transparent);
+  }
+  .site-nav__links::-webkit-scrollbar {
+    display: none;
+  }
+  .site-nav__links a,
+  .site-nav .site-nav__brand {
+    flex: none;
+    white-space: nowrap;
+  }
+  .site-nav__right {
+    flex: none;
+  }
+}
+
+/* Phones: the hero already shows the name, so the brand and section numbers go. */
 @media (max-width: 600px) {
-  .site-nav__brand {
+  .site-nav {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .site-nav .site-nav__brand {
     display: none;
   }
   .site-nav__num {

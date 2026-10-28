@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { getActiveSection, subscribeActiveSection } from "@/components/active-section";
 import { isFlat, resolveMode } from "@/components/flythrough/mode";
 import { RESUME_PATH } from "@/content/site";
@@ -43,6 +43,30 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
   const view = useSyncExternalStore(subscribe, readView, () => "interactive" as NavView);
   const active = useSyncExternalStore(subscribeActiveSection, getActiveSection, () => null);
 
+  const linksRef = useRef<HTMLElement>(null);
+
+  // Below desktop the links scroll sideways; flag when they overflow so CSS fades the clipped edges.
+  useEffect(() => {
+    const row = linksRef.current;
+    if (!row || typeof ResizeObserver === "undefined") return;
+    const check = () => row.toggleAttribute("data-overflow", row.scrollWidth > row.clientWidth + 1);
+    const ro = new ResizeObserver(check);
+    ro.observe(row);
+    check();
+    return () => ro.disconnect();
+  }, []);
+
+  // Keep the active link in view inside the scrolling row. A no-op when they all fit.
+  useEffect(() => {
+    const row = linksRef.current;
+    const link = row?.querySelector<HTMLElement>('[aria-current="location"]');
+    if (!row || !link || row.scrollWidth <= row.clientWidth) return;
+    const left = link.offsetLeft - row.offsetLeft;
+    if (left < row.scrollLeft || left + link.offsetWidth > row.scrollLeft + row.clientWidth) {
+      row.scrollTo({ left: left - 8, behavior: "smooth" });
+    }
+  }, [active]);
+
   const choose = (next: NavView) => {
     if (next === view) return;
     navigate(viewHref(next, window.location.href));
@@ -55,7 +79,7 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
           <BrandMark className="site-nav__mark" />
           Eric Lingren
         </a>
-        <nav aria-label="Sections" className="site-nav__links">
+        <nav aria-label="Sections" className="site-nav__links" ref={linksRef}>
           {NAV_LINKS.map((l, i) => (
             <a key={l.id} href={`#${l.id}`} aria-current={active === l.id ? "location" : undefined}>
               <span className="site-nav__num" aria-hidden="true">

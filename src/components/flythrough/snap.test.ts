@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FLY_CONFIG } from "./config";
-import { attachPanelSnap, crossedStop, flyDuration, flyProgress, idleSnapTarget, isFreshSwipe, lockHolds } from "./snap";
+import { attachPanelSnap, crossedStop, idleSnapTarget, isFreshSwipe, lockHolds } from "./snap";
 
 const STOPS = [0, 1000, 2000, 3000];
 const CFG = FLY_CONFIG.snap;
@@ -91,60 +91,6 @@ describe("isFreshSwipe", () => {
   });
 });
 
-describe("flyProgress", () => {
-  /** Progress sampled every ms across the whole flight. */
-  const samples = (steps: number) => {
-    const total = flyDuration(steps, CFG);
-    return Array.from({ length: Math.ceil(total) + 2 }, (_, t) => flyProgress(t, steps, CFG));
-  };
-
-  it("starts at 0, ends at 1 and never moves backward", () => {
-    for (const steps of [0.4, 1, 3, 6, -2]) {
-      const p = samples(steps);
-      expect(p[0]).toBe(0);
-      expect(p.at(-1)).toBe(1);
-      p.slice(1).forEach((x, i) => expect(x).toBeGreaterThanOrEqual(p[i] - 1e-12));
-    }
-  });
-
-  it("never flies faster than the cruise speed, however far it goes", () => {
-    for (const steps of [1, 3, 6]) {
-      const p = samples(steps);
-      const peak = Math.max(...p.slice(1).map((x, i) => (x - p[i]) * steps));
-      expect(peak).toBeLessThanOrEqual((CFG.navCruisePerSec / 1000) * 1.0001);
-    }
-  });
-
-  it("eases off the mark and into the stop", () => {
-    const total = flyDuration(6, CFG);
-    expect(flyProgress(CFG.navRampMs * 0.2, 6, CFG)).toBeLessThan(0.005);
-    expect(flyProgress(total - CFG.navRampMs * 0.2, 6, CFG)).toBeGreaterThan(0.995);
-  });
-
-  it("is continuous where the ramps meet the cruise", () => {
-    const steps = 6;
-    const cruiseEnd = flyDuration(steps, CFG) - CFG.navRampMs;
-    for (const t of [CFG.navRampMs, cruiseEnd]) {
-      expect(Math.abs(flyProgress(t + 1e-6, steps, CFG) - flyProgress(t - 1e-6, steps, CFG))).toBeLessThan(1e-6);
-    }
-  });
-});
-
-describe("flyDuration", () => {
-  it("grows with the number of panel gaps travelled, either direction", () => {
-    expect(flyDuration(3, CFG)).toBeGreaterThan(flyDuration(1, CFG));
-    expect(flyDuration(-2, CFG)).toBe(flyDuration(2, CFG));
-  });
-
-  it("is just the two ramps for a hop too short to reach cruise speed", () => {
-    expect(flyDuration(0.3, CFG)).toBe(2 * CFG.navRampMs);
-  });
-
-  it("takes well over a second for even a single panel", () => {
-    expect(flyDuration(1, CFG)).toBeGreaterThanOrEqual(1200);
-  });
-});
-
 /** Minimal window: scrollTo moves scrollY and fires scroll synchronously. */
 function fakeWindow() {
   const handlers: Record<string, ((e: Event) => void)[]> = {};
@@ -198,10 +144,13 @@ describe("attachPanelSnap", () => {
     for (let i = 0; i < 1000 && frames.some(Boolean); i++) frame();
   };
 
+  let flight: (number | null)[] = [];
   const setup = (smooth = true) => {
     frames = [];
+    flight = [];
     const win = fakeWindow();
-    const snap = attachPanelSnap(win as unknown as Window, () => STOPS, CFG, { smooth, now, raf, caf });
+    const onFlight = (u: number | null) => flight.push(u);
+    const snap = attachPanelSnap(win as unknown as Window, () => STOPS, CFG, { smooth, now, raf, caf, onFlight });
     return { win, snap };
   };
 
@@ -335,7 +284,7 @@ describe("attachPanelSnap", () => {
       frame();
       ys.push(win.scrollY);
     }
-    expect(t - start).toBeGreaterThanOrEqual(flyDuration(3, CFG));
+    expect(t - start).toBeGreaterThanOrEqual(CFG.navMs);
     expect(ys.at(-1)).toBe(3000);
     // Monotonic, slow off the mark and slow into the stop.
     ys.slice(1).forEach((y, i) => expect(y).toBeGreaterThanOrEqual(ys[i]));
@@ -346,7 +295,7 @@ describe("attachPanelSnap", () => {
   it("anchor navigation does not snap at the stops it flies through", () => {
     const { win, snap } = setup();
     snap.navigateTo(3000);
-    for (let i = 0; i < 80; i++) frame();
+    for (let i = 0; i < 50; i++) frame();
     expect(win.scrollY).toBeGreaterThan(1000);
     expect(win.scrollY).toBeLessThan(3000);
     expect(frames.some(Boolean)).toBe(true);
@@ -378,6 +327,47 @@ describe("attachPanelSnap", () => {
     expect(win.scrollY).toBe(3000);
     expect(win.scrollTo).toHaveBeenLastCalledWith({ top: 3000, behavior: "auto" });
     expect(frames.some(Boolean)).toBe(false);
+  });
+
+  it("takes the same time for every jump, near or far", () => {
+    for (const top of [1000, 3000]) {
+      const { win, snap } = setup();
+      snap.navigateTo(top);
+      const start = t;
+      flyToEnd();
+      expect(win.scrollY).toBe(top);
+      expect(t - start).toBeGreaterThanOrEqual(CFG.navMs);
+      expect(t - start).toBeLessThan(CFG.navMs + 32);
+    }
+  });
+
+  it("takes well over a second, like the one-panel hop it replaces", () => {
+    expect(CFG.navMs).toBeGreaterThanOrEqual(1200);
+    expect(CFG.navMs).toBeLessThanOrEqual(1600);
+  });
+
+  it("reports the flight clock every frame, rising from 0 to 1", () => {
+    const { snap } = setup();
+    snap.navigateTo(3000);
+    flyToEnd();
+    const u = flight as number[];
+    expect(u.length).toBeGreaterThan(10);
+    expect(u.at(-1)).toBe(1);
+    u.slice(1).forEach((x, i) => expect(x).toBeGreaterThan(u[i]));
+  });
+
+  it("reports a cancelled flight so the camera can ease back in", () => {
+    const { win, snap } = setup();
+    snap.navigateTo(3000);
+    for (let i = 0; i < 30; i++) frame();
+    win.wheel(40);
+    expect(flight.at(-1)).toBeNull();
+  });
+
+  it("reports nothing under reduced motion", () => {
+    const { snap } = setup(false);
+    snap.navigateTo(3000);
+    expect(flight).toEqual([]);
   });
 
   it("detach removes every listener and stops a flight", () => {

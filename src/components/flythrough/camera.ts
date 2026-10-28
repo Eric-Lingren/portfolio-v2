@@ -43,17 +43,32 @@ export function stepsAhead(i: number, progress: number, count: number): number {
   return i - clamp01(progress) * (count - 1);
 }
 
-/** Yaw (degrees) toward the panel's side; eases to exactly 0 on arrival. */
-export function panelYaw(i: number, progress: number, count: number, layout: Layout): number {
+/** How much of the weave (camera x, panel yaw) survives at pull-back `pull`. */
+const weave = (pull: number, cfg: FlyConfig) => 1 - clamp01(pull) * cfg.dive.flatten;
+
+/** Yaw (degrees) toward the panel's side; eases to exactly 0 on arrival and flattens as the camera pulls back. */
+export function panelYaw(
+  i: number,
+  progress: number,
+  count: number,
+  layout: Layout,
+  pull = 0,
+  cfg: FlyConfig = FLY_CONFIG,
+): number {
   const delta = stepsAhead(i, progress, count);
-  return -panelSide(i) * layout.maxYaw * smoothstep(Math.abs(delta)) || 0;
+  return -panelSide(i) * layout.maxYaw * smoothstep(Math.abs(delta)) * weave(pull, cfg) || 0;
 }
 
-/** Opacity in [0,1]: faded in the far distance and shortly after the camera passes. */
-export function panelOpacity(i: number, progress: number, count: number, cfg: FlyConfig = FLY_CONFIG): number {
+/**
+ * Opacity in [0,1]: faded in the far distance and shortly after the camera
+ * passes. Pulled back, the camera sees further down the stack, and panels it
+ * has passed stay in view below it a while longer.
+ */
+export function panelOpacity(i: number, progress: number, count: number, pull = 0, cfg: FlyConfig = FLY_CONFIG): number {
   const delta = stepsAhead(i, progress, count);
-  if (delta >= 0) return 1 - smoothstep(delta - (cfg.farFade - 1));
-  return 1 - smoothstep(-delta / cfg.passedFade);
+  const far = cfg.farFade + clamp01(pull) * cfg.dive.reach;
+  if (delta >= 0) return 1 - smoothstep(delta - (far - 1));
+  return 1 - smoothstep(-delta / (cfg.passedFade + clamp01(pull) * cfg.dive.linger));
 }
 
 export type PanelStyle = { transform: string; opacity: number };
@@ -63,27 +78,35 @@ export function panelStyle(
   progress: number,
   count: number,
   layout: Layout,
+  pull = 0,
   cfg: FlyConfig = FLY_CONFIG,
 ): PanelStyle {
   const x = panelX(i, layout);
-  const yaw = panelYaw(i, progress, count, layout);
+  const yaw = panelYaw(i, progress, count, layout, pull, cfg);
   return {
     transform: `translate3d(${x}px, 0, ${-i * cfg.depth}px) rotateY(${yaw}deg) scale(${layout.scale})`,
-    opacity: panelOpacity(i, progress, count, cfg),
+    opacity: panelOpacity(i, progress, count, pull, cfg),
   };
 }
 
-/** World transform: moves the world opposite to the camera, plus optional look-around. */
+/**
+ * World transform: moves the world opposite to the camera, plus optional
+ * look-around. Pull-back `pull` (0..1) orbits the camera up and back around
+ * the point it is on, so the panels ahead stack up the screen in perspective.
+ */
 export function worldTransform(
   progress: number,
   count: number,
   layout: Layout,
   look: { x: number; y: number } = { x: 0, y: 0 },
+  pull = 0,
   cfg: FlyConfig = FLY_CONFIG,
 ): string {
-  const cx = cameraX(progress, count, layout, cfg);
+  const cx = cameraX(progress, count, layout, cfg) * weave(pull, cfg);
   const cz = cameraZ(progress, count, cfg);
-  return `rotateX(${-look.y * cfg.lookDegrees}deg) rotateY(${look.x * cfg.lookDegrees}deg) translate3d(${-cx}px, 0, ${-cz}px)`;
+  const p = clamp01(pull);
+  const orbit = p > 0 ? ` translate3d(0, 0, ${-p * cfg.dive.depth}px) rotateX(${-p * cfg.dive.tilt}deg)` : "";
+  return `rotateX(${-look.y * cfg.lookDegrees}deg) rotateY(${look.x * cfg.lookDegrees}deg)${orbit} translate3d(${-cx}px, 0, ${-cz}px)`;
 }
 
 /** Scroll position to progress, from stable values only (no layout reads). */

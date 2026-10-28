@@ -22,13 +22,22 @@ export const FLY_CONFIG = {
     idleMs: 140,
     pullRadius: 0.2,
     /**
-     * Anchor fly-through: ease up over navRampMs, cruise at navCruisePerSec panels/s, ease down.
-     * Felt: native smooth scroll rushed several panels (motion sickness). An ease-in-out cubic over
-     * at most 4s eased well but its middle still flew by too fast. 1 panel ~1.5s, 6 panels ~5.4s.
+     * Anchor fly-through duration (ms), the same for every jump (see dive below). Felt: the old
+     * one-panel hop at ~1.5s was right; cruising 1.3 panels/s made Home to Contact ~5.4s.
      */
-    navRampMs: 750,
-    navCruisePerSec: 1.3,
+    navMs: 1500,
   },
+  /**
+   * Anchor navigation "pull back and dive" (see dive.ts). The camera pulls back `depth` px and
+   * tilts `tilt` degrees down, glides over the stack during the middle `glide` of the flight,
+   * then dives in. `rise` is the fraction of the flight spent pulling out (and diving in).
+   * At full pull the weave flattens by `flatten`, panels `reach` more steps ahead stay visible,
+   * and passed panels fade over `linger` more steps (they are still in view, below the camera).
+   * Felt: a mid-flight fade that cut to the last gap "jumps", "glitchy". Cutting to the panel
+   * before the target flashed it. Flying every panel at cruise speed took ~5s and its weaving
+   * brought on motion sickness.
+   */
+  dive: { glide: 0.7, rise: 0.4, depth: 2600, tilt: 22, flatten: 1, reach: 4, linger: 1 },
   /** Nav height (px) assumed until the fixed nav is measured; panels center in the space below it. */
   navClearance: 64,
   /** Minimum gap (px) between a resting panel and the viewport edges. */

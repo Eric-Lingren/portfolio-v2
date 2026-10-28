@@ -110,4 +110,11 @@ describe("WhatIDo", () => {
     }
     style.remove();
   });
+
+  it("colours the cards from brand tokens only (coral, cyan, coral)", () => {
+    const panelCss = readFileSync(join(process.cwd(), "src/components/panels/what-i-do.css"), "utf8");
+    expect(panelCss).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i);
+    expect(panelCss).toMatch(/\.pillar \{[^}]*--pillar-accent: var\(--accent\);/);
+    expect(panelCss).toMatch(/\.pillar\[data-viz="board"\] \{\s*--pillar-accent: var\(--accent-2\);/);
+  });
 });

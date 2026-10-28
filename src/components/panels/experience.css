@@ -5,7 +5,7 @@
  */
 .experience-list {
   --axis: 2.75rem;
-  --seg: var(--accent-2);
+  --seg: var(--accent);
   position: relative;
   margin: 0;
   padding: 0;
@@ -35,7 +35,7 @@
 }
 
 .experience-row[data-current] {
-  --seg: var(--accent);
+  --seg: var(--accent-2);
 }
 
 /* The role's segment on the rail. */
@@ -51,14 +51,15 @@
 }
 
 .panel-layer--polished .experience-row[data-current]::before {
-  box-shadow: 0 0 14px rgba(255, 107, 87, 0.6);
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.6);
 }
 
 .panel-layer--sketch .experience-row {
   --seg: var(--sk-line);
 }
 
-.panel-layer--sketch .experience-row:not([data-current])::before {
+/* Past roles sit back so the current one leads: dimmed segment and dots, plain dates. */
+.experience-row:not([data-current])::before {
   opacity: 0.45;
 }
 
@@ -122,6 +123,11 @@
   background: var(--seg);
 }
 
+.panel-layer--polished .experience-row:not([data-current]) .experience-dates::before,
+.panel-layer--polished .experience-row:not([data-current]) .experience-dates::after {
+  opacity: 0.45;
+}
+
 .panel-layer--sketch .experience-dates::before,
 .panel-layer--sketch .experience-dates::after {
   background: var(--sk-bg);
@@ -143,7 +149,9 @@
 }
 
 .panel-layer--sketch .experience-date-start,
-.panel-layer--sketch .experience-date-end {
+.panel-layer--sketch .experience-date-end,
+.experience-row:not([data-current]) .experience-date-start,
+.experience-row:not([data-current]) .experience-date-end {
   color: inherit;
 }
 

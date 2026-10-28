@@ -129,4 +129,14 @@ describe("Nav", () => {
     expect(block).toMatch(/font-size: 0\.6875rem/);
     expect(css).toMatch(/\.view-switch button:focus-visible/);
   });
+
+  it("keeps the bar to one line below desktop: links in one sideways-scrolling row, brand hidden on phones", () => {
+    const css = readFileSync("src/components/nav.css", "utf8");
+    const narrow = css.slice(css.indexOf("@media (max-width: 1100px)"), css.indexOf("@media (max-width: 600px)"));
+    const phone = css.slice(css.indexOf("@media (max-width: 600px)"));
+    // Must out-rank the base `.site-nav .site-nav__brand { display: inline-flex }`.
+    expect(phone).toMatch(/\.site-nav \.site-nav__brand \{\s*display: none;/);
+    expect(narrow).toMatch(/\.site-nav__links \{[^}]*flex-wrap: nowrap;[^}]*overflow-x: auto;/);
+    expect(narrow).toMatch(/\.site-nav \{[^}]*flex-wrap: nowrap;/);
+  });
 });
