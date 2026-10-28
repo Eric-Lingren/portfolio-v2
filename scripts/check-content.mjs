@@ -3,13 +3,25 @@
 // Usage: node scripts/check-content.mjs [--strict] [--root <dir>]
 // Default mode warns on everything and exits 0. --strict (the production launch
 // gate) exits 1 on STRICT_RULES: unresolved [ERIC: markers, testimonial
-// placeholders, internal links, phone numbers, and PR/file/line count claims in
-// headline-class copy. Structure rules (sections, word count, frontmatter keys)
+// problems, internal links, phone numbers, and PR/file/line count claims in
+// headline-class copy.
+// Testimonials: src/content/testimonials.ts is loaded as data (child node
+// process, native TS stripping). Checks: 4 or 6 cards (testimonials-placeholder);
+// each card has non-empty quote/roleLabel/sourceType/employer, an integer year,
+// an `original` matching [A-Za-z0-9_-]+ that resolves to
+// public/testimonials/<original>.png, a quote of 30 words or fewer, and every
+// PNG in public/testimonials/ is used by a card (testimonials-card); name guard
+// on roleLabel and quote text plus email/@handle/URL patterns in quotes, using
+// docs/private/testimonials/name-blocklist.txt (testimonials-name). The owner's
+// own name is always allowed. A missing blocklist skips term matching with a
+// warning; pattern checks still run. Structure rules (sections, word count, frontmatter keys)
 // stay warnings. Case-study rules apply to content/work/*.mdx.
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import matter from "gray-matter";
+import { looksLikePersonalName } from "./name-guard.mjs";
 
 export const REQUIRED_SECTIONS = [
   "Context",
@@ -39,6 +51,8 @@ const SCAN_DIRS = ["content", "src/content", "src/components/panels"];
 export const STRICT_RULES = new Set([
   "eric-marker",
   "testimonials-placeholder",
+  "testimonials-card",
+  "testimonials-name",
   "internal-link",
   "phone",
   "myfxbook",
@@ -86,6 +100,99 @@ function readBlocklist(root) {
     .split("\n")
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith("#"));
+}
+
+const OWNER_NAMES = new Set(["eric", "eric lingren"]);
+const QUOTE_WORD_MAX = 30;
+const CARD_STRINGS = ["quote", "roleLabel", "sourceType", "employer"];
+
+function readTestimonialBlocklist(root) {
+  const file = path.join(root, "docs/private/testimonials/name-blocklist.txt");
+  if (!fs.existsSync(file)) return null;
+  return fs
+    .readFileSync(file, "utf8")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith("#") && !OWNER_NAMES.has(l.toLowerCase()));
+}
+
+// Loads TESTIMONIALS by importing the .ts file in a child node process.
+function loadTestimonials(file) {
+  const code = `import(${JSON.stringify(pathToFileURL(file).href)}).then((m) => { process.stdout.write(JSON.stringify(m.TESTIMONIALS)); });`;
+  const r = spawnSync(process.execPath, ["--input-type=module", "-e", code], {
+    encoding: "utf8",
+  });
+  if (r.status !== 0) return { error: (r.stderr || "load failed").trim().split("\n")[0] };
+  try {
+    const data = JSON.parse(r.stdout);
+    if (!Array.isArray(data)) return { error: "TESTIMONIALS is not an array" };
+    return { cards: data };
+  } catch {
+    return { error: "TESTIMONIALS is not serializable data" };
+  }
+}
+
+function checkTestimonials(root, file, add) {
+  const loaded = loadTestimonials(file);
+  if (loaded.error) {
+    add(file, 1, "testimonials-placeholder", `testimonials.ts could not be loaded: ${loaded.error}`);
+    return;
+  }
+  const cards = loaded.cards;
+  if (cards.length !== 4 && cards.length !== 6) {
+    add(file, 1, "testimonials-placeholder", `testimonials has ${cards.length} card(s); need exactly 4 or 6`);
+  }
+  const blocklist = readTestimonialBlocklist(root);
+  if (blocklist === null) {
+    add(
+      file,
+      1,
+      "testimonials-name-blocklist-missing",
+      "docs/private/testimonials/name-blocklist.txt not found; name term matching skipped",
+    );
+  }
+  const imgDir = path.join(root, "public/testimonials");
+  const used = new Set();
+  cards.forEach((card, i) => {
+    const c = card && typeof card === "object" ? card : {};
+    const at = `card ${i + 1}`;
+    for (const key of CARD_STRINGS) {
+      if (typeof c[key] !== "string" || !c[key].trim()) {
+        add(file, 1, "testimonials-card", `${at}: ${key} must be a non-empty string`);
+      }
+    }
+    if (!Number.isInteger(c.year)) add(file, 1, "testimonials-card", `${at}: year must be an integer`);
+    if (typeof c.original !== "string" || !/^[A-Za-z0-9_-]+$/.test(c.original)) {
+      add(file, 1, "testimonials-card", `${at}: original must match [A-Za-z0-9_-]+`);
+    } else {
+      used.add(`${c.original}.png`);
+      if (!fs.existsSync(path.join(imgDir, `${c.original}.png`))) {
+        add(file, 1, "testimonials-card", `${at}: public/testimonials/${c.original}.png does not exist`);
+      }
+    }
+    const quote = typeof c.quote === "string" ? c.quote : "";
+    const words = quote.split(/\s+/).filter(Boolean).length;
+    if (words > QUOTE_WORD_MAX) {
+      add(file, 1, "testimonials-card", `${at}: quote is ${words} words (max ${QUOTE_WORD_MAX})`);
+    }
+    if (typeof c.roleLabel === "string" && c.roleLabel.trim() && looksLikePersonalName(c.roleLabel, blocklist ?? [])) {
+      add(file, 1, "testimonials-name", `${at}: roleLabel looks like a personal name`);
+    }
+    for (const name of blocklist ?? []) {
+      const re = new RegExp(`(?<![\\p{L}\\p{N}_])${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\p{L}\\p{N}_])`, "iu");
+      if (re.test(quote)) add(file, 1, "testimonials-name", `${at}: quote contains a blocklisted name`);
+    }
+    if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(quote)) add(file, 1, "testimonials-name", `${at}: quote contains an email`);
+    if (/(?<![\w])@\w+/.test(quote)) add(file, 1, "testimonials-name", `${at}: quote contains an @handle`);
+    if (/https?:\/\/|www\./i.test(quote)) add(file, 1, "testimonials-name", `${at}: quote contains a URL`);
+  });
+  if (fs.existsSync(imgDir)) {
+    for (const name of fs.readdirSync(imgDir)) {
+      if (name.toLowerCase().endsWith(".png") && !used.has(name)) {
+        add(file, 1, "testimonials-card", `public/testimonials/${name} is not used by any card`);
+      }
+    }
+  }
 }
 
 function isCaseStudy(root, file) {
@@ -174,18 +281,8 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
     }
   }
 
-  const manifest = path.join(root, "src/content/testimonials.ts");
-  if (fs.existsSync(manifest)) {
-    const count = (fs.readFileSync(manifest, "utf8").match(/\boriginal\s*:\s*["'`]/g) ?? []).length;
-    if (count < 4 || count > 6) {
-      add(
-        manifest,
-        1,
-        "testimonials-placeholder",
-        `testimonials has ${count} card(s); placeholders render until it has 4-6`,
-      );
-    }
-  }
+  const testimonialsFile = path.join(root, "src/content/testimonials.ts");
+  if (fs.existsSync(testimonialsFile)) checkTestimonials(root, testimonialsFile, add);
 
   const errors = findings.filter((f) => f.severity === "error");
   return { findings, exitCode: strict && errors.length > 0 ? 1 : 0 };
