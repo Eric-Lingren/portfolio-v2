@@ -1,17 +1,19 @@
-import { PLACEHOLDER_COUNT, TESTIMONIALS, type Testimonial } from "@/content/testimonials";
+import { TESTIMONIALS, type Testimonial } from "@/content/testimonials";
+import { FileIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./testimonials.css";
+
+const PLACEHOLDER_COUNT = 4;
 
 type Props = {
   layers?: PanelLayers;
   z?: number;
   id?: string;
-  /** Defaults to the redaction script's manifest. */
-  manifest?: readonly Testimonial[];
+  testimonials?: readonly Testimonial[];
 };
 
-export function Testimonials({ layers = "polished", z = 0, id, manifest = TESTIMONIALS }: Props) {
-  const empty = manifest.length === 0;
+export function Testimonials({ layers = "polished", z = 0, id, testimonials = TESTIMONIALS }: Props) {
+  const empty = testimonials.length === 0;
   return (
     <Panel name="Testimonials" z={z} id={id} layers={layers}>
       <div className="testimonials section">
@@ -20,15 +22,27 @@ export function Testimonials({ layers = "polished", z = 0, id, manifest = TESTIM
           {empty
             ? Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => (
                 <li key={i} className="testimonial-card" data-testimonial-placeholder>
-                  <div className="testimonial-placeholder">Placeholder: redacted praise screenshot goes here</div>
-                  <p className="testimonial-role">[ERIC: role label]</p>
+                  <blockquote className="testimonial-quote">{"“[ERIC: quote]”"}</blockquote>
+                  <p className="testimonial-source">[ERIC: role] · [ERIC: source type] · [ERIC: employer] · [ERIC: year]</p>
                 </li>
               ))
-            : manifest.map((t) => (
-                <li key={t.id} className="testimonial-card" data-testimonial>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- static export, pre-redacted PNGs */}
-                  <img className="testimonial-frame" src={t.image} alt={t.alt} loading="lazy" decoding="async" />
-                  <p className="testimonial-role">{t.roleLabel}</p>
+            : testimonials.map((t) => (
+                <li key={t.original} className="testimonial-card" data-testimonial>
+                  <blockquote className="testimonial-quote">{`“${t.quote}”`}</blockquote>
+                  <p className="testimonial-source">{[t.roleLabel, t.sourceType, t.employer, t.year].join(" · ")}</p>
+                  <a
+                    className="btn btn-primary"
+                    href={`/testimonials/${t.original}.png`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View original screenshot"
+                  >
+                    <FileIcon />
+                    View original
+                    <span className="btn-arrow btn-arrow--out" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
                 </li>
               ))}
         </ul>

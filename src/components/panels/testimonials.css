@@ -3,54 +3,45 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--block-gap);
+}
+
+@media (max-width: 600px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .testimonial-card {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.75rem;
   margin: 0;
-  padding: 0.75rem;
+  padding: 1rem;
   border: 1px solid var(--po-border);
   border-radius: 8px;
   background: #111827;
 }
 
-.testimonial-frame {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 4px;
+.testimonial-quote {
+  margin: 0;
+  font-style: normal;
 }
 
-.testimonial-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: 4px;
-  border: 1px dashed var(--po-border-strong);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 13px;
-  text-align: center;
-  color: var(--po-muted);
-}
-
-.panel-layer--sketch .testimonial-placeholder {
-  background: repeating-linear-gradient(45deg, transparent 0 6px, var(--po-border-strong) 6px 7px);
-}
-
-.testimonial-role {
+.testimonial-source {
   margin: 0;
   font-size: 0.875rem;
   color: var(--po-muted);
 }
 
 /* po-muted is tuned for the dark polished layer; on the light sketch layer it fails contrast. */
-.panel-layer--sketch .testimonial-role {
+.panel-layer--sketch .testimonial-source {
   color: #4b5563;
+}
+
+/* Pin the button to the bottom so rows of unequal quotes still line up. */
+.testimonial-card > a {
+  margin-top: auto;
 }

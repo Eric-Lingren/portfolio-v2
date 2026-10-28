@@ -174,20 +174,15 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
     }
   }
 
-  const manifest = path.join(root, "src/content/testimonials.json");
+  const manifest = path.join(root, "src/content/testimonials.ts");
   if (fs.existsSync(manifest)) {
-    let entries = null;
-    try {
-      entries = JSON.parse(fs.readFileSync(manifest, "utf8"));
-    } catch {
-      add(manifest, 1, "testimonials-placeholder", "testimonials manifest is not valid JSON");
-    }
-    if (Array.isArray(entries) && (entries.length < 4 || entries.length > 6)) {
+    const count = (fs.readFileSync(manifest, "utf8").match(/\boriginal\s*:\s*["'`]/g) ?? []).length;
+    if (count < 4 || count > 6) {
       add(
         manifest,
         1,
         "testimonials-placeholder",
-        `testimonials manifest has ${entries.length} card(s); placeholders render until it has 4-6`,
+        `testimonials has ${count} card(s); placeholders render until it has 4-6`,
       );
     }
   }
