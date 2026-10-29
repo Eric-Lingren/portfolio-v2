@@ -17,7 +17,6 @@ describe("render-performance case study", () => {
     for (const key of REQUIRED_FRONTMATTER) expect(parsed.data).toHaveProperty(key);
     expect(parsed.data.slug).toBe("render-performance");
     expect(parsed.data.order).toBe(5);
-    expect(parsed.data.cardNumber).toBeNull();
     expect(parsed.data.thumbnail).toMatch(/^\/work\/render-performance\//);
     expect(Array.isArray(parsed.data.stack)).toBe(true);
     expect(parsed.data.outcomes.length).toBeGreaterThan(0);
@@ -43,10 +42,29 @@ describe("render-performance case study", () => {
     for (const m of html) expect(m[0]).toMatch(/\balt\s*=\s*"[^"]+"/);
   });
 
-  it("does not use the unverified 300% claim as a headline or proof point", () => {
-    const fm = JSON.stringify(parsed.data);
-    expect(fm).not.toMatch(/300/);
-    expect(parsed.content).toMatch(/\[ERIC: how was the 300% measured\?\]/);
+  it("does not use the unverified 300% claim anywhere", () => {
+    expect(JSON.stringify(parsed.data)).not.toMatch(/300%/);
+    expect(parsed.content).not.toMatch(/300%/);
+    const cards = fs.readFileSync(path.join(ROOT, "src", "content", "work-cards.json"), "utf8");
+    expect(cards).not.toMatch(/300%/);
+  });
+
+  it("places the Lighthouse before/after with sourced alt text", () => {
+    const images = JSON.parse(fs.readFileSync(path.join(ROOT, "src", "content", "work-images.json"), "utf8"));
+    const tag = parsed.content.match(/<BeforeAfter\b([\s\S]*?)\/>/);
+    expect(tag).not.toBeNull();
+    const attr = (k: string) => tag![1].match(new RegExp(`\\b${k}="([^"]*)"`))?.[1] ?? "";
+    expect(images).toHaveProperty([attr("before")]);
+    expect(images).toHaveProperty([attr("after")]);
+    expect(attr("beforeAlt")).toMatch(/47/);
+    expect(attr("beforeAlt")).toMatch(/5\.2/);
+    expect(attr("afterAlt")).toMatch(/82/);
+    expect(attr("afterAlt")).toMatch(/2\.0/);
+  });
+
+  it("has a drafted card with no marker", () => {
+    expect(parsed.data.cardNumber).toBe("2.0s");
+    expect(parsed.data.cardOutcome).not.toMatch(/\[ERIC:/);
   });
 
   it("passes content-check with no findings besides ERIC markers", () => {
