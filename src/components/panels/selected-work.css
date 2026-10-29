@@ -5,7 +5,7 @@
 }
 
 .work-grid {
-  /* Two across, thumbnail beside the text, so five cards fit the panel at full size. A lone last card is centered. */
+  /* Desktop: three across, the last two centered. Image on top, then text. */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -16,31 +16,30 @@
 }
 
 .work-item {
-  flex: 0 0 calc((100% - var(--block-gap)) / 2);
+  flex: 0 0 calc((100% - 2 * var(--block-gap)) / 3);
 }
 
-/* Narrow panels: one across. */
-@container (max-width: 560px) {
+/* Tablet widths: two across with the same image-top card. */
+@container (max-width: 719px) {
   .work-item {
-    flex-basis: 100%;
+    flex-basis: calc((100% - var(--block-gap)) / 2);
   }
 }
 
 .work-card {
   display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  gap: 0.35rem 1rem;
+  gap: 0.35rem 0;
   height: 100%;
-  padding: 0.875rem;
+  padding: 0;
 }
 
 .work-thumb {
   position: relative;
-  grid-row: span 3;
-  align-self: start;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
+  margin-bottom: 0.25rem;
 }
 
 .work-thumb-sketch,
@@ -67,6 +66,19 @@
 .work-card-outcome,
 .work-card-number {
   margin: 0;
+  padding-inline: 0.875rem;
+}
+
+.work-card-outcome {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.work-card-number:last-child {
+  padding-bottom: 0.875rem;
 }
 
 .work-card-title {
@@ -87,18 +99,8 @@
   margin-right: 0.35rem;
 }
 
-/* Phones: smaller thumbnail and type so all the cards fit one screen. */
+/* Small screens: smaller type. Layout switches by container width above, not here. */
 @media (max-width: 600px) {
-  .work-grid {
-    gap: 0.6rem;
-  }
-
-  .work-card {
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.25rem 0.75rem;
-    padding: 0.7rem;
-  }
-
   .work-card-title {
     font-size: 0.95rem;
   }
@@ -110,6 +112,44 @@
 
   .work-card-number strong {
     font-size: 1.1rem;
+  }
+}
+
+/* Phones: one compact row per card, the same 2:1 crop at 112x56 beside the text. */
+@container (max-width: 559px) {
+  .work-item {
+    flex-basis: 100%;
+  }
+
+  .work-grid {
+    gap: 0.6rem;
+  }
+
+  .work-card {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    padding: 0.7rem;
+  }
+
+  .work-thumb {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    margin-bottom: 0;
+  }
+
+  .work-card-title,
+  .work-card-outcome,
+  .work-card-number {
+    grid-column: 2;
+    padding-inline: 0;
+  }
+
+  .work-card-number:last-child {
+    padding-bottom: 0;
+  }
+
+  .work-thumb-x {
+    font-size: 1rem;
   }
 }
 

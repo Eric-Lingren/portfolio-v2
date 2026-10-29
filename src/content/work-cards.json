@@ -5,8 +5,8 @@
     "outcome": "Firms can ask each portfolio company for each KPI at its own cadence, inside one Information Request.",
     "number": null,
     "numberLabel": "",
-    "thumbnail": "/work/kpi-granularity/thumbnail.png",
-    "hasThumbnail": false
+    "thumbnail": "/work/kpi-granularity/thumb.webp",
+    "hasThumbnail": true
   },
   {
     "slug": "investor-reports",
@@ -14,8 +14,8 @@
     "outcome": "Rebuilt the page portfolio companies use to report to their investors, then added a toggle that lets them switch to auto-submit.",
     "number": "20",
     "numberLabel": "portfolio companies on the auto-submit toggle in week one",
-    "thumbnail": "/work/investor-reports/thumbnail.png",
-    "hasThumbnail": false
+    "thumbnail": "/work/investor-reports/thumb.webp",
+    "hasThumbnail": true
   },
   {
     "slug": "metrics-tab-v2",
@@ -23,8 +23,8 @@
     "outcome": "The metrics grid now edits like a spreadsheet, with keyboard navigation and paste from Excel, live for all customers.",
     "number": null,
     "numberLabel": "",
-    "thumbnail": "/work/metrics-tab-v2/thumbnail.png",
-    "hasThumbnail": false
+    "thumbnail": "/work/metrics-tab-v2/thumb.webp",
+    "hasThumbnail": true
   },
   {
     "slug": "frontend-platform",
@@ -32,7 +32,7 @@
     "outcome": "Three competing UI folders became one component tree, with lint rules that keep it that way.",
     "number": null,
     "numberLabel": "",
-    "thumbnail": "/work/frontend-platform/thumbnail.png",
+    "thumbnail": "/work/frontend-platform/thumb.webp",
     "hasThumbnail": false
   },
   {
@@ -41,7 +41,7 @@
     "outcome": "[ERIC: one-line outcome of the render-time work, in plain words]",
     "number": null,
     "numberLabel": "",
-    "thumbnail": "/work/render-performance/thumbnail.png",
-    "hasThumbnail": false
+    "thumbnail": "/work/render-performance/thumb.webp",
+    "hasThumbnail": true
   }
 ]
