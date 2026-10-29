@@ -64,6 +64,23 @@ describe("investor-reports case study", () => {
     for (const m of html) expect(m[0]).toMatch(/\balt="[^"]{6,}"/);
   });
 
+  it("places one before/after pair and two figures from the image map", () => {
+    const images = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "src/content/work-images.json"), "utf8"),
+    );
+    expect(parsed.content.match(/<BeforeAfter\b/g)).toHaveLength(1);
+    expect(parsed.content.match(/<Figure\b/g)).toHaveLength(2);
+    const srcs = [...parsed.content.matchAll(/\b(?:src|before|after)="([^"]+)"/g)].map((m) => m[1]);
+    expect(srcs).toHaveLength(4);
+    for (const src of srcs) expect(images).toHaveProperty([src]);
+    const props = [...parsed.content.matchAll(/\b(alt|caption|beforeAlt|afterAlt)="([^"]*)"/g)];
+    expect(props.length).toBe(7);
+    for (const m of props) {
+      expect(m[2].trim().length).toBeGreaterThan(5);
+      if (m[1] === "caption") expect(m[2]).not.toMatch(/https?:|#\d+|PR\b|#[a-z-]+\b/i);
+    }
+  });
+
   it("passes content-check with no forbidden patterns", () => {
     const { findings } = checkContent({ root: ROOT });
     const mine = findings.filter(
