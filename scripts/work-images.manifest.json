@@ -1,4 +1,8 @@
 {
+  "frontend-platform": [
+    { "source": "frontend-platform/storybook-primitives.png", "kind": "thumb", "minSource": { "width": 1136, "height": 568 }, "rect": { "left": 800, "top": 100, "width": 1460, "height": 730 } },
+    { "source": "frontend-platform/storybook-primitives.png", "kind": "detail", "name": "storybook-button-variants" }
+  ],
   "investor-reports": [
     { "source": "investor-reports/masthead-after.jpg", "kind": "thumb", "rect": { "left": 238, "top": 0, "width": 494, "height": 247 } },
     { "source": "investor-reports/masthead-before.jpg", "kind": "detail", "name": "masthead-before" },

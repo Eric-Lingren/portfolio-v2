@@ -2,7 +2,8 @@
 // Builds the published work images from raw sources in docs/private/work (never committed).
 // Driven by scripts/work-images.manifest.json:
 //   { "<slug>": [ { "source": "<file under docs/private/work>", "name": "<output name>", "kind": "thumb"|"detail",
-//                   "rect": { "left", "top", "width", "height" } } ] }
+//                   "rect": { "left", "top", "width", "height" }, "minSource": { "width", "height" } } ] }
+//  - minSource (optional): fail with a clear message when the source image is smaller than this.
 //  - thumb:  crop rect (must be 2:1 within 1px), resize to 568x284, write public/work/<slug>/thumb.webp.
 //  - detail: full-size WebP at public/work/<slug>/<name>.webp, max width 1600, never upscaled, aspect kept.
 //            An optional rect crops first.
@@ -72,6 +73,12 @@ async function buildOne({ slug, entry, sourceRoot, outRoot }) {
   }
   const meta = await sharp(input).metadata();
   const bounds = { width: meta.width, height: meta.height };
+  const min = entry.minSource;
+  if (min && (bounds.width < min.width || bounds.height < min.height)) {
+    throw new Error(
+      `${label}: source ${entry.source} is ${bounds.width}x${bounds.height}, under the required minimum ${min.width}x${min.height}`,
+    );
+  }
 
   let pipeline = sharp(input);
   if (kind === "thumb") {
