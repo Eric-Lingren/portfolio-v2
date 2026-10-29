@@ -27,7 +27,7 @@ export function SelectedWork({
     <Panel name="SelectedWork" z={z} id={id} layers={layers}>
       <div className="work section">
         <h2 className="section-title">Selected work</h2>
-        <ul className="work-grid">
+        <ul className="work-grid" role="list">
           {items.map((c) => (
             <li key={c.slug} className="work-item">
               <a className="card work-card" href={`/work/${c.slug}`} data-card={c.slug}>
@@ -37,7 +37,15 @@ export function SelectedWork({
                   </div>
                   {c.hasThumbnail ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img className="work-thumb-real" src={c.thumbnail} alt="" loading="lazy" />
+                    <img
+                      className="work-thumb-real"
+                      src={c.thumbnail}
+                      width={568}
+                      height={284}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <div className="work-thumb-real work-thumb-missing" aria-hidden="true" />
                   )}

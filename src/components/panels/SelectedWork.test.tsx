@@ -19,6 +19,35 @@ describe("SelectedWork", () => {
     links.forEach((a, i) => expect(a).toHaveAttribute("href", `/work/${SLUGS[i]}`));
   });
 
+  it("renders lazy 568x284 thumbs and a role=list grid when every thumb is present", () => {
+    const all = (cards as WorkCard[]).map((c) => ({ ...c, hasThumbnail: true }));
+    const { container } = render(<SelectedWork items={all} />);
+    expect(container.querySelector("ul.work-grid")).toHaveAttribute("role", "list");
+    const links = Array.from(container.querySelectorAll("a.work-card"));
+    expect(links.map((a) => a.getAttribute("data-card"))).toEqual(SLUGS);
+    const imgs = Array.from(container.querySelectorAll("img.work-thumb-real"));
+    expect(imgs).toHaveLength(5);
+    for (const img of imgs) {
+      expect(img).toHaveAttribute("width", "568");
+      expect(img).toHaveAttribute("height", "284");
+      expect(img).toHaveAttribute("loading", "lazy");
+      expect(img).toHaveAttribute("decoding", "async");
+      expect(img).toHaveAttribute("alt", "");
+    }
+    expect(container.querySelectorAll(".work-thumb-missing")).toHaveLength(0);
+  });
+
+  it("points every card at /work/<slug>/thumb.webp", () => {
+    for (const c of cards as WorkCard[]) expect(c.thumbnail).toBe(`/work/${c.slug}/thumb.webp`);
+  });
+
+  it("css has 3-across, a phone container rule for compact rows, and a 2-line outcome clamp", () => {
+    expect(panelCss).toMatch(/\.work-item\s*{\s*flex:\s*0 0 calc\(\(100% - 2 \* var\(--block-gap\)\) \/ 3\)/);
+    expect(panelCss).toMatch(/@container \(max-width: 559px\)[\s\S]*grid-template-columns: 7rem/);
+    expect(panelCss).toMatch(/\.work-card-outcome\s*{[^}]*line-clamp: 2/);
+    expect(panelCss).toMatch(/aspect-ratio: 2 \/ 1/);
+  });
+
   it("card data matches case study frontmatter and is in sync with the generator", () => {
     expect(cards).toEqual(buildCards());
     for (const c of cards as WorkCard[]) {
