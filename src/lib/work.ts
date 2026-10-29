@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { evaluate } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import type { ReactElement } from "react";
+import { mdxComponents } from "@/components/work";
 
 export interface StudyFrontmatter {
   title: string;
@@ -50,5 +51,5 @@ export function getStudy(slug: string, opts: { includeFixtures?: boolean } = {})
 
 export async function compileBody(source: string): Promise<ReactElement> {
   const { default: Content } = await evaluate(source, { ...runtime } as Parameters<typeof evaluate>[1]);
-  return Content({});
+  return Content({ components: mdxComponents });
 }
