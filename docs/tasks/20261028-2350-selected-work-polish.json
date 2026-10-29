@@ -1,0 +1,662 @@
+{
+  "schema_version": "2",
+  "producer": "to-tasks",
+  "source": {
+    "type": "seed",
+    "ref": "20261028-2336-selected-work-polish.json"
+  },
+  "generated_at": "2026-10-29T06:50:38Z",
+  "branching": {
+    "strategy": "single",
+    "branch": "feat/portfolio-v2-3d-rebuild"
+  },
+  "tasks": [
+    {
+      "id": "T-0041",
+      "title": "Extract and fetch raw work image sources into docs/private/work",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add `scripts/extract-work-sources.mjs` and an npm script `work:sources`. It decodes the base64 JPEGs embedded in the gitignored `docs/private/eric-lingren-impact.html` and writes them to `docs/private/work/<slug>/<name>.jpg`. A mapping table inside the script assigns each `<img>` to a slug by its alt text or order, never by line number: kpi-granularity gets 2 images (per-KPI granularity configure UI, adding company-specific metrics), investor-reports gets 4 (masthead before, masthead after, footer progress tracker, auto-submit state), metrics-tab-v2 gets 1 (focused cell plus Datum Tracer). The 4 images that belong to sections not on the panel (Scenarios, Metrics Repository) are skipped.\n\nThe script also downloads the 3 v1 Lighthouse reports of dev.insideoutdev.com (dated 10-28-21, 10-29-21 and 11-1-21) into `docs/private/work/render-performance/`. Their URLs are the three user-images.githubusercontent.com entries in the v1 site's work data: run `git show v1-legacy:src/components/standard/work/workData.js` and read the 'Website Render Optimizations' entry (about lines 248-264). All three returned HTTP 200 when fetched during the grill. Use descriptive file names that carry the date, for example `lighthouse-2021-10-28.png`.\n\nThe script is idempotent (reruns overwrite the same names), never writes outside `docs/private/` (already gitignored via `/docs/private/`), and takes the HTML path and the fetch function as injectable arguments so tests need no network. Run it once as part of this task and list the produced files in the log.",
+      "acceptance_criteria": [
+        "Test: a fixture HTML with 3 tiny base64 JPEGs mapped to slugs plus 1 unmapped section image writes the 3 mapped images to the expected slug paths, skips the unmapped one, and the decoded bytes equal the fixture bytes.",
+        "Test: with an injected fetch, 3 Lighthouse URLs are written to docs/private/work/render-performance/; a non-200 response fails with a message that names the URL. No test touches the real network.",
+        "Test: every output path resolves under docs/private/work, and a mapping entry with a path-traversal slug is rejected.",
+        "`npm run work:sources` has been run once: docs/private/work holds 7 images from the HTML and 3 Lighthouse PNGs, and `git status` lists none of them.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "summary": "Added scripts/extract-work-sources.mjs (alt-text mapping, injectable html path and fetch, slug and path-traversal guards, idempotent) plus the work:sources npm script and 15 tests. Ran it once: 7 HTML images and 3 Lighthouse PNGs now sit in the main checkout's docs/private/work, and git status lists none of them.",
+      "files_touched": [
+        "package.json",
+        "scripts/extract-work-sources.mjs",
+        "scripts/extract-work-sources.test.mjs"
+      ],
+      "tests": {
+        "passed": 403,
+        "failed": 0
+      },
+      "commit": "b37565a034ee23259231175a9e0907b9e5793e33",
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0041.md"
+    },
+    {
+      "id": "T-0042",
+      "title": "Build WebP thumbnails and detail images from a crop manifest",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add `scripts/build-work-images.mjs` (npm script `work:images`) driven by `scripts/work-images.manifest.json`. For each slug the manifest lists outputs: source file (relative to `docs/private/work`), crop rect `{left, top, width, height}`, output name, and kind `thumb` or `detail`.\n\n- thumb: crop, resize to 568x284 (2:1 at 2x), write WebP to `public/work/<slug>/thumb.webp`.\n- detail: full-size WebP at `public/work/<slug>/<name>.webp`, max width 1600, never upscaled, aspect ratio kept.\n- Write `src/content/work-images.json` mapping each published path (for example `/work/<slug>/<file>`) to `{width, height}`. `<Figure>` and `<BeforeAfter>` read it.\n- Metadata is stripped and output is deterministic. The script fails on a missing source, an out-of-bounds crop rect, or a thumb rect that is not 2:1 (1px tolerance).\n\nFill the manifest for the 4 slugs that have sources now. Agreed thumb subjects: kpi-granularity = the per-KPI granularity configure UI (650x432 shot); investor-reports = the masthead after image, cropped to its left logo and title region; metrics-tab-v2 = focused cell plus Datum Tracer; render-performance = the 10-29-21 Lighthouse report, score ring plus 4 metric rows. Detail outputs: kpi-granularity both images, investor-reports all 4 images, metrics-tab-v2 the 1 image, render-performance the 10-28-21 and 10-29-21 reports only (the 11-1-21 run has portrait frames, so it is a different preset and is not a clean comparison; do not build it, because unused files fail the orphan check).\n\nCrop rects are tuned by eye: after each run, open every generated thumb and adjust its rect until the agreed subject reads at 284x142 CSS px. Record what each thumb shows in the log. frontend-platform is not built here; it waits for the Storybook capture (T-0043, T-0044).",
+      "acceptance_criteria": [
+        "Test: a sharp-generated synthetic PNG with distinct colour quadrants produces a WebP thumb that is 568x284 and whose corner pixels match the cropped quadrant.",
+        "Test: an out-of-bounds crop, a missing source, and a thumb rect that is not 2:1 each throw an error that names the slug and output.",
+        "Test: a detail output wider than 1600 is downscaled with aspect kept, a narrower one is not upscaled, and every width/height in work-images.json equals the real output size read back with sharp.",
+        "Test: two consecutive runs give byte-identical outputs and an identical work-images.json.",
+        "`npm run work:images` has been run: public/work/{kpi-granularity,investor-reports,metrics-tab-v2,render-performance}/thumb.webp exist at 568x284, and the log records what each thumb shows after a visual check.",
+        "public/work contains only files the script produced.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0041"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "3cfb802efa31729825c288c2bcdb3a44781e6dbd",
+      "summary": "Added scripts/build-work-images.mjs (npm run work:images) driven by scripts/work-images.manifest.json: 568x284 thumbs, detail WebPs capped at 1600 wide and never upscaled, src/content/work-images.json. Fails on missing source, out-of-bounds rect or non-2:1 thumb rect; prunes unproduced files in public/work. Built 13 images for 4 slugs. Thumbs: kpi-granularity configure table; investor-reports title+logo tile; metrics-tab-v2 focused $7,896 cell + Datum Tracer; render-performance 10-29-21 score ring + metric grid.",
+      "files_touched": [
+        "package.json",
+        "scripts/build-work-images.mjs",
+        "scripts/build-work-images.test.mjs",
+        "scripts/work-images.manifest.json",
+        "src/content/work-images.json",
+        "public/work/**"
+      ],
+      "tests": {
+        "passed": 421,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0042.md"
+    },
+    {
+      "id": "T-0043",
+      "title": "Capture the Storybook screenshot of shadcn primitives on staging",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Eric captures one screenshot of the shadcn primitives in Storybook on the staging environment. It is the visual for the frontend-platform card thumb and detail page, showing the 'one component tree' outcome.\n\nSteps for Eric:\n1. Open the staging Storybook and pick a docs page or composed story that shows several shadcn primitives in one frame.\n2. Check the frame holds only staging or seeded data: no customer names, no real people, no internal links in view.\n3. Capture it as a PNG at least 1136 px wide and 568 px tall that contains a 2:1 region (it becomes the 568x284 thumb).\n4. Save it as `docs/private/work/frontend-platform/storybook-primitives.png` (the folder is gitignored).\n\nDo not use a shot that features the test-speed or Storybook CI gains; those belong to a coworker.",
+      "acceptance_criteria": [
+        "File exists at docs/private/work/frontend-platform/storybook-primitives.png and decodes as a PNG of at least 1136x568.",
+        "Test: T-0044's build step fails with a clear message when this file is missing or smaller than 1136x568, so a bad capture is caught by `npm test`."
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": null,
+      "summary": "Eric saved the Storybook 'All Button Types' grid (2556x1696) to docs/private/work/frontend-platform/storybook-primitives.png. Chosen over the shadcn Variants story for visual density; it is the team's legacy design-system Button, so the detail-page caption must describe it as the team's Storybook button variants, not as shadcn."
+    },
+    {
+      "id": "T-0044",
+      "title": "Add the frontend-platform thumbnail and detail image to the build",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Extend `scripts/work-images.manifest.json` with the frontend-platform entries built from `docs/private/work/frontend-platform/storybook-primitives.png`: a 2:1 thumb crop showing the grid of shadcn primitives, and one full-size detail image. Add a size guard so the build fails with a clear message when the source is missing or under 1136x568. Run `npm run work:images` and visually check the thumb at 284x142.\n\nAlso add a test that iterates `CARD_SLUGS` from `scripts/generate-work-cards.mjs` and the manifest, so adding a panel card without a thumb entry fails the suite.",
+      "acceptance_criteria": [
+        "Test: every slug in CARD_SLUGS has a thumb entry in the manifest.",
+        "Test: the build fails with a clear message for a missing or too-small frontend-platform source, using a synthetic fixture.",
+        "public/work/frontend-platform/thumb.webp exists at 568x284 and work-images.json has the detail image's real dimensions; the log records what the thumb shows.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042",
+        "T-0043"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "84bf4c24c123b61a9696d52ceea6c2adf6389f52",
+      "tests": {
+        "passed": 462,
+        "failed": 0
+      },
+      "summary": "Added frontend-platform to the manifest: 568x284 thumb cropped (left 800, top 100, 1460x730) to the All Buttons and Buttons with Icons grids only; detail storybook-button-variants.webp at 1600x1062. Added minSource size guard (1136x568) and tests for the CARD_SLUGS thumb check and missing/too-small source. Regenerated work-cards.json (frontend-platform hasThumbnail true).",
+      "files_touched": [
+        "scripts/work-images.manifest.json",
+        "scripts/build-work-images.mjs",
+        "scripts/work-images.manifest.test.mjs",
+        "src/content/work-images.json",
+        "src/content/work-cards.json",
+        "public/work/frontend-platform/thumb.webp",
+        "public/work/frontend-platform/storybook-button-variants.webp"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0044.md"
+    },
+    {
+      "id": "T-0045",
+      "title": "Redesign Selected Work cards: 3+2 image-top on desktop, compact rows on phone",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "End-to-end card redesign, from frontmatter to rendered panel.\n\nData: set `thumbnail` to `/work/<slug>/thumb.webp` in all 5 case-study MDX files and regenerate `src/content/work-cards.json` with the generator so `hasThumbnail` is true for every slug that has a built thumb.\n\nMarkup and CSS (`SelectedWork.tsx`, `selected-work.css`):\n- Desktop (container wide enough for 3 across, about 720px and up; 1440x900 gives about 893px): 3 cards on the first row and 2 centred on the second. Each card is image on top at aspect-ratio 2/1 (about 284x142 CSS px), then title, outcome clamped to 2 lines, then the optional card number.\n- Tablet widths between the phone and desktop breakpoints: 2 across with the same image-top card. This was an assumption in the grill, not confirmed by Eric, so note it in the log for his tablet check.\n- Phone (container under 560px): compact rows. The same 2:1 crop shows at about 112x56 on the left, title and card number on the right, outcome clamped to 2 lines. Same markup, CSS-only switch. Reconcile this with the existing 600px media query that shrinks the type.\n- The `ul` gets `role=\"list\"`. Every thumb `img` has `width=\"568\" height=\"284\"`, `loading=\"lazy\"`, `decoding=\"async\"` and `alt=\"\"` (the link already names the project).\n- Keep `.work-thumb-sketch` and `.work-thumb-real` in the same box so the sketch layer still matches; resize the hatched X placeholder to the 2:1 box. Keep the `.work-thumb-missing` empty frame for dev.\n- All cards use the shared `.card` rules only. No image zoom, no per-card effect, no new motion.\n\nFit: at 1440x900 the card grid has roughly 580px of room before the panel scales down through --content-fit; the 3+2 layout must stay inside it. On a 390x844 phone, 5 rows must also fit without scaling. Keep the existing SelectedWork tests green: 5 `a.work-card` in slug order with `data-card` and `href`, the geometry test, and the `.card:hover` / `.card:active` selectors in globals.css.",
+      "acceptance_criteria": [
+        "Test: with all thumbs present, SelectedWork renders 5 a.work-card in slug order, each thumb img has width=568, height=284, loading=lazy, decoding=async and alt=\"\", and the ul has role=list.",
+        "Test: the sketch-versus-polished geometry test and the .card:hover / .card:active assertions still pass.",
+        "Test: selected-work.css contains a 3-across rule, a rule for the container under 560px that switches to compact rows, and a 2-line clamp on the outcome.",
+        "Test: work-cards.json equals buildCards() and every card's thumbnail is /work/<slug>/thumb.webp.",
+        "browser_verify captures of the Selected Work area on desktop and phone show the 3+2 layout and the compact rows, and the panel shows no content-fit scaling.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/?view=classic"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "css=.work-grid",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "selected-work-cards"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "Selected Work cards change from 2-across with small side thumbs to 3+2 image-top cards on desktop and compact rows on phone"
+      },
+      "commit": "69da6b05f48e44bff6b226311e5a24551a916722",
+      "tests": {
+        "passed": 424,
+        "failed": 0
+      },
+      "summary": "Selected Work cards redesigned: image-top 2:1 cards, 3+2 centred on desktop, 2-across on tablet (container under 720px), compact rows under 560px; ul role=list and thumb img attrs; all 5 MDX thumbnails set and work-cards.json regenerated (hasThumbnail false only for frontend-platform). Browser check skipped (verify_host not configured); fit at 1440x900 and 390x844 not verified by browser.",
+      "files_touched": [
+        "content/work/*.mdx",
+        "src/content/work-cards.json",
+        "src/components/panels/SelectedWork.tsx",
+        "src/components/panels/selected-work.css",
+        "src/components/panels/SelectedWork.test.tsx"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0045.md"
+    },
+    {
+      "id": "T-0046",
+      "title": "Add Figure and BeforeAfter components for case-study MDX",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Wire a components map into the `@mdx-js/mdx` `evaluate()` call in `src/lib/work.ts` so two components resolve inside work MDX. Put them in `src/components/work/` with styles in `src/app/work/case-study.css`.\n\n- `<Figure src alt caption />`: renders `figure` > `a` (href = src, `target=\"_blank\"`, `rel=\"noopener noreferrer\"`, with an sr-only 'Open full-size image' label) > `img` (width and height from `src/content/work-images.json`, `loading=\"lazy\"`, `decoding=\"async\"`, alt), then `figcaption`. Full size opens in a new tab, the same pattern Testimonials uses. No lightbox.\n- `<BeforeAfter before after beforeAlt afterAlt caption />`: two images side by side with visible 'Before' and 'After' labels, stacked on phone (container 600px and under). Each image gets the same link, size and loading treatment as Figure.\n- A missing or empty alt/beforeAlt/afterAlt, or a src that has no entry in work-images.json, must throw so the static build fails instead of shipping a broken image.\n- Images stay within the 720px case-study column. The dimension lookup is injectable for tests.",
+      "acceptance_criteria": [
+        "Test: Figure renders figure, img and figcaption with width and height from work-images.json, and its link has target=_blank and rel containing noopener.",
+        "Test: Figure and BeforeAfter throw on an empty alt and on a src missing from work-images.json.",
+        "Test: BeforeAfter renders both images with visible 'Before' and 'After' labels and both alts; case-study.css lays them side by side above 600px and stacks them at 600px and under.",
+        "Test: a fixture MDX using both components compiles through compileBody and renders them.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "bf080a29beac40b2ebf947a4a76f9ba36af43aba",
+      "tests": {
+        "passed": 429,
+        "failed": 0
+      },
+      "summary": "Added Figure and BeforeAfter (src/components/work/) wired into compileBody's evaluate via a components map. Throw on empty alt or src missing from work-images.json; lookup injectable via `lookup` prop. Side-by-side/stacked styles in case-study.css, stacking at 600px and under via @container on .case-study__column.",
+      "files_touched": [
+        "src/lib/work.ts",
+        "src/components/work/work-image.tsx",
+        "src/components/work/Figure.tsx",
+        "src/components/work/BeforeAfter.tsx",
+        "src/components/work/index.ts",
+        "src/components/work/work.test.tsx",
+        "src/app/work/case-study.css"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0046.md"
+    },
+    {
+      "id": "T-0047",
+      "title": "Add a back link on case-study pages that deep-links to the Selected Work panel",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add a back link at the top of `CaseStudyView` labelled 'Back to selected work'. It points to `/#work`: the Selected Work panel's id in `src/components/flythrough/registry.tsx` is `work`. The seed text said `/#selected-work`, but that id does not exist.\n\nThe fly-through currently ignores `location.hash`, so the link would land on the hero. Add hash handling: on load with a hash that matches a registry panel id, jump straight to that panel's stop (`panelScrollTop(i, count, lvh)` in camera.ts) with no animation, since first paint stays static. In the flat stack used for `?view=classic`, reduced motion and downgrade, scroll the element with that id into view. An unknown hash is ignored. Keep it minimal and add no motion.",
+      "acceptance_criteria": [
+        "Test: CaseStudyView renders a link named 'Back to selected work' with href /#work.",
+        "Test: with window.location.hash = '#work' the fly-through's initial scroll equals panelScrollTop for the registry index of 'work'; an unknown hash leaves the initial scroll at the top.",
+        "Test: in the flat stack the element with id 'work' exists and is scrolled into view for '#work'.",
+        "browser_verify: clicking the back link on a case-study page lands on the Selected Work panel.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/work/kpi-granularity"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "click",
+            "locator": "role=link[name=\"Back to selected work\"]"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "capture",
+            "name": "after-back-link"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "Case-study pages gain a back link; clicking it lands on the Selected Work panel"
+      },
+      "summary": "Added a 'Back to selected work' link (next/link to /#work) at the top of CaseStudyView, and hash handling: FlyStage jumps instantly to the matching panel's panelScrollTop on mount, FlatStack scrolls the matching element into view instantly, unknown hashes are ignored (new hash-target.ts helper). Browser check was skipped (verify_host not configured), so the real-browser click-through was not verified; unit tests cover the behavior.",
+      "files_touched": [
+        "src/components/CaseStudyView.tsx",
+        "src/app/work/case-study.css",
+        "src/app/work/work.test.tsx",
+        "src/components/flythrough/FlyStage.tsx",
+        "src/components/flythrough/FlatStack.tsx",
+        "src/components/flythrough/hash-target.ts",
+        "src/components/flythrough/hash-target.test.tsx"
+      ],
+      "tests": {
+        "passed": 396,
+        "failed": 0
+      },
+      "commit": "b9c52462dc41003e908cbcaf02c6971ce60f2948",
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0047.md"
+    },
+    {
+      "id": "T-0048",
+      "title": "Add work-image checks and a per-slug word floor to the strict content gate",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "In `scripts/check-content.mjs`, with tests in `scripts/check-content.test.mjs`, add strict-mode rules:\n1. `work-thumbnail-missing`: every card in `src/content/work-cards.json` has its thumbnail file in `public/`. Missing is a failure, not a silent empty frame. Only the panel cards (CARD_SLUGS) are checked; ai-toolkit is out of scope.\n2. `work-figure`: in `content/work/*.mdx`, every `<Figure>` has non-empty alt and caption and a src that exists in `public/` and in work-images.json; every `<BeforeAfter>` has before, after, beforeAlt, afterAlt and caption with existing files.\n3. `work-orphan`: every file under `public/work/` is referenced by a card thumbnail or a Figure/BeforeAfter src, and every work-images.json entry has a file. Follow the testimonials orphan check at about lines 155-197.\n4. `work-internal-url`: no Slack, Linear or Notion URLs (including standard-metrics.slack.com, linear.app, app.notion.com) and no github.com/Quaestor-Technologies links in `content/work/*.mdx` or `work-cards.json`.\n5. A regression test that a `cardOutcome` containing an `[ERIC:` marker is already flagged by the existing marker rule. No new rule code.\n\nWord floor: replace the single `WORD_MIN = 600` with `WORD_MIN_OVERRIDES` (a slug-to-number map, empty to start) so the word-count check uses `override ?? 600`. The per-page interviews add a 450 entry only when cuts push a page under 600. The per-slug test files that assert 600-900 words read the same map. The empty-frame fallback stays in the component for dev; this gate keeps it from shipping.",
+      "acceptance_criteria": [
+        "Test: a card whose thumbnail file is missing fails work-thumbnail-missing in strict mode; ai-toolkit's missing thumb does not.",
+        "Test: a Figure with empty alt, no caption, or a src not in public/ or work-images.json fails work-figure; a BeforeAfter missing afterAlt fails.",
+        "Test: an unreferenced file in public/work and a work-images.json entry with no file each fail work-orphan.",
+        "Test: Slack, Linear, Notion and Quaestor-Technologies URLs in work MDX or work-cards.json fail work-internal-url.",
+        "Test: a work-cards.json cardOutcome containing [ERIC: is flagged; a slug in WORD_MIN_OVERRIDES with 450 words passes while the same count fails without the override.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0046"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "7ab117caefeda150123bf8b23469f6f99482f5f5",
+      "tests": {
+        "passed": 455,
+        "failed": 0
+      },
+      "summary": "Added work-thumbnail-missing, work-figure, work-orphan and work-internal-url strict rules to check-content.mjs; replaced single word floor with WORD_MIN_OVERRIDES (empty) plus wordMinFor(slug), read by the six per-slug work tests. Real strict run currently reports expected work-thumbnail-missing (frontend-platform), 7 work-orphan (unreferenced detail images) and the render-performance cardOutcome eric-marker.",
+      "files_touched": [
+        "scripts/check-content.mjs",
+        "scripts/check-content.d.mts",
+        "scripts/check-content.test.mjs",
+        "src/app/work/*.test.ts"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0048.md"
+    },
+    {
+      "id": "T-0049",
+      "title": "render-performance: place the Lighthouse before/after and fill sourced markers",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Edit `content/work/render-performance.mdx` (and regenerate `work-cards.json`) using only facts the sources support. Sources: the 10-28-21 and 10-29-21 Lighthouse reports built in T-0042, and the v1 entry from `git show v1-legacy:src/components/standard/work/workData.js` ('Website Render Optimizations', about lines 248-264).\n\n- Place a `<BeforeAfter>` of the two reports with real alt text that states each score and LCP, plus a caption. The 11-1-21 run is not used.\n- Fill from the reports: profiling tool = Lighthouse; measured on dev.insideoutdev.com on 10-28-21 and 10-29-21; performance score 47 to 82; FCP 4.0s to 1.3s; LCP 5.2s to 2.0s; Speed Index 6.1s to 1.6s; TTI 4.3s to 2.1s; TBT 190ms to 150ms. Largest cost found = images (Lighthouse opportunities before: properly size images about 6.36s, next-gen formats about 2.4s, render-blocking resources about 0.9s).\n- Fill from the v1 entry: stack = React and Node.js; what shipped = images resized and compressed, lazy imports, React Suspense for route mounts, third-party scripts made async, render-blocking resources deferred; goal = bring first contentful paint under an acceptable threshold.\n- Delete the sentence about the '300%' headline entirely (about line 58). Do not mention 300% anywhere, including work-cards.json.\n- Draft the card: cardNumber `2.0s`, a short cardNumberLabel such as 'largest paint, down from 5.2s', and a one-line cardOutcome. These are drafts; the interview in T-0050 confirms the wording.\n- Leave every marker that no source answers (team, role split, usage change, trade-offs, what is still slow). Do not invent.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports. Marker line numbers quoted here come from a read-only scan taken before any edits and may have shifted. Match markers by their text, not by line number.",
+      "acceptance_criteria": [
+        "Test: render-performance.mdx contains a <BeforeAfter> whose before and after srcs are in work-images.json and whose two alts are non-empty and mention the scores.",
+        "Test: neither render-performance.mdx nor work-cards.json contains '300%'; render-performance.test.ts's no-unverified-claim test still passes.",
+        "Test: work-cards.json equals buildCards() and the render-performance cardOutcome no longer contains an [ERIC: marker.",
+        "Body stays 600-900 words (or the log explains why), and every remaining [ERIC: marker is listed in the log with why no source answers it.",
+        "`node scripts/check-content.mjs --strict` reports only eric-marker findings for render-performance.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042",
+        "T-0045",
+        "T-0046",
+        "T-0048"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "399f0f0bd6d2e763f0d62dffe32507ed59cf37e6",
+      "tests": {
+        "passed": 457,
+        "failed": 0
+      },
+      "summary": "Rewrote render-performance.mdx from the Lighthouse reports and v1 entry: BeforeAfter with score/LCP alts, metrics table, sourced stack and decisions, 300% sentence removed. Regenerated work-cards.json (cardNumber 2.0s, label 'largest paint, down from 5.2s'). Updated render-performance.test.ts (old test required the 300% marker and null cardNumber).",
+      "files_touched": [
+        "content/work/render-performance.mdx",
+        "src/content/work-cards.json",
+        "src/app/work/render-performance.test.ts"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0049.md"
+    },
+    {
+      "id": "T-0050",
+      "title": "render-performance: interview Eric to resolve the remaining gaps (1 of 5)",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Interview session, first of five, run with Claude at the keyboard and Eric answering. Order across the five pages: render-performance, metrics-tab-v2, kpi-granularity, investor-reports, frontend-platform.\n\n1. List every remaining `[ERIC:` marker in `content/work/render-performance.mdx` and ask them as short direct questions in one batch.\n2. Rule per marker: answer it or cut the sentence. If Eric can't answer in a sentence, the sentence goes.\n3. Confirm the wording of cardOutcome, cardNumber `2.0s` and cardNumberLabel drafted in T-0049.\n4. If cuts leave the body under 600 words, add this slug to `WORD_MIN_OVERRIDES` at 450 and update its test. Never pad.\n5. If the copy misses twice, park the page and say so, per Eric's saved rule.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports.",
+      "acceptance_criteria": [
+        "content/work/render-performance.mdx and its work-cards.json entry contain no [ERIC: text.",
+        "`node scripts/check-content.mjs --strict` reports zero findings for render-performance.",
+        "Test: render-performance.test.ts passes, including word count (600-900 or a documented 450 override), six sections, and alt text.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0049"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0051",
+      "title": "metrics-tab-v2: place the Datum Tracer screenshot and fill sourced markers",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Edit `content/work/metrics-tab-v2.mdx` (and regenerate `work-cards.json` if the card fields change). Source: the 'Metrics Tab v2' section of the gitignored `docs/private/eric-lingren-impact.html` (about lines 263-283).\n\n- Place one `<Figure>` of the focused cell plus Datum Tracer image with real alt text and a caption. No PR numbers, channel names or internal links in the caption.\n- The scan found no marker the HTML answers fully and 2 it answers in part: the screenshot-slot marker (about line 19) and the marker about display versus editing (about line 49, the HTML shows display only). Fill only what the source states; keep the rest.\n- Do not use PR or Linear counts as impact.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports. Marker line numbers quoted here come from a read-only scan taken before any edits and may have shifted. Match markers by their text, not by line number.",
+      "acceptance_criteria": [
+        "Test: metrics-tab-v2.mdx contains a <Figure> whose src is in work-images.json with non-empty alt and caption, and its caption has no URL, PR number or channel name.",
+        "Test: metrics-tab-v2.test.ts passes (frontmatter, words, sections, alt text).",
+        "Every remaining [ERIC: marker is listed in the log with why no source answers it.",
+        "`node scripts/check-content.mjs --strict` reports only eric-marker findings for metrics-tab-v2.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042",
+        "T-0045",
+        "T-0046",
+        "T-0048"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "1ba83eb1e88273ee80aa45a0e8bd53fe8d1238e8",
+      "tests": {
+        "passed": 455,
+        "failed": 0
+      },
+      "summary": "Placed a Figure of the focused cell plus Datum Tracer in metrics-tab-v2.mdx with UI-only alt and caption. Screenshot marker narrowed to the still-missing edit-mode and paste images.",
+      "files_touched": [
+        "content/work/metrics-tab-v2.mdx"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0051.md"
+    },
+    {
+      "id": "T-0052",
+      "title": "metrics-tab-v2: interview Eric to resolve the remaining gaps (2 of 5)",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Interview session, second of five. Same protocol as T-0050: ask every remaining `[ERIC:` marker in `content/work/metrics-tab-v2.mdx` in one batch; answer it or cut the sentence; if cuts leave the body under 600 words add the slug to `WORD_MIN_OVERRIDES` at 450 and update its test, never pad; park the page if the copy misses twice.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports.",
+      "acceptance_criteria": [
+        "content/work/metrics-tab-v2.mdx and its work-cards.json entry contain no [ERIC: text.",
+        "`node scripts/check-content.mjs --strict` reports zero findings for metrics-tab-v2.",
+        "Test: metrics-tab-v2.test.ts passes (word count 600-900 or a documented 450 override).",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0051"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0053",
+      "title": "kpi-granularity: place both screenshots and fill sourced markers",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Edit `content/work/kpi-granularity.mdx`. Source: the 'KPI Granularity' section of the gitignored `docs/private/eric-lingren-impact.html` (about lines 154-178).\n\n- Place two `<Figure>`s: per-KPI granularity on the configure page, and adding company-specific metrics. Real alt text and captions; no PR numbers, channel names or internal links.\n- The scan found 4 markers the HTML answers and 3 it answers in part. Answered: the screenshot slot (about line 18), the 84 separate Q3 investor reports before versus over 20 Q3 requests after (Net Burn monthly to quarterly), and 75 Q3 reports of which 24 changed granularity. Partial: one fact only from the same passage, a PR title with no partial-failure detail, and a praise quote whose speaker is named. Do not name the speaker.\n- Use the report and request counts as business facts; do not use PR or Linear counts as impact.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports. Marker line numbers quoted here come from a read-only scan taken before any edits and may have shifted. Match markers by their text, not by line number.",
+      "acceptance_criteria": [
+        "Test: kpi-granularity.mdx contains two <Figure>s with srcs in work-images.json and non-empty alt and caption, and no caption has a URL, PR number or channel name.",
+        "Test: kpi-granularity.test.ts passes (frontmatter, 600-900 words, six sections, alt text).",
+        "Every remaining [ERIC: marker is listed in the log with why no source answers it.",
+        "`node scripts/check-content.mjs --strict` reports only eric-marker findings for kpi-granularity.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042",
+        "T-0045",
+        "T-0046",
+        "T-0048"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "8146e5c1b933a5a2f8152a0ac616761cbe1b14e6",
+      "tests": {
+        "passed": 455,
+        "failed": 0
+      },
+      "summary": "Placed both Figures in kpi-granularity.mdx. Filled sourced facts: 84 separate Q3 requests before vs over 20 after (Net Burn monthly to quarterly), 24 of 75 Q3 requests changed granularity, Jul 2024 to Oct 2025 across 3 projects. 10 markers remain, including the pull quote (source names the speaker).",
+      "files_touched": [
+        "content/work/kpi-granularity.mdx"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0053.md"
+    },
+    {
+      "id": "T-0054",
+      "title": "kpi-granularity: interview Eric to resolve the remaining gaps (3 of 5)",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Interview session, third of five. Same protocol as T-0050: ask every remaining `[ERIC:` marker in `content/work/kpi-granularity.mdx` in one batch; answer it or cut the sentence; if cuts leave the body under 600 words add the slug to `WORD_MIN_OVERRIDES` at 450 and update its test, never pad; park the page if the copy misses twice.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports.",
+      "acceptance_criteria": [
+        "content/work/kpi-granularity.mdx and its work-cards.json entry contain no [ERIC: text.",
+        "`node scripts/check-content.mjs --strict` reports zero findings for kpi-granularity.",
+        "Test: kpi-granularity.test.ts passes (word count 600-900 or a documented 450 override).",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0053"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0055",
+      "title": "investor-reports: place the masthead before/after and progress images, fill sourced markers",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Edit `content/work/investor-reports.mdx`. Source: the 'Investor Report Makeover' section of the gitignored `docs/private/eric-lingren-impact.html` (about lines 181-213).\n\n- Place a `<BeforeAfter>` of the masthead before and after, and two `<Figure>`s: the footer progress tracker and the auto-submit state. Real alt text and captions; no PR numbers, channel names or internal links. The footer tracker image shows 10 of 11 items complete, 7 of 8 metrics and 3 of 3 documents; the auto-submit image shows 5 of 14 metrics with 8 days left.\n- The scan found 3 markers the HTML answers and 2 it answers in part. Answered: the masthead screenshots (about line 19), the progress and auto-submit facts, and one more at about line 57. Partial: 20 portfolio companies used the toggle in the first week (not a total), and a note about separate PRs. The HTML states no before/after completion rate exists, so that marker is cut or left for the interview.\n- The two masthead strips are about 1400x240 (roughly 5.8:1). Side by side in the 720px column each half is about 350px wide. Open the rendered pair at 720px and record in the log whether the text is legible. If it is not, stop and report; do not change the BeforeAfter layout without Eric's decision.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports. Marker line numbers quoted here come from a read-only scan taken before any edits and may have shifted. Match markers by their text, not by line number.",
+      "acceptance_criteria": [
+        "Test: investor-reports.mdx contains one <BeforeAfter> and two <Figure>s whose srcs are in work-images.json, each with non-empty alt and caption and no URL, PR number or channel name in the captions.",
+        "Test: investor-reports.test.ts passes (frontmatter, no PR/file/line counts, words, sections, alt text).",
+        "The log records the legibility check of the masthead pair at 720px.",
+        "`node scripts/check-content.mjs --strict` reports only eric-marker findings for investor-reports.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0042",
+        "T-0045",
+        "T-0046",
+        "T-0048"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "f73bf58e8e459e1c9c24318cec96da349506ae7b",
+      "tests": {
+        "passed": 456,
+        "failed": 0
+      },
+      "summary": "Placed one BeforeAfter (masthead) and two Figures (footer progress tracker, auto-submit state) in investor-reports.mdx; resolved 3 sourced markers. Masthead pair NOT fully legible at 720px (each half 352x60px); layout left unchanged pending Eric's decision. Resolved per Eric: BeforeAfter now stacks full width when either image is wider than 2:1, so the masthead pair renders at 720x123 each and reads; Lighthouse pair stays side by side.",
+      "files_touched": [
+        "content/work/investor-reports.mdx",
+        "src/app/work/investor-reports.test.ts"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0055.md"
+    },
+    {
+      "id": "T-0056",
+      "title": "investor-reports: interview Eric to resolve the remaining gaps (4 of 5)",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Interview session, fourth of five. Same protocol as T-0050: ask every remaining `[ERIC:` marker in `content/work/investor-reports.mdx` in one batch; answer it or cut the sentence; if cuts leave the body under 600 words add the slug to `WORD_MIN_OVERRIDES` at 450 and update its test, never pad; park the page if the copy misses twice. If T-0055 reported the masthead pair as illegible side by side, settle that with Eric first.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports.",
+      "acceptance_criteria": [
+        "content/work/investor-reports.mdx and its work-cards.json entry contain no [ERIC: text.",
+        "`node scripts/check-content.mjs --strict` reports zero findings for investor-reports.",
+        "Test: investor-reports.test.ts passes (word count 600-900 or a documented 450 override).",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0055"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0057",
+      "title": "frontend-platform: place the Storybook primitives screenshot",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Edit `content/work/frontend-platform.mdx` to place one `<Figure>` of the Storybook shadcn primitives image built in T-0044, with real alt text and a caption. The impact HTML (about lines 241-260) answers none of the markers in this page, so this task changes only the figure and its surrounding sentence. Do not add the Storybook-for-Figma paragraph (whether that PR was Eric's is unconfirmed) and do not mention the test-speed or Storybook CI gains, which belong to a coworker. Leave every marker for the interview.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports. Marker line numbers quoted here come from a read-only scan taken before any edits and may have shifted. Match markers by their text, not by line number.",
+      "acceptance_criteria": [
+        "Test: frontend-platform.mdx contains a <Figure> whose src is in work-images.json with non-empty alt and caption.",
+        "Test: frontend-platform.test.ts passes, including its no-colleague-test-speed-claim test.",
+        "`node scripts/check-content.mjs --strict` reports only eric-marker findings for frontend-platform.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0044",
+        "T-0045",
+        "T-0046",
+        "T-0048"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "cba1a1696b2bb7476354234dba465a256cd842fc",
+      "tests": {
+        "passed": 462,
+        "failed": 0
+      },
+      "summary": "Placed one Figure of the Storybook All Button Types image in frontend-platform.mdx with a truthful alt and caption (no shadcn, no names). No surrounding sentence added (page supports Storybook only via the stack tag). Screenshot marker narrowed to the remaining demo-instance screenshot.",
+      "files_touched": [
+        "content/work/frontend-platform.mdx"
+      ],
+      "log_path": "docs/tasks/.logs/20261028-2350-selected-work-polish/T-0057.md"
+    },
+    {
+      "id": "T-0058",
+      "title": "frontend-platform: interview Eric to resolve the remaining gaps (5 of 5)",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Interview session, last of five. Same protocol as T-0050: ask every remaining `[ERIC:` marker in `content/work/frontend-platform.mdx` in one batch; answer it or cut the sentence; if cuts leave the body under 600 words add the slug to `WORD_MIN_OVERRIDES` at 450 and update its test, never pad; park the page if the copy misses twice. Also settle these with Eric:\n- The page cites '1,853 imports across 1,046 files', which is a file count his copy rules reject as impact. Keep it as a one-off detail of the codemod or cut it.\n- Whether the Storybook-for-Figma PR (#14532) was his work. Add the shadcn and Storybook paragraph to Key decisions only if it was.\n- Never claim the 23% test-speed or 48% Storybook CI gains; they are a coworker's.\n\nFollow Eric's saved copy-voice rules: business outcomes over features, no slogans, no PR, file or line counts as impact, and only facts a source supports.",
+      "acceptance_criteria": [
+        "content/work/frontend-platform.mdx and its work-cards.json entry contain no [ERIC: text.",
+        "`node scripts/check-content.mjs --strict` reports zero findings for frontend-platform.",
+        "Test: frontend-platform.test.ts passes (word count 600-900 or a documented 450 override, and no colleague test-speed claim).",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0057"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0059",
+      "title": "Verify the Selected Work pass and rebuild out/ for Eric's check",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Run the done criteria that a machine can check, then rebuild the static site Eric views.\n\n1. `node scripts/check-content.mjs --strict`: zero findings whose file is under `content/work/` or is `src/content/work-cards.json`. Findings elsewhere (content/resume/resume.mdx markers, the testimonials name-blocklist warning) are out of scope here; list them in the log.\n2. `npm run typecheck`, `npm run lint`, `npm test`.\n3. `npm run build` so `out/` is current, then check that none of `out/work/{kpi-granularity,investor-reports,metrics-tab-v2,frontend-platform,render-performance}/index.html` contains `[ERIC`.\n4. Serve `out/` and run a Lighthouse audit of `/work/render-performance/`. Record LCP for the mobile and desktop presets. The target is LCP under 2.5s. If the Lighthouse CLI isn't available, say so and fail the task rather than skipping it.\n5. Confirm each of the 5 case-study pages renders its images with width and height attributes and a working back link.",
+      "acceptance_criteria": [
+        "Test: `node scripts/check-content.mjs --strict` shows zero selected-work-scope findings (file under content/work or src/content/work-cards.json).",
+        "`grep -l \"\\[ERIC\" out/work/*/index.html` over the 5 case-study pages returns nothing.",
+        "The log records Lighthouse LCP for /work/render-performance/ and it is under 2.5s.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0045",
+        "T-0047",
+        "T-0048",
+        "T-0050",
+        "T-0052",
+        "T-0054",
+        "T-0056",
+        "T-0058"
+      ],
+      "status": "blocked",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0060",
+      "title": "Eric checks the rebuilt site on desktop and a real phone",
+      "type": "HITL",
+      "task_type": "code",
+      "description": "Eric looks at the rebuilt static site; this needs his eyes and a real phone.\n\n1. Serve it with `npx serve out` (the :3000 preview he already uses).\n2. Desktop at 1440x900: open the home page in the fly-through and in `?view=classic`. The Selected Work panel shows 3 cards over 2, each with its image, and the panel does not shrink. Tablet width: 2 across looks right.\n3. Real phone: compact rows with a readable thumb, title and outcome; 5 rows fit without scaling.\n4. Open each of the 5 case-study pages: images render, the Before/After pair reads on desktop and stacks on phone, the back link lands on the Selected Work panel, and no `[ERIC:` text shows.\n5. Note anything off; copy that misses twice gets parked.",
+      "acceptance_criteria": [
+        "Eric confirms the Selected Work panel at 1440x900 shows no content-fit scaling in fly-through and ?view=classic.",
+        "Eric confirms the phone layout and all 5 detail pages.",
+        "Test: T-0059's automated checks passed before this check was requested."
+      ],
+      "blocked_by": [
+        "T-0059"
+      ],
+      "status": "deferred_hitl",
+      "branch": null,
+      "pr": null
+    },
+    {
+      "id": "T-0061",
+      "title": "Fix the [ERIC: ...] placeholder in the shipped resume PDF and resume.mdx (InsideOut Development bullet)",
+      "type": "AFK",
+      "task_type": "triage",
+      "description": "Fix the [ERIC: ...] placeholder in the shipped resume PDF and resume.mdx (InsideOut Development bullet).\n\npublic/eric-lingren-resume.pdf line 21 and content/resume/resume.mdx:15-16 hold the literal marker. The Lighthouse before/after numbers from this grill can supply the content.",
+      "acceptance_criteria": [
+        "Item has been exported to its destination by export-tasks"
+      ],
+      "blocked_by": [],
+      "status": "not_started",
+      "branch": null,
+      "pr": null,
+      "domain": "personal",
+      "deliverable": "code",
+      "seed_ref": "20261028-2336-selected-work-polish.json",
+      "task_ref": "20261028-2350-selected-work-polish.json"
+    }
+  ],
+  "follow_ups": [
+    {
+      "id": "FU-002",
+      "title": "Check Selected Work tablet layout and phone fit by eye",
+      "steps": [
+        "Run npm run dev, open /?view=classic",
+        "At about 600-700px container width confirm 2-across image-top cards (tablet layout was an assumption in the grill, not confirmed)",
+        "At 390x844 confirm 5 compact rows fit without --content-fit scaling; at 1440x900 confirm 3+2 fits without scaling"
+      ],
+      "source": "discovered",
+      "trigger_task": "T-0045"
+    }
+  ]
+}

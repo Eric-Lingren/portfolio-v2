@@ -5,8 +5,8 @@ export type Testimonial = {
   employer: string;
   year: number;
   original: string;
-  /** Optional verbatim phrase inside `quote` to emphasise. */
-  highlight?: string;
+  /** Optional verbatim phrases inside `quote` to emphasise. */
+  highlights?: readonly string[];
 };
 
 // Verbatim excerpts approved by Eric. Never invent entries.
@@ -22,7 +22,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Standard Metrics",
     year: 2026,
     original: "SM2",
-    highlight: "in record time",
+    highlights: ["in record time"],
   },
   {
     quote:
@@ -32,7 +32,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Standard Metrics",
     year: 2024,
     original: "SM1",
-    highlight: "constantly keeping me updated",
+    highlights: ["tackling problems", "constantly keeping me updated!"],
   },
   {
     quote:
@@ -42,7 +42,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Standard Metrics",
     year: 2023,
     original: "SM3",
-    highlight: "showing great ownership",
+    highlights: ["showing great ownership", "fixing them at a rapid clip."],
   },
   {
     quote:
@@ -52,7 +52,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Bryan University",
     year: 2023,
     original: "BU2",
-    highlight: "very passionate and enthusiastic",
+    highlights: ["extraordinary instructor", "very passionate and enthusiastic"],
   },
   {
     quote:
@@ -62,7 +62,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Bryan University",
     year: 2020,
     original: "BU1",
-    highlight: "really knows his react very well",
+    highlights: ["wonderful teacher!", "really knows his react very well"],
   },
   {
     quote:
@@ -72,6 +72,6 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Bryan University",
     year: 2020,
     original: "BU1",
-    highlight: "helped boost my self confidence",
+    highlights: ["amazing instructor!", "helped boost my self confidence"],
   },
 ];

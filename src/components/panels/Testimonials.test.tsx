@@ -50,18 +50,25 @@ describe("Testimonials", () => {
     expect(container.querySelector(".btn")).toBeNull();
   });
 
-  it("wraps the highlight phrase in a mark and keeps the full quote text", () => {
-    const [first, second] = fixture(2);
+  it("wraps each highlight phrase in a mark and keeps the full quote text", () => {
+    const [first, second, third] = fixture(3);
     const cards = [
-      { ...first, quote: "Shipped it in record time.", highlight: "in record time" },
-      { ...second, quote: "Plain quote.", highlight: "not present" },
+      { ...first, quote: "Shipped it in record time.", highlights: ["in record time"] },
+      { ...second, quote: "Plain quote.", highlights: ["not present"] },
+      {
+        ...third,
+        quote: "Great owner, fast fixes, kept me updated.",
+        highlights: ["kept me updated", "Great owner", "owner, fast", "missing"],
+      },
     ];
     const { container } = render(<Testimonials testimonials={cards} />);
-    const [a, b] = container.querySelectorAll("blockquote");
+    const [a, b, c] = container.querySelectorAll("blockquote");
     expect(a.textContent).toBe("“Shipped it in record time.”");
     expect(a.querySelector("mark.testimonial-highlight")!.textContent).toBe("in record time");
     expect(b.textContent).toBe("“Plain quote.”");
     expect(b.querySelector("mark")).toBeNull();
+    expect(c.textContent).toBe("“Great owner, fast fixes, kept me updated.”");
+    expect([...c.querySelectorAll("mark")].map((m) => m.textContent)).toEqual(["Great owner", "kept me updated"]);
   });
 
   it("renders no cards and no placeholder markers when the list is empty", () => {

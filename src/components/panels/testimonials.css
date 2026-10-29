@@ -38,7 +38,9 @@
 .testimonial-highlight {
   background: none;
   color: var(--accent);
-  font-weight: 600;
+  /* Slightly larger than the quote; line-height 1 keeps the line spacing even. */
+  font-size: 1.1em;
+  line-height: 1;
 }
 
 /* Source line in the nav's mono label style. */
