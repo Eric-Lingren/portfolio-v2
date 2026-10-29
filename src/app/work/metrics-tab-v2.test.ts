@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
-import { checkContent, REQUIRED_FRONTMATTER, REQUIRED_SECTIONS } from "../../../scripts/check-content.mjs";
+import { checkContent, REQUIRED_FRONTMATTER, REQUIRED_SECTIONS, wordMinFor } from "../../../scripts/check-content.mjs";
 
 const ROOT = path.join(__dirname, "..", "..", "..");
 const FILE = path.join(ROOT, "content", "work", "metrics-tab-v2.mdx");
@@ -25,7 +25,7 @@ describe("metrics-tab-v2 case study", () => {
 
   it("body is 600 to 900 words", () => {
     const n = words(parsed.content);
-    expect(n).toBeGreaterThanOrEqual(600);
+    expect(n).toBeGreaterThanOrEqual(wordMinFor("metrics-tab-v2"));
     expect(n).toBeLessThanOrEqual(900);
   });
 

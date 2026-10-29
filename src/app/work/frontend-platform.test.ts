@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
-import { checkContent } from "../../../scripts/check-content.mjs";
+import { checkContent, wordMinFor } from "../../../scripts/check-content.mjs";
 import { generateStaticParams } from "./[slug]/page";
 
 const ROOT = process.cwd();
@@ -38,7 +38,7 @@ describe("frontend-platform case study", () => {
 
   it("has 600 to 900 words in the body", () => {
     const words = parsed.content.split(/\s+/).filter(Boolean).length;
-    expect(words).toBeGreaterThanOrEqual(600);
+    expect(words).toBeGreaterThanOrEqual(wordMinFor("frontend-platform"));
     expect(words).toBeLessThanOrEqual(900);
   });
 
