@@ -1,0 +1,54 @@
+{
+  "/work/investor-reports/auto-submit-state.webp": {
+    "width": 746,
+    "height": 134
+  },
+  "/work/investor-reports/footer-progress-tracker.webp": {
+    "width": 818,
+    "height": 162
+  },
+  "/work/investor-reports/masthead-after.webp": {
+    "width": 1400,
+    "height": 247
+  },
+  "/work/investor-reports/masthead-before.webp": {
+    "width": 1400,
+    "height": 240
+  },
+  "/work/investor-reports/thumb.webp": {
+    "width": 568,
+    "height": 284
+  },
+  "/work/kpi-granularity/company-specific-metrics.webp": {
+    "width": 881,
+    "height": 636
+  },
+  "/work/kpi-granularity/configure-ui.webp": {
+    "width": 650,
+    "height": 432
+  },
+  "/work/kpi-granularity/thumb.webp": {
+    "width": 568,
+    "height": 284
+  },
+  "/work/metrics-tab-v2/focused-cell-datum-tracer.webp": {
+    "width": 1113,
+    "height": 663
+  },
+  "/work/metrics-tab-v2/thumb.webp": {
+    "width": 568,
+    "height": 284
+  },
+  "/work/render-performance/lighthouse-2021-10-28.webp": {
+    "width": 984,
+    "height": 1094
+  },
+  "/work/render-performance/lighthouse-2021-10-29.webp": {
+    "width": 1045,
+    "height": 1094
+  },
+  "/work/render-performance/thumb.webp": {
+    "width": 568,
+    "height": 284
+  }
+}
