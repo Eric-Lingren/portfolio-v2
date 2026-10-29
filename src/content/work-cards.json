@@ -33,7 +33,7 @@
     "number": null,
     "numberLabel": "",
     "thumbnail": "/work/frontend-platform/thumb.webp",
-    "hasThumbnail": false
+    "hasThumbnail": true
   },
   {
     "slug": "render-performance",
