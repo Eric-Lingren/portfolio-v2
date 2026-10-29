@@ -26,6 +26,12 @@ describe("work route", () => {
     }
   });
 
+  it("links back to the Selected Work panel", async () => {
+    const study = getStudy("fixture-study", { includeFixtures: true });
+    render(<CaseStudyView study={study!}>{await compileBody(study!.content)}</CaseStudyView>);
+    expect(screen.getByRole("link", { name: "Back to selected work" })).toHaveAttribute("href", "/#work");
+  });
+
   it("excludes fixtures from production studies and static params", () => {
     expect(getStudies().some((s) => s.fixture)).toBe(false);
     expect(getStudy("fixture-study")).toBeUndefined();
