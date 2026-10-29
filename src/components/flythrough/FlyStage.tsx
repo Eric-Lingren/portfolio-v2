@@ -19,6 +19,7 @@ import {
 } from "./camera";
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
+import { initialScrollTop } from "./hash-target";
 import { PANELS } from "./registry";
 import { divePull } from "./dive";
 import { attachPanelSnap } from "./snap";
@@ -48,6 +49,9 @@ export function FlyStage() {
     let layout: Layout = layoutFor(window.innerWidth);
     let width = window.innerWidth;
     let lvh = window.innerHeight;
+    // A hash naming a panel starts the camera on that panel's stop. Instant: first paint stays static.
+    const hashTop = initialScrollTop(window.location.hash, COUNT, lvh);
+    if (hashTop > 0) window.scrollTo({ top: hashTop, left: 0, behavior: "instant" });
     let target = scrollProgress(window.scrollY, lvh);
     let current = target;
     let pullTarget = 0;

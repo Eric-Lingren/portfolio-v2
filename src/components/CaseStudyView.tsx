@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Study } from "@/lib/work";
 
@@ -5,6 +6,9 @@ export function CaseStudyView({ study, children }: { study: Study; children: Rea
   return (
     <main className="case-study">
       <article className="case-study__column">
+        <Link className="case-study__back" href="/#work">
+          Back to selected work
+        </Link>
         <h1 className="case-study__title">{study.title}</h1>
         <aside className="case-study__summary" aria-label="Summary">
           <dl>

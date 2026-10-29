@@ -11,6 +11,17 @@
   margin: 0 auto;
 }
 
+.case-study__back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.case-study__back:is(:hover, :focus-visible) {
+  text-decoration: underline;
+}
+
 .case-study__title {
   margin: 0 0 1.5rem;
   font-size: clamp(2rem, 5vw, 3rem);

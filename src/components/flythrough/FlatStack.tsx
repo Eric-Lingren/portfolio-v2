@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { setActiveSection } from "../active-section";
 import { RenderModeContext } from "./render-mode";
+import { hashPanelIndex } from "./hash-target";
 import { PANELS } from "./registry";
 import "./flat.css";
 
@@ -12,6 +13,12 @@ import "./flat.css";
  * render mode. No stage, no sketch layer, no 3D.
  */
 export function FlatStack() {
+  // A hash naming a panel scrolls that panel into view, instantly.
+  useEffect(() => {
+    if (hashPanelIndex(window.location.hash) < 0) return;
+    document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" });
+  }, []);
+
   // The section crossing the middle of the viewport is the active one.
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") return;
