@@ -38,9 +38,9 @@
   {
     "slug": "render-performance",
     "title": "Cutting render time at Inside Out Development",
-    "outcome": "[ERIC: one-line outcome of the render-time work, in plain words]",
-    "number": null,
-    "numberLabel": "",
+    "outcome": "Largest contentful paint on the company site dropped from 5.2s to 2.0s after the images and loading were reworked.",
+    "number": "2.0s",
+    "numberLabel": "largest paint, down from 5.2s",
     "thumbnail": "/work/render-performance/thumb.webp",
     "hasThumbnail": true
   }
