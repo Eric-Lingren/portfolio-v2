@@ -23,6 +23,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import matter from "gray-matter";
 import { looksLikePersonalName } from "./name-guard.mjs";
+import { CARD_SLUGS } from "./generate-work-cards.mjs";
 
 export const REQUIRED_SECTIONS = [
   "Context",
@@ -47,6 +48,10 @@ export const REQUIRED_FRONTMATTER = [
 ];
 export const WORD_MIN = 600;
 export const WORD_MAX = 900;
+// Per-slug lower bound overrides (slug -> number). Empty until a page is cut
+// below WORD_MIN on purpose; the word-count check uses `override ?? WORD_MIN`.
+export const WORD_MIN_OVERRIDES = {};
+export const wordMinFor = (slug) => WORD_MIN_OVERRIDES[slug] ?? WORD_MIN;
 
 const SCAN_DIRS = ["content", "src/content", "src/components/panels"];
 export const STRICT_RULES = new Set([
@@ -59,6 +64,10 @@ export const STRICT_RULES = new Set([
   "myfxbook",
   "blocklist",
   "headline-count",
+  "work-thumbnail-missing",
+  "work-figure",
+  "work-orphan",
+  "work-internal-url",
 ]);
 // Case study frontmatter keys that surface as headlines or card copy.
 const HEADLINE_KEYS = new Set(["title", "cardOutcome", "cardNumber", "cardNumberLabel", "outcomes"]);
@@ -199,6 +208,116 @@ function checkTestimonials(root, file, add) {
   }
 }
 
+const WORK_URL_PATTERNS = [
+  [/slack\.com/i, "Slack URL"],
+  [/linear\.app/i, "Linear URL"],
+  [/notion\.(?:so|com|site)/i, "Notion URL"],
+  [/github\.com\/Quaestor-Technologies/i, "Quaestor-Technologies GitHub link"],
+];
+
+function readJson(file) {
+  if (!fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function lineOf(text, index) {
+  return text.slice(0, index).split("\n").length;
+}
+
+// Parses name="v", name='v' and name={"v"} attributes from a JSX tag body.
+function parseAttrs(body) {
+  const attrs = {};
+  const re = /([A-Za-z]\w*)\s*=\s*(?:"([^"]*)"|'([^']*)'|\{\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`)\s*\})/g;
+  let m;
+  while ((m = re.exec(body))) attrs[m[1]] = m[2] ?? m[3] ?? m[4] ?? m[5] ?? m[6] ?? "";
+  return attrs;
+}
+
+const FIGURE_REQUIRED = {
+  Figure: ["src", "alt", "caption"],
+  BeforeAfter: ["before", "after", "beforeAlt", "afterAlt", "caption"],
+};
+const FIGURE_SRC_KEYS = { Figure: ["src"], BeforeAfter: ["before", "after"] };
+
+function walkFiles(dir) {
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkFiles(full));
+    else out.push(full);
+  }
+  return out;
+}
+
+// Work images: card thumbnails, Figure/BeforeAfter props, orphans, internal URLs.
+function checkWork(root, add) {
+  const cardsFile = path.join(root, "src/content/work-cards.json");
+  const imagesFile = path.join(root, "src/content/work-images.json");
+  const cards = readJson(cardsFile);
+  const images = readJson(imagesFile) ?? {};
+  const referenced = new Set();
+  const publicHas = (src) => fs.existsSync(path.join(root, "public", src));
+
+  if (Array.isArray(cards)) {
+    for (const card of cards) {
+      if (!card || typeof card.thumbnail !== "string") continue;
+      referenced.add(card.thumbnail);
+      if (!CARD_SLUGS.includes(card.slug)) continue;
+      if (!publicHas(card.thumbnail)) {
+        add(cardsFile, 1, "work-thumbnail-missing", `${card.slug}: public${card.thumbnail} does not exist`);
+      }
+    }
+    fs.readFileSync(cardsFile, "utf8")
+      .split("\n")
+      .forEach((text, i) => {
+        for (const [re, label] of WORK_URL_PATTERNS) {
+          if (re.test(text)) add(cardsFile, i + 1, "work-internal-url", label);
+        }
+      });
+  }
+
+  for (const file of walkFiles(path.join(root, "content/work")).filter((f) => f.endsWith(".mdx"))) {
+    const raw = fs.readFileSync(file, "utf8");
+    raw.split("\n").forEach((text, i) => {
+      for (const [re, label] of WORK_URL_PATTERNS) {
+        if (re.test(text)) add(file, i + 1, "work-internal-url", label);
+      }
+    });
+    const tagRe = /<(Figure|BeforeAfter)\b([\s\S]*?)\/?>/g;
+    let m;
+    while ((m = tagRe.exec(raw))) {
+      const [, tag, inner] = m;
+      const line = lineOf(raw, m.index);
+      const attrs = parseAttrs(inner);
+      for (const key of FIGURE_REQUIRED[tag]) {
+        if (typeof attrs[key] !== "string" || !attrs[key].trim()) {
+          add(file, line, "work-figure", `<${tag}> ${key} must be non-empty`);
+        }
+      }
+      for (const key of FIGURE_SRC_KEYS[tag]) {
+        const src = attrs[key];
+        if (typeof src !== "string" || !src.trim()) continue;
+        referenced.add(src);
+        if (!publicHas(src)) add(file, line, "work-figure", `<${tag}> ${key} ${src} does not exist in public/`);
+        if (!(src in images)) add(file, line, "work-figure", `<${tag}> ${key} ${src} is not in work-images.json`);
+      }
+    }
+  }
+
+  for (const full of walkFiles(path.join(root, "public/work"))) {
+    const src = "/" + path.relative(path.join(root, "public"), full).split(path.sep).join("/");
+    if (!referenced.has(src)) add(full, 1, "work-orphan", `public${src} is not used by any card or Figure/BeforeAfter`);
+  }
+  for (const src of Object.keys(images)) {
+    if (!publicHas(src)) add(imagesFile, 1, "work-orphan", `work-images.json entry ${src} has no file in public/`);
+  }
+}
+
 function isCaseStudy(root, file) {
   const rel = path.relative(root, file).split(path.sep).join("/");
   return /^content\/work\/[^/]+\.mdx$/.test(rel);
@@ -274,12 +393,15 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
         }
       }
       const words = parsed.content.split(/\s+/).filter(Boolean).length;
-      if (words < WORD_MIN || words > WORD_MAX) {
+      const slug =
+        typeof parsed.data.slug === "string" && parsed.data.slug ? parsed.data.slug : path.basename(file, ".mdx");
+      const wordMin = wordMinFor(slug);
+      if (words < wordMin || words > WORD_MAX) {
         add(
           file,
           fmLines + 1,
           "word-count",
-          `body is ${words} words (expected ${WORD_MIN}-${WORD_MAX})`,
+          `body is ${words} words (expected ${wordMin}-${WORD_MAX})`,
         );
       }
     }
@@ -287,6 +409,8 @@ export function checkContent({ root = process.cwd(), strict = false } = {}) {
 
   const testimonialsFile = path.join(root, "src/content/testimonials.ts");
   if (fs.existsSync(testimonialsFile)) checkTestimonials(root, testimonialsFile, add);
+
+  checkWork(root, add);
 
   const errors = findings.filter((f) => f.severity === "error");
   return { findings, exitCode: strict && errors.length > 0 ? 1 : 0 };

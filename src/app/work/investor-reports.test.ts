@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
-import { checkContent } from "../../../scripts/check-content.mjs";
+import { checkContent, wordMinFor } from "../../../scripts/check-content.mjs";
 import { getStudy } from "@/lib/work";
 import { generateStaticParams } from "./[slug]/page";
 
@@ -46,7 +46,7 @@ describe("investor-reports case study", () => {
 
   it("body is 600 to 900 words", () => {
     const words = parsed.content.split(/\s+/).filter(Boolean).length;
-    expect(words).toBeGreaterThanOrEqual(600);
+    expect(words).toBeGreaterThanOrEqual(wordMinFor(SLUG));
     expect(words).toBeLessThanOrEqual(900);
   });
 

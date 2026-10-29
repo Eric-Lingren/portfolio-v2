@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
 import { compileBody, getStudy } from "@/lib/work";
+import { wordMinFor } from "../../../scripts/check-content.mjs";
 import { generateStaticParams } from "./[slug]/page";
 
 const SLUG = "ai-toolkit";
@@ -47,7 +48,7 @@ describe("ai-toolkit case study", () => {
 
   it("is 600-900 words", () => {
     const words = read().content.split(/\s+/).filter(Boolean).length;
-    expect(words).toBeGreaterThanOrEqual(600);
+    expect(words).toBeGreaterThanOrEqual(wordMinFor(SLUG));
     expect(words).toBeLessThanOrEqual(900);
   });
 

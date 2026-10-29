@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { checkContent } from "./check-content.mjs";
+import { checkContent, WORD_MIN_OVERRIDES } from "./check-content.mjs";
 
 const SECTIONS = ["Context", "Problem", "My role", "Key decisions", "Impact", "What I'd do next"];
 const FM = `---
@@ -282,5 +282,170 @@ describe("strict launch gate", () => {
       "src/content/ai-toolkit.ts": 'const a = "Touched 40 files";',
     });
     expect(r).toEqual({ rules: [], exitCode: 0 });
+  });
+});
+
+describe("work image and copy gate", () => {
+  const strict = (files) => {
+    const r = checkContent({ root: project(files), strict: true });
+    return {
+      rules: r.findings.filter((f) => f.severity === "error").map((f) => f.rule),
+      exitCode: r.exitCode,
+      findings: r.findings,
+    };
+  };
+  const card = (slug, thumb = `/work/${slug}/thumb.webp`, extra = {}) => ({
+    slug,
+    title: slug,
+    outcome: "Did a thing.",
+    number: null,
+    numberLabel: "",
+    thumbnail: thumb,
+    hasThumbnail: true,
+    ...extra,
+  });
+  const cardsJson = (cards) => JSON.stringify(cards);
+  const imgs = (...srcs) => JSON.stringify(Object.fromEntries(srcs.map((s) => [s, { width: 10, height: 10 }])));
+  const mdx = (tags) => FM + body() + "\n" + tags + "\n";
+  const clean = {
+    "src/content/work-cards.json": cardsJson([card("kpi-granularity")]),
+    "public/work/kpi-granularity/thumb.webp": "x",
+    "src/content/work-images.json": imgs("/work/kpi-granularity/a.webp", "/work/kpi-granularity/b.webp"),
+    "public/work/kpi-granularity/a.webp": "x",
+    "public/work/kpi-granularity/b.webp": "x",
+  };
+  const goodFigure = '<Figure src="/work/kpi-granularity/a.webp" alt="A chart" caption="A caption" />';
+  const goodBA =
+    '<BeforeAfter before="/work/kpi-granularity/a.webp" after="/work/kpi-granularity/b.webp" beforeAlt="Old" afterAlt="New" caption="Cap" />';
+
+  it("passes a consistent work tree", () => {
+    const r = strict({ ...clean, "content/work/a.mdx": mdx(goodFigure + "\n" + goodBA) });
+    expect(r.rules).toEqual([]);
+    expect(r.exitCode).toBe(0);
+  });
+
+  describe("work-thumbnail-missing", () => {
+    it("fails a panel card whose thumbnail file is missing", () => {
+      const r = strict({ "src/content/work-cards.json": cardsJson([card("frontend-platform")]) });
+      expect(r.rules).toContain("work-thumbnail-missing");
+      expect(r.exitCode).toBe(1);
+    });
+
+    it("does not check ai-toolkit", () => {
+      const r = strict({ "src/content/work-cards.json": cardsJson([card("ai-toolkit")]) });
+      expect(r.rules).not.toContain("work-thumbnail-missing");
+    });
+  });
+
+  describe("work-figure", () => {
+    const run = (tags, over = {}) => strict({ ...clean, ...over, "content/work/a.mdx": mdx(tags) });
+
+    it.each([
+      ["empty alt", '<Figure src="/work/kpi-granularity/a.webp" alt="" caption="c" />'],
+      ["no caption", '<Figure src="/work/kpi-granularity/a.webp" alt="a" />'],
+      ["src not in public", '<Figure src="/work/kpi-granularity/zzz.webp" alt="a" caption="c" />'],
+      ["expression props and no caption", '<Figure\n  src={"/work/kpi-granularity/a.webp"}\n  alt={"a"}\n/>'],
+    ])("fails a Figure with %s", (_n, tags) => {
+      expect(run(tags).rules).toContain("work-figure");
+    });
+
+    it("fails a src in public but not in work-images.json", () => {
+      const r = run('<Figure src="/work/kpi-granularity/c.webp" alt="a" caption="c" />', {
+        "public/work/kpi-granularity/c.webp": "x",
+      });
+      expect(r.findings.some((f) => f.rule === "work-figure" && /work-images\.json/.test(f.message))).toBe(true);
+    });
+
+    it("fails a BeforeAfter missing afterAlt", () => {
+      const r = run(
+        '<BeforeAfter before="/work/kpi-granularity/a.webp" after="/work/kpi-granularity/b.webp" beforeAlt="Old" caption="c" />',
+      );
+      expect(r.findings.some((f) => f.rule === "work-figure" && f.message.includes("afterAlt"))).toBe(true);
+    });
+
+    it("fails a BeforeAfter with a missing file", () => {
+      const r = run(
+        '<BeforeAfter before="/work/kpi-granularity/a.webp" after="/work/kpi-granularity/nope.webp" beforeAlt="o" afterAlt="n" caption="c" />',
+      );
+      expect(r.rules).toContain("work-figure");
+    });
+  });
+
+  describe("work-orphan", () => {
+    it("fails an unreferenced file in public/work", () => {
+      const r = strict({
+        ...clean,
+        "content/work/a.mdx": mdx(goodFigure + "\n" + goodBA),
+        "public/work/kpi-granularity/stray.webp": "x",
+      });
+      expect(r.findings.some((f) => f.rule === "work-orphan" && f.message.includes("stray.webp"))).toBe(true);
+      expect(r.exitCode).toBe(1);
+    });
+
+    it("fails a work-images.json entry with no file", () => {
+      const r = strict({
+        ...clean,
+        "src/content/work-images.json": imgs(
+          "/work/kpi-granularity/a.webp",
+          "/work/kpi-granularity/b.webp",
+          "/work/kpi-granularity/ghost.webp",
+        ),
+        "content/work/a.mdx": mdx(goodFigure + "\n" + goodBA),
+      });
+      expect(r.findings.some((f) => f.rule === "work-orphan" && f.message.includes("ghost.webp"))).toBe(true);
+    });
+
+    it("counts a file referenced only by a card thumbnail as used", () => {
+      const r = strict({
+        "src/content/work-cards.json": cardsJson([card("kpi-granularity")]),
+        "public/work/kpi-granularity/thumb.webp": "x",
+      });
+      expect(r.rules).toEqual([]);
+    });
+  });
+
+  describe("work-internal-url", () => {
+    const urls = [
+      ["Slack", "https://standard-metrics.slack.com/archives/C1"],
+      ["Linear", "https://linear.app/sm/issue/SM-1"],
+      ["Notion", "https://app.notion.com/p/abc"],
+      ["Quaestor-Technologies", "https://github.com/Quaestor-Technologies/Quaestor-Web/pull/9"],
+    ];
+
+    it.each(urls)("fails a %s URL in work MDX", (_n, url) => {
+      const r = strict({ ...clean, "content/work/a.mdx": mdx(`See ${url}`) });
+      expect(r.rules).toContain("work-internal-url");
+    });
+
+    it.each(urls)("fails a %s URL in work-cards.json", (_n, url) => {
+      const r = strict({
+        ...clean,
+        "src/content/work-cards.json": cardsJson([card("kpi-granularity", undefined, { outcome: `See ${url}` })]),
+      });
+      expect(r.rules).toContain("work-internal-url");
+    });
+  });
+
+  it("flags an [ERIC: marker in a work-cards.json cardOutcome", () => {
+    const r = strict({
+      ...clean,
+      "src/content/work-cards.json": cardsJson([card("kpi-granularity", undefined, { cardOutcome: "[ERIC: fill this]" })]),
+    });
+    expect(r.rules).toContain("eric-marker");
+    expect(r.exitCode).toBe(1);
+  });
+});
+
+describe("WORD_MIN_OVERRIDES", () => {
+  it("lets a listed slug pass at 450 words while the same count fails without it", () => {
+    const files = { "content/work/a.mdx": FM + body(450) };
+    expect(WORD_MIN_OVERRIDES).toEqual({});
+    expect(rules(project(files))).toContain("word-count");
+    WORD_MIN_OVERRIDES.t = 450;
+    try {
+      expect(rules(project(files))).not.toContain("word-count");
+    } finally {
+      delete WORD_MIN_OVERRIDES.t;
+    }
   });
 });
