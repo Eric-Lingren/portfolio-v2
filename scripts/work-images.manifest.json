@@ -16,7 +16,7 @@
     { "source": "metrics-tab-v2/focused-cell-datum-tracer.jpg", "kind": "detail", "name": "focused-cell-datum-tracer" }
   ],
   "render-performance": [
-    { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "thumb", "rect": { "left": 80, "top": 40, "width": 900, "height": 450 } },
+    { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "thumb", "rect": { "left": 88, "top": 212, "width": 880, "height": 440 } },
     { "source": "render-performance/lighthouse-2021-10-28.png", "kind": "detail", "name": "lighthouse-2021-10-28" },
     { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "detail", "name": "lighthouse-2021-10-29" }
   ]
