@@ -133,6 +133,10 @@
   gap: 1rem;
 }
 
+.case-study__before-after-grid[data-stacked] {
+  grid-template-columns: 1fr;
+}
+
 .case-study__before-after-item {
   min-width: 0;
 }

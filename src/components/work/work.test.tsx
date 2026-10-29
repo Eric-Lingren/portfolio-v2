@@ -64,6 +64,16 @@ describe("BeforeAfter", () => {
     expect(() => render(<BeforeAfter {...props} after="/work/x/missing.webp" />)).toThrow(/work-images/);
   });
 
+  it("stacks wide images (wider than 2:1) and keeps others side by side", () => {
+    const wide = (src: string) => (src.startsWith("/work/x/") ? { width: 1400, height: 240 } : undefined);
+    const { container: side } = render(<BeforeAfter {...props} />);
+    expect(side.querySelector(".case-study__before-after-grid")).not.toHaveAttribute("data-stacked");
+    const { container: stacked } = render(<BeforeAfter {...props} lookup={wide} />);
+    expect(stacked.querySelector(".case-study__before-after-grid")).toHaveAttribute("data-stacked", "true");
+    const css = fs.readFileSync(path.join(process.cwd(), "src/app/work/case-study.css"), "utf8");
+    expect(css).toMatch(/\.case-study__before-after-grid\[data-stacked\]\s*{[^}]*grid-template-columns:\s*1fr;/);
+  });
+
   it("css lays out side by side and stacks at 600px and under", () => {
     const css = fs.readFileSync(path.join(process.cwd(), "src/app/work/case-study.css"), "utf8");
     expect(css).toMatch(/\.case-study__before-after-grid\s*{[^}]*grid-template-columns:\s*1fr 1fr/);
