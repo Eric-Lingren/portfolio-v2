@@ -4,7 +4,7 @@
   list-style: none;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--block-gap);
+  gap: calc(var(--block-gap) * 1.2);
 }
 
 @media (max-width: 600px) {
@@ -19,29 +19,48 @@
   align-items: flex-start;
   gap: 0.75rem;
   margin: 0;
-  padding: 1rem;
-  border: 1px solid var(--po-border);
-  border-radius: 8px;
-  background: #111827;
+  padding: 1.25rem 1.5rem;
+  height: 100%;
 }
 
+/* Editorial quote: larger, tighter, balanced lines. */
 .testimonial-quote {
   margin: 0;
+  font-size: 1rem;
+  font-weight: 450;
   font-style: normal;
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  text-wrap: pretty;
 }
 
+/* The outcome phrase in each quote, in brand coral. */
+.testimonial-highlight {
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Source line in the nav's mono label style. */
 .testimonial-source {
   margin: 0;
-  font-size: 0.875rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  text-transform: uppercase;
   color: var(--po-muted);
 }
 
-/* po-muted is tuned for the dark polished layer; on the light sketch layer it fails contrast. */
+/* po-muted and coral are tuned for the dark polished layer; on the light sketch layer they fail contrast. */
 .panel-layer--sketch .testimonial-source {
   color: #4b5563;
 }
+.panel-layer--sketch .testimonial-highlight {
+  color: #b42318;
+}
 
-/* Pin the button to the bottom so rows of unequal quotes still line up. */
-.testimonial-card > a {
+/* Pin the source line to the bottom so rows of unequal quotes still line up. */
+.testimonial-card > .testimonial-source {
   margin-top: auto;
 }

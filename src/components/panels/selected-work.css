@@ -27,16 +27,12 @@
 }
 
 .work-card {
-  position: relative;
   display: grid;
   grid-template-columns: 6rem minmax(0, 1fr);
   align-content: start;
   gap: 0.35rem 1rem;
   height: 100%;
   padding: 0.875rem;
-  border: 1.5px solid;
-  color: inherit;
-  text-decoration: none;
 }
 
 .work-thumb {
@@ -118,11 +114,6 @@
 }
 
 /* Layer color: polished */
-.panel-layer--polished .work-card {
-  background: var(--po-surface);
-  border-color: var(--po-border);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
 .panel-layer--polished .work-card-outcome,
 .panel-layer--polished .work-card-number span {
   color: var(--po-muted);
@@ -139,27 +130,6 @@
 }
 
 /* Layer color: sketch */
-.panel-layer--sketch .work-card {
-  border-color: var(--sk-line);
-  border-style: dashed;
-}
 .panel-layer--sketch .work-thumb-real {
   visibility: hidden;
-}
-
-/* Desktop-only hover glow */
-@media (hover: hover) and (pointer: fine) {
-  .panel-layer--polished .work-card:hover {
-    border-color: var(--accent-2);
-    box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35);
-  }
-}
-
-/* Touch: visible tap/active state */
-@media (hover: none) {
-  .panel-layer--polished .work-card:active {
-    border-color: var(--accent-2);
-    box-shadow: 0 0 0 2px var(--accent-2);
-    transform: scale(0.98);
-  }
 }

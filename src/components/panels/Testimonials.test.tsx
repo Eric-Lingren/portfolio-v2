@@ -24,45 +24,50 @@ const fixture = (n: number): Testimonial[] =>
 describe("Testimonials", () => {
   it.each([4, 6])("renders %i uniform excerpt cards with no images", (n) => {
     const { container } = render(<Testimonials testimonials={fixture(n)} />);
-    const cards = [...container.querySelectorAll("li.testimonial-card")];
+    const cards = [...container.querySelectorAll("a.testimonial-card")];
     expect(cards).toHaveLength(n);
     expect(new Set(cards.map((c) => c.className)).size).toBe(1);
     cards.forEach((c, i) => {
       expect(c.querySelector("blockquote")!.textContent).toBe(`“Quote number ${i}”`);
-      expect(c.querySelector(".testimonial-source")!.textContent).toBe(`Role ${i} · Slack message · Acme · ${2020 + i}`);
+      expect(c.querySelector(".testimonial-source")!.textContent).toBe(`Role ${i} · Acme · ${2020 + i}`);
       expect(c.querySelector("img")).toBeNull();
       const order = [...c.children].map((el) => el.tagName);
-      expect(order).toEqual(["BLOCKQUOTE", "P", "A"]);
+      expect(order).toEqual(["BLOCKQUOTE", "P", "SPAN"]);
+      expect(c.parentElement!.tagName).toBe("LI");
     });
-    expect(container.querySelector("[data-testimonial-placeholder]")).toBeNull();
   });
 
-  it("links each card to its original screenshot with the shared button classes", () => {
+  it("makes each whole card a link to its original screenshot, with no button", () => {
     const { container } = render(<Testimonials testimonials={fixture(4)} />);
-    const links = [...container.querySelectorAll<HTMLAnchorElement>("li.testimonial-card a")];
+    const links = [...container.querySelectorAll<HTMLAnchorElement>("a.testimonial-card")];
     expect(links).toHaveLength(4);
-    const resumeClasses = ["btn", "btn-primary"];
     links.forEach((a, i) => {
       expect(a).toHaveAttribute("href", `/testimonials/shot-${i}.png`);
       expect(a).toHaveAttribute("target", "_blank");
-      expect(a).toHaveAttribute("aria-label", "View original screenshot");
-      expect(a.textContent).toContain("View original");
-      expect(a.firstElementChild).toBe(a.querySelector("svg.btn-icon"));
-      expect(a.className.split(" ")).toEqual(resumeClasses);
+      expect(a.querySelector(".sr-only")!.textContent).toBe("View original screenshot (opens in a new tab)");
+      expect(a.textContent).toContain(`Quote number ${i}`);
     });
+    expect(container.querySelector(".btn")).toBeNull();
   });
 
-  it("renders 4 marked placeholder cards with the same structure and no link", () => {
+  it("wraps the highlight phrase in a mark and keeps the full quote text", () => {
+    const [first, second] = fixture(2);
+    const cards = [
+      { ...first, quote: "Shipped it in record time.", highlight: "in record time" },
+      { ...second, quote: "Plain quote.", highlight: "not present" },
+    ];
+    const { container } = render(<Testimonials testimonials={cards} />);
+    const [a, b] = container.querySelectorAll("blockquote");
+    expect(a.textContent).toBe("“Shipped it in record time.”");
+    expect(a.querySelector("mark.testimonial-highlight")!.textContent).toBe("in record time");
+    expect(b.textContent).toBe("“Plain quote.”");
+    expect(b.querySelector("mark")).toBeNull();
+  });
+
+  it("renders no cards and no placeholder markers when the list is empty", () => {
     const { container } = render(<Testimonials testimonials={[]} />);
-    const cards = container.querySelectorAll("li.testimonial-card[data-testimonial-placeholder]");
-    expect(cards).toHaveLength(4);
-    cards.forEach((c) => {
-      expect(c.querySelector("blockquote")).not.toBeNull();
-      expect(c.querySelector(".testimonial-source")).not.toBeNull();
-      expect(c.querySelector("a")).toBeNull();
-    });
-    expect(container.textContent).toContain("[ERIC:");
-    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelectorAll("a.testimonial-card")).toHaveLength(0);
+    expect(container.textContent).not.toContain("[ERIC:");
   });
 
   it("uses the shared 600px breakpoint and no italics in the card CSS", () => {
@@ -82,7 +87,8 @@ describe("Testimonials", () => {
       const sketch = container.querySelector('[data-layer="sketch"]')!;
       const polished = container.querySelector('[data-layer="polished"]')!;
       expect(geometry(sketch)).toBe(geometry(polished));
-      for (const sel of [".testimonials", ".testimonials-grid", ".testimonial-card"]) {
+      const selectors = [".testimonials", ".testimonials-grid", ...(manifest.length ? [".testimonial-card"] : [])];
+      for (const sel of selectors) {
         expect(geometry(sketch.querySelector(sel)!)).toBe(geometry(polished.querySelector(sel)!));
       }
       unmount();

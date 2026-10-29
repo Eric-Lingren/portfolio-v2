@@ -9,7 +9,8 @@
 // process, native TS stripping). Checks: 4 or 6 cards (testimonials-placeholder);
 // each card has non-empty quote/roleLabel/sourceType/employer, an integer year,
 // an `original` matching [A-Za-z0-9_-]+ that resolves to
-// public/testimonials/<original>.png, a quote of 30 words or fewer, and every
+// public/testimonials/<original>.png, a quote of 30 words or fewer, an optional
+// highlight that appears verbatim in the quote, and every
 // PNG in public/testimonials/ is used by a card (testimonials-card); name guard
 // on roleLabel and quote text plus email/@handle/URL patterns in quotes, using
 // docs/private/testimonials/name-blocklist.txt (testimonials-name). The owner's
@@ -171,6 +172,9 @@ function checkTestimonials(root, file, add) {
       }
     }
     const quote = typeof c.quote === "string" ? c.quote : "";
+    if (c.highlight !== undefined && (typeof c.highlight !== "string" || !c.highlight.trim() || !quote.includes(c.highlight))) {
+      add(file, 1, "testimonials-card", `${at}: highlight must be a non-empty phrase taken verbatim from the quote`);
+    }
     const words = quote.split(/\s+/).filter(Boolean).length;
     if (words > QUOTE_WORD_MAX) {
       add(file, 1, "testimonials-card", `${at}: quote is ${words} words (max ${QUOTE_WORD_MAX})`);

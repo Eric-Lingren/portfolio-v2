@@ -30,7 +30,7 @@ export function SelectedWork({
         <ul className="work-grid">
           {items.map((c) => (
             <li key={c.slug} className="work-item">
-              <a className="work-card" href={`/work/${c.slug}`} data-card={c.slug}>
+              <a className="card work-card" href={`/work/${c.slug}`} data-card={c.slug}>
                 <div className="work-thumb">
                   <div className="work-thumb-sketch sketch-image" aria-hidden="true">
                     <span className="work-thumb-x">X</span>

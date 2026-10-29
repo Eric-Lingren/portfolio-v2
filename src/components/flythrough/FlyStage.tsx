@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { setActiveSection } from "../active-section";
 import {
+  clamp01,
   contentFit,
   fitScale,
   footerLift,
@@ -22,7 +23,7 @@ import { PANELS } from "./registry";
 import { divePull } from "./dive";
 import { attachPanelSnap } from "./snap";
 import { StageContext } from "./stage-context";
-import { applyWipe, builtAmount, findWipe, panelDistance, type WipeTargets } from "./wipe";
+import { applyWipe, builtAmount, findWipe, nextBuilt, panelDistance, type WipeTargets } from "./wipe";
 
 const COUNT = PANELS.length;
 
@@ -61,6 +62,9 @@ export function FlyStage() {
     let footerHeight = 0;
     const footer = document.querySelector(".site-footer");
     let lift = 0;
+    // Panel an anchor flight is heading for, null outside a flight. Otherwise the panel nearest the scroll target.
+    let flightDest: number | null = null;
+    const built = PANELS.map((_, i) => builtAmount(panelDistance(i, current, COUNT)));
     let look: LookPoint = { x: 0, y: 0 };
     let lookTarget: LookPoint = { x: 0, y: 0 };
     let raf = 0;
@@ -114,6 +118,9 @@ export function FlyStage() {
         fitLast();
       }
       world.style.transform = worldTransform(current, COUNT, layout, look, pull);
+      const near = Math.round(clamp01(target) * (COUNT - 1));
+      if (flightDest === near) flightDest = null;
+      const dest = flightDest ?? near;
       panelRefs.current.forEach((el, i) => {
         if (!el) return;
         const s = panelStyle(i, current, COUNT, layout, pull);
@@ -125,7 +132,8 @@ export function FlyStage() {
         if (nearest) setActiveSection(PANELS[i].id);
         el.style.pointerEvents = nearest && s.opacity > 0.9 ? "auto" : "none";
         const w = wipes[i];
-        if (w) applyWipe(w, builtAmount(panelDistance(i, current, COUNT)));
+        built[i] = nextBuilt(built[i], panelDistance(i, current, COUNT), i === dest);
+        if (w) applyWipe(w, built[i]);
       });
     };
 
@@ -176,6 +184,7 @@ export function FlyStage() {
     // Pull-back rides the anchor flight's clock; a cancelled flight eases back in through the lerp.
     const onFlight = (u: number | null) => {
       pullTarget = u === null ? 0 : divePull(u);
+      if (u === null || u >= 1) flightDest = null;
       wake();
     };
     const snap = attachPanelSnap(
@@ -191,6 +200,8 @@ export function FlyStage() {
       if (i < 0) return;
       e.preventDefault();
       snap.navigateTo(panelScrollTop(i, COUNT, lvh));
+      // After navigateTo: it cancels any running flight, which clears the old destination.
+      flightDest = i;
     };
 
     const detachLook = attachLookAround(window, (p) => {

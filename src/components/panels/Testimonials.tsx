@@ -1,9 +1,6 @@
 import { TESTIMONIALS, type Testimonial } from "@/content/testimonials";
-import { FileIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./testimonials.css";
-
-const PLACEHOLDER_COUNT = 4;
 
 type Props = {
   layers?: PanelLayers;
@@ -12,39 +9,42 @@ type Props = {
   testimonials?: readonly Testimonial[];
 };
 
+/** Wraps the card's highlight phrase in a <mark>; falls back to plain text when it is absent or not found. */
+function QuoteText({ quote, highlight }: Pick<Testimonial, "quote" | "highlight">) {
+  const at = highlight ? quote.indexOf(highlight) : -1;
+  if (!highlight || at < 0) return <>{`“${quote}”`}</>;
+  return (
+    <>
+      {`“${quote.slice(0, at)}`}
+      <mark className="testimonial-highlight">{highlight}</mark>
+      {`${quote.slice(at + highlight.length)}”`}
+    </>
+  );
+}
+
 export function Testimonials({ layers = "polished", z = 0, id, testimonials = TESTIMONIALS }: Props) {
-  const empty = testimonials.length === 0;
   return (
     <Panel name="Testimonials" z={z} id={id} layers={layers}>
       <div className="testimonials section">
         <h2 className="section-title">Testimonials</h2>
         <ul className="testimonials-grid">
-          {empty
-            ? Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => (
-                <li key={i} className="testimonial-card" data-testimonial-placeholder>
-                  <blockquote className="testimonial-quote">{"“[ERIC: quote]”"}</blockquote>
-                  <p className="testimonial-source">[ERIC: role] · [ERIC: source type] · [ERIC: employer] · [ERIC: year]</p>
-                </li>
-              ))
-            : testimonials.map((t) => (
-                <li key={t.original} className="testimonial-card" data-testimonial>
-                  <blockquote className="testimonial-quote">{`“${t.quote}”`}</blockquote>
-                  <p className="testimonial-source">{[t.roleLabel, t.sourceType, t.employer, t.year].join(" · ")}</p>
-                  <a
-                    className="btn btn-primary"
-                    href={`/testimonials/${t.original}.png`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="View original screenshot"
-                  >
-                    <FileIcon />
-                    View original
-                    <span className="btn-arrow btn-arrow--out" aria-hidden="true">
-                      ↗
-                    </span>
-                  </a>
-                </li>
-              ))}
+          {testimonials.map((t, i) => (
+            <li key={`${t.original}-${i}`} className="testimonial-item">
+              <a
+                className="card testimonial-card"
+                href={`/testimonials/${t.original}.png`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testimonial
+              >
+                <blockquote className="testimonial-quote">
+                  <QuoteText quote={t.quote} highlight={t.highlight} />
+                </blockquote>
+                <p className="testimonial-source">{[t.roleLabel, t.employer, t.year].join(" · ")}</p>
+                <span className="sr-only">View original screenshot (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </Panel>

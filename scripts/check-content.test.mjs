@@ -129,6 +129,13 @@ describe("check-content rules", () => {
       }
     });
 
+    it("accepts a verbatim highlight and fails one not in the quote", () => {
+      const withHl = (h) => [mk(1, { highlight: h }), ...n(4).slice(1)];
+      expect(strict(tRoot(withHl("careful"))).rules).toEqual([]);
+      expect(strict(tRoot(withHl("slow"))).rules).toContain("testimonials-card");
+      expect(strict(tRoot(withHl(""))).rules).toContain("testimonials-card");
+    });
+
     describe("name guard", () => {
       const bl = { "docs/private/testimonials/name-blocklist.txt": "# names\nJane Doe\nEric\n" };
       const withQuote = (q, over = {}) => [mk(1, { quote: q, ...over }), ...n(4).slice(1)];

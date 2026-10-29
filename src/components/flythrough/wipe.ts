@@ -14,9 +14,10 @@ export function panelDistance(i: number, progress: number, count: number, cfg: F
 }
 
 /**
- * Built amount in [0,1] from camera distance to the panel. 0 when far away,
- * 1 once within `wipeDone` of arrival (and after the camera passes). A pure
- * function of distance, so it is symmetric when scrolling in reverse.
+ * Built amount in [0,1] from camera distance to the panel. 0 when far away on
+ * either side, 1 once within `wipeDone` of arrival. Depends on |distance| only,
+ * so a panel approached from behind (scrolling back) builds the same way as one
+ * approached from ahead.
  *
  * Spaced on a log scale: the camera closes a fixed fraction of the remaining
  * distance per frame, so equal distance ratios take equal time and the sweep
@@ -25,9 +26,21 @@ export function panelDistance(i: number, progress: number, count: number, cfg: F
 export function builtAmount(distance: number, cfg: FlyConfig = FLY_CONFIG): number {
   const done = cfg.wipeDone * cfg.depth;
   const range = cfg.wipeRange * cfg.depth;
-  if (distance <= done) return 1;
+  const d = Math.abs(distance);
+  if (d <= done) return 1;
   if (!(range > done)) return 0;
-  return 1 - smoothstep(Math.log(distance / done) / Math.log(range / done));
+  return 1 - smoothstep(Math.log(d / done) / Math.log(range / done));
+}
+
+/**
+ * Next built amount for a panel. Only the panel the camera is heading for may
+ * build; every other panel can only un-build. Panels flown past mid-flight
+ * stay sketched instead of flashing built and back, and the panel being left
+ * still sweeps back to its sketch as it recedes.
+ */
+export function nextBuilt(prev: number, distance: number, isDestination: boolean, cfg: FlyConfig = FLY_CONFIG): number {
+  const b = builtAmount(distance, cfg);
+  return isDestination ? b : Math.min(prev, b);
 }
 
 const pct = (v: number) => `${Math.round(v * 1000) / 1000}%`;

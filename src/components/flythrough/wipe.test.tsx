@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { Panel } from "../Panel";
 import { FLY_CONFIG } from "./config";
 import { StageContext } from "./stage-context";
-import { applyWipe, builtAmount, findWipe, panelDistance, wipeTransforms } from "./wipe";
+import { applyWipe, builtAmount, findWipe, nextBuilt, panelDistance, wipeTransforms } from "./wipe";
 
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 const wipeSource = readFileSync(join(__dirname, "wipe.ts"), "utf8");
@@ -29,14 +29,20 @@ describe("builtAmount", () => {
     expect(builtAmount(mid)).toBeCloseTo(0.5, 6);
   });
 
-  it("is 1 at arrival and after the camera passes", () => {
+  it("is 1 at arrival", () => {
     expect(builtAmount(0)).toBe(1);
-    expect(builtAmount(-DEPTH)).toBe(1);
+  });
+
+  it("builds a panel behind the camera the same way as one ahead (scrolling back)", () => {
+    expect(builtAmount(-DEPTH)).toBe(0);
+    for (const steps of [0.005, 0.05, 0.1, 0.2, 0.3, 0.5]) {
+      expect(builtAmount(-DEPTH * steps)).toBe(builtAmount(DEPTH * steps));
+    }
   });
 
   it("is monotonic non-increasing in distance and clamped to 0..1", () => {
     let prev = 1;
-    for (let d = -DEPTH; d <= DEPTH * 3; d += 25) {
+    for (let d = 0; d <= DEPTH * 3; d += 25) {
       const v = builtAmount(d);
       expect(v).toBeGreaterThanOrEqual(0);
       expect(v).toBeLessThanOrEqual(1);
@@ -184,5 +190,31 @@ describe("wipe code guards", () => {
     expect(css).toMatch(/@media \(hover: hover\) and \(pointer: fine\)\s*\{[^@]*\.panel-layer--polished:hover/);
     expect(css).toMatch(/--cyan-glow:\s*0 0 0 1px #06b6d4,\s*0 0 28px rgba\(6, 182, 212, 0\.4\)/);
     expect(css).not.toMatch(/\.panel-layer--sketch:hover/);
+  });
+});
+
+describe("nextBuilt", () => {
+  it("builds the destination panel as the camera closes in from either side", () => {
+    expect(nextBuilt(0, DEPTH * 0.1, true)).toBe(builtAmount(DEPTH * 0.1));
+    expect(nextBuilt(0, -DEPTH * 0.1, true)).toBe(builtAmount(DEPTH * 0.1));
+    expect(nextBuilt(0, 0, true)).toBe(1);
+  });
+
+  it("never builds a panel the camera is only flying past", () => {
+    let b = 0;
+    for (let steps = 1; steps >= -1; steps -= 0.01) b = nextBuilt(b, DEPTH * steps, false);
+    expect(b).toBe(0);
+  });
+
+  it("lets the panel being left sweep back to its sketch", () => {
+    let b = 1;
+    const seen: number[] = [];
+    for (let steps = 0; steps >= -0.5; steps -= 0.05) {
+      b = nextBuilt(b, DEPTH * steps, false);
+      seen.push(b);
+    }
+    expect(seen[0]).toBe(1);
+    expect(b).toBe(0);
+    seen.forEach((v, i) => i && expect(v).toBeLessThanOrEqual(seen[i - 1]));
   });
 });

@@ -78,10 +78,10 @@ describe("SelectedWork", () => {
     style.remove();
   });
 
-  it("defines a visible touch active state and desktop-only hover", () => {
-    expect(panelCss).toMatch(/@media \(hover: none\)[\s\S]*\.work-card:active[\s\S]*box-shadow/);
-    expect(panelCss).toMatch(
-      /@media \(hover: hover\) and \(pointer: fine\)[\s\S]*\.work-card:hover[\s\S]*var\(--accent-2\)/,
-    );
+  it("uses the shared card, which defines a visible touch active state and desktop-only hover", () => {
+    const { container } = render(<SelectedWork />);
+    expect(container.querySelector("a.work-card")?.classList.contains("card")).toBe(true);
+    expect(css).toMatch(/@media \(hover: none\)[\s\S]*\.card:active[\s\S]*box-shadow/);
+    expect(css).toMatch(/@media \(hover: hover\) and \(pointer: fine\)[\s\S]*\.card:hover[\s\S]*var\(--accent-2\)/);
   });
 });

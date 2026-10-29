@@ -148,7 +148,7 @@ describe("Footer", () => {
   it("has the exact text and repo link", () => {
     const { container } = render(<Footer />);
     expect(container.textContent).toBe(
-      "Based near Seattle. Sailing, vintage video games, and travel (50+ countries).Built with Next.js and CSS 3D. Source on GitHub.",
+      "Based near Seattle. Sailing, retro video games, and travel (50+ countries).Built with Next.js and CSS 3D. Source on GitHub.",
     );
     expect(screen.getByRole("link", { name: "Source on GitHub" })).toHaveAttribute(
       "href",
