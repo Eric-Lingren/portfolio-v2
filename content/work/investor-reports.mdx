@@ -8,7 +8,6 @@ stack:
 outcomes:
   - Twenty portfolio companies switched to the auto-submit toggle in its first week
   - Auto-submit went from idea to release in a couple of weeks, ahead of a reporting season
-  - "[ERIC: add before-and-after completion rate if you can find it]"
 cardOutcome: Rebuilt the page portfolio companies use to report to their investors, then added a toggle that lets them switch to auto-submit.
 cardNumber: "20"
 cardNumberLabel: portfolio companies on the auto-submit toggle in week one
@@ -16,7 +15,13 @@ thumbnail: /work/investor-reports/thumb.webp
 order: 2
 ---
 
-{/* [ERIC: add demo-instance screenshot of the masthead before and after, then set a real thumbnail file and meaningful alt text. No images are in this draft on purpose.] */}
+<BeforeAfter
+  before="/work/investor-reports/masthead-before.webp"
+  after="/work/investor-reports/masthead-after.webp"
+  beforeAlt="Investor report header before the redesign, with status and due date in a single crowded row"
+  afterAlt="Investor report header after the redesign, with reporting period, due date and status grouped on the right"
+  caption="The report masthead before and after the redesign."
+/>
 
 ## Context
 
@@ -42,7 +47,19 @@ I was one of the core engineers on the rebuild, working across the masthead, sub
 
 **Make progress honest.** The footer progress tracker shows what is done and what is left, and partial submits are visible instead of silent. I chose to show the uncomfortable state over a clean-looking one, because a report that looks finished and is not costs the firm more than a report that looks incomplete.
 
+<Figure
+  src="/work/investor-reports/footer-progress-tracker.webp"
+  alt="Footer progress tracker showing 10 of 11 items complete, 7 of 8 required metrics and 3 of 3 required documents"
+  caption="The footer progress tracker shows what is done and what is left."
+/>
+
 **Put auto-submit on the report itself.** The obvious home for a setting like this is an account page. I put the toggle on the report, at the moment the person is deciding whether to submit by hand again. Once switched on, the page shows how many days remain before the data is submitted automatically, so the person is never guessing what will happen. [ERIC: confirm the exact auto-submit behavior and any guardrails, such as what happens to missing fields]
+
+<Figure
+  src="/work/investor-reports/auto-submit-state.webp"
+  alt="Progress bar reading 5 of 14 required metrics, with a red notice that data will be auto-submitted and 8 days left"
+  caption="The auto-submit state, with the days remaining before the data is sent."
+/>
 
 **Keep the first version small.** The idea went from proposal to release in a couple of weeks because the first version was narrow: one toggle, one clear state, built on the save and progress work that already existed. [ERIC: add one thing you deliberately left out of version one]
 
@@ -50,11 +67,9 @@ I was one of the core engineers on the rebuild, working across the masthead, sub
 
 Twenty portfolio companies used the new toggle in the first week after release, and most of them chose to move from manual submit to auto-submit. The release landed in time for the reporting season that was already underway.
 
-The first phase of the makeover was expected to lift report completion rate, and the project retro recorded strong positive feedback from portfolio company users.
+The first phase of the makeover was expected to lift report completion rate. The project retro called it a "major improvement from the user perspective" with "a lot of positive feedback from portCo users."
 
-One honest gap: no before-and-after completion rate was recorded, and the retro lists it as an open question. I would rather say that than guess. [ERIC: if you can get the completion rate before and after, add it here, otherwise leave this paragraph as is]
-
-[ERIC: add any quote or reaction, attributed by role only, such as a customer success lead or a product leader.]
+One honest gap: no before-and-after completion rate was recorded, and the retro lists it as an open question. I would rather say that than guess.
 
 ## What I'd do next
 
