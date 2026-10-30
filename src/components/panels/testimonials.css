@@ -13,6 +13,23 @@
   }
 }
 
+/*
+ * Short viewports in the 3D stage: every panel fits the room below the nav, so three rows of quotes
+ * shrank to ~73%. Two rows of three with tighter cards keep the quotes near full size.
+ * Wide screens only; the flat classic page scrolls, so it keeps two across.
+ */
+@media (max-height: 799px) and (min-width: 1024px) {
+  .fly-panel .testimonials-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--block-gap);
+  }
+
+  .fly-panel .testimonial-card {
+    gap: 0.6rem;
+    padding: 1rem 1.1rem;
+  }
+}
+
 .testimonial-card {
   display: flex;
   flex-direction: column;

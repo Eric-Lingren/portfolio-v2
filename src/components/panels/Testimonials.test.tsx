@@ -85,6 +85,13 @@ describe("Testimonials", () => {
     expect(cardCss).not.toMatch(/testimonial-frame/);
   });
 
+  it("goes three across on short, wide viewports, in the 3D stage only", () => {
+    const cardCss = readFileSync(join(process.cwd(), "src/components/panels/testimonials.css"), "utf8");
+    expect(cardCss).toMatch(
+      /@media \(max-height: 799px\) and \(min-width: 1024px\) \{\s*\.fly-panel \.testimonials-grid \{\s*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/,
+    );
+  });
+
   it("keeps identical geometry in both layers", () => {
     const style = document.createElement("style");
     style.textContent = css + readFileSync(join(process.cwd(), "src/components/panels/testimonials.css"), "utf8");

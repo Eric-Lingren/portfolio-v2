@@ -81,6 +81,12 @@ describe("SelectedWork", () => {
     expect(panelCss).toMatch(/aspect-ratio: 2 \/ 1/);
   });
 
+  it("puts all five cards in one row on short viewports, in wide 3D panels only", () => {
+    expect(panelCss).toMatch(
+      /@media \(max-height: 799px\) \{\s*@container \(min-width: 800px\) \{\s*\.fly-panel \.work-item \{\s*flex-basis: calc\(\(100% - 4 \* var\(--block-gap\)\) \/ 5\);/,
+    );
+  });
+
   it("card data has a case study per card and is in sync with the generator", () => {
     expect(cards).toEqual(buildCards());
     for (const c of cards as WorkCard[]) expect(getStudy(c.slug)).toBeTruthy();

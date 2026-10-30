@@ -19,6 +19,19 @@
   flex: 0 0 calc((100% - 2 * var(--block-gap)) / 3);
 }
 
+/*
+ * Short viewports in the 3D stage: every panel fits the room below the nav, so the two-row grid
+ * shrank its text to ~60% under 690px tall. One row of five fits at full size instead.
+ * Wide panels only; the flat classic page scrolls, so it keeps the grid.
+ */
+@media (max-height: 799px) {
+  @container (min-width: 800px) {
+    .fly-panel .work-item {
+      flex-basis: calc((100% - 4 * var(--block-gap)) / 5);
+    }
+  }
+}
+
 /* Tablet widths: two across with the same image-top card. */
 @container (max-width: 719px) {
   .work-item {

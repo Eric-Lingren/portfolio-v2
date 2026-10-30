@@ -545,3 +545,23 @@
     height: 5.5rem;
   }
 }
+
+/*
+ * Short viewports in the 3D stage: every panel fits the room below the nav, so tall cards shrank
+ * their text. A shorter picture and tighter card spacing keep it at full size down to ~650px tall.
+ * The flat classic page scrolls, so it keeps the roomy cards.
+ */
+@media (max-height: 799px) {
+  .fly-panel .what-i-do .viz {
+    height: 4.5rem;
+  }
+
+  .fly-panel .pillar {
+    row-gap: 0.8rem;
+    padding: 1.1rem 1.1rem 1.25rem;
+  }
+
+  .fly-panel .pillar-outcome {
+    padding-top: 0.8rem;
+  }
+}

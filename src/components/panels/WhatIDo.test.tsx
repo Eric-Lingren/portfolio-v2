@@ -117,4 +117,12 @@ describe("WhatIDo", () => {
     expect(panelCss).toMatch(/\.pillar \{[^}]*--pillar-accent: var\(--accent\);/);
     expect(panelCss).toMatch(/\.pillar\[data-viz="board"\] \{\s*--pillar-accent: var\(--accent-2\);/);
   });
+
+  it("tightens the cards on short viewports, in the 3D stage only", () => {
+    const panelCss = readFileSync(join(process.cwd(), "src/components/panels/what-i-do.css"), "utf8");
+    const short = panelCss.slice(panelCss.indexOf("@media (max-height: 799px)"));
+    expect(short.length).toBeLessThan(panelCss.length);
+    expect(short).toMatch(/\.fly-panel \.what-i-do \.viz \{\s*height: 4\.5rem;/);
+    expect(short).toMatch(/\.fly-panel \.pillar \{[^}]*padding: 1\.1rem 1\.1rem 1\.25rem;/);
+  });
 });
