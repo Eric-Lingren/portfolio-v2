@@ -5,6 +5,8 @@ export type ResumeJob = {
   company: string;
   title: string;
   dates: string;
+  /** Company website. */
+  url: string;
   bullets: readonly string[];
 };
 
@@ -17,6 +19,9 @@ export type ResumeProject = {
 };
 
 export type ResumeSkillGroup = { label: string; items: readonly string[] };
+
+/** One education line: the org name links to its website. */
+export type ResumeEducation = { org: string; detail: string; url: string };
 
 export type ResumeContactLink = { label: string; href: string };
 
@@ -31,7 +36,7 @@ export type Resume = {
   jobs: readonly ResumeJob[];
   projects: readonly ResumeProject[];
   skills: readonly ResumeSkillGroup[];
-  education: readonly string[];
+  education: readonly ResumeEducation[];
 };
 
 /** 'Mar 2022 to present' becomes 'Mar 2022 – Present'. */
@@ -47,9 +52,10 @@ export function shortUrl(url: string): string {
 }
 
 /** Bullets per job, keyed by company. Company, title and dates come from experience.ts. */
-const JOB_BULLETS: readonly { company: string; bullets: readonly string[] }[] = [
+const JOB_BULLETS: readonly { company: string; url: string; bullets: readonly string[] }[] = [
   {
     company: "Standard Metrics",
+    url: "https://standardmetrics.io",
     bullets: [
       "Led a frontend platform re-architecture across a 15-engineer team. Design system share of new UI code rose from 22% to 84%.",
       "Led the KPI cadence project so firms can request each KPI at its own cadence in one Information Request. One firm had needed 84 separate requests, and about half of customers now adjust cadences.",
@@ -60,6 +66,7 @@ const JOB_BULLETS: readonly { company: string; bullets: readonly string[] }[] = 
   },
   {
     company: "InsideOut Development",
+    url: "https://insideoutdev.com",
     bullets: [
       "Led front-end render performance work. Largest contentful paint dropped from 5.2s to 2.0s, and Lighthouse score rose from 47 to 82.",
       "Cut marketing tech spend by 25% by moving from SlideShare, HubSpot and UberFlip to a Strapi and Pardot stack.",
@@ -67,6 +74,7 @@ const JOB_BULLETS: readonly { company: string; bullets: readonly string[] }[] = 
   },
   {
     company: "Bryan University",
+    url: "https://bryanuniversity.edu",
     bullets: [
       "Taught hundreds of students full-stack development with React, REST APIs and Python, with recorded video feedback on assignments.",
     ],
@@ -122,10 +130,10 @@ const SKILLS: readonly ResumeSkillGroup[] = [
   },
 ];
 
-const EDUCATION: readonly string[] = [
-  "V School · Full Stack Web Development · 2018",
-  "IBM · Data Science Professional Certificate · 2022",
-  "Cisco · CCENT · 2018",
+const EDUCATION: readonly ResumeEducation[] = [
+  { org: "V School", detail: "Full Stack Web Development · 2018", url: "https://vschool.io" },
+  { org: "IBM", detail: "Data Science Professional Certificate · 2022", url: "https://www.ibm.com" },
+  { org: "Cisco", detail: "CCENT · 2018", url: "https://www.cisco.com" },
 ];
 
 /** Builds the resume from an experience list, so company, title and dates cannot drift from experience.ts. */
@@ -139,10 +147,10 @@ export function buildResume(experience: readonly ExperienceRole[]): Resume {
     links: [SITE_URL, LINKEDIN_URL, GITHUB_URL].map((href) => ({ label: shortUrl(href), href })),
     summary:
       "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I lead frontend platform work and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
-    jobs: JOB_BULLETS.map(({ company, bullets }) => {
+    jobs: JOB_BULLETS.map(({ company, url, bullets }) => {
       const role = experience.find((r) => r.company === company);
       if (!role) throw new Error(`resume: "${company}" is missing from experience.ts`);
-      return { company: role.company, title: role.title, dates: toDisplayDates(role.dates), bullets };
+      return { company: role.company, title: role.title, dates: toDisplayDates(role.dates), url, bullets };
     }),
     projects: PROJECTS,
     skills: SKILLS,

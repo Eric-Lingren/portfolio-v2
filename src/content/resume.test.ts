@@ -101,9 +101,17 @@ describe("resume content", () => {
 
   it("has the education block", () => {
     expect(RESUME.education).toEqual([
-      "V School · Full Stack Web Development · 2018",
-      "IBM · Data Science Professional Certificate · 2022",
-      "Cisco · CCENT · 2018",
+      { org: "V School", detail: "Full Stack Web Development · 2018", url: "https://vschool.io" },
+      { org: "IBM", detail: "Data Science Professional Certificate · 2022", url: "https://www.ibm.com" },
+      { org: "Cisco", detail: "CCENT · 2018", url: "https://www.cisco.com" },
+    ]);
+  });
+
+  it("links every company to its website", () => {
+    expect(RESUME.jobs.map((j) => [j.company, j.url])).toEqual([
+      ["Standard Metrics", "https://standardmetrics.io"],
+      ["InsideOut Development", "https://insideoutdev.com"],
+      ["Bryan University", "https://bryanuniversity.edu"],
     ]);
   });
 

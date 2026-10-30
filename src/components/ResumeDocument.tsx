@@ -64,7 +64,9 @@ export function ResumeDocument({ resume, phone }: Props) {
         <h2 className="resume-section-title">Experience</h2>
         {resume.jobs.map((job) => (
           <div key={job.company} className="resume-item">
-            <h3 className="resume-item-title">{job.company}</h3>
+            <h3 className="resume-item-title">
+              <a href={job.url}>{job.company}</a>
+            </h3>
             <p className="resume-meta">
               {job.title} &middot; <span className="resume-dates">{job.dates}</span>
             </p>
@@ -81,7 +83,9 @@ export function ResumeDocument({ resume, phone }: Props) {
         <h2 className="resume-section-title">Projects</h2>
         {resume.projects.map((project) => (
           <div key={project.name} className="resume-item">
-            <h3 className="resume-item-title">{project.name}</h3>
+            <h3 className="resume-item-title">
+              <a href={project.url}>{project.name}</a>
+            </h3>
             <p className="resume-meta">
               {project.role} &middot; <span className="resume-dates">{project.dates}</span> &middot;{" "}
               <a href={project.url}>{project.url.replace(/^https?:\/\//, "")}</a>
@@ -109,8 +113,10 @@ export function ResumeDocument({ resume, phone }: Props) {
       <section>
         <h2 className="resume-section-title">Education</h2>
         <ul className="resume-list">
-          {resume.education.map((line) => (
-            <li key={line}>{line}</li>
+          {resume.education.map((entry) => (
+            <li key={entry.org}>
+              <a href={entry.url}>{entry.org}</a> &middot; {entry.detail}
+            </li>
           ))}
         </ul>
       </section>

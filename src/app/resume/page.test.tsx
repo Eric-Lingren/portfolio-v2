@@ -67,6 +67,26 @@ describe("/resume page", () => {
     ]);
   });
 
+  it("links every contact item except location to its site", () => {
+    const links = [...doc.querySelectorAll("header ul li a")].map((a) => [a.textContent, a.getAttribute("href")]);
+    expect(links).toEqual([
+      [EMAIL, `mailto:${EMAIL}`],
+      ["ericlingren.com", "https://www.ericlingren.com"],
+      ["linkedin.com/in/ericlingren", "https://www.linkedin.com/in/ericlingren/"],
+      ["github.com/Eric-Lingren", "https://www.github.com/Eric-Lingren"],
+    ]);
+  });
+
+  it("links each company name and education org to its website", () => {
+    const companies = [...doc.querySelectorAll("h3 a")].map((a) => [a.textContent, a.getAttribute("href")]);
+    expect(companies).toEqual([
+      ...RESUME.jobs.map((j) => [j.company, j.url]),
+      ...RESUME.projects.map((p) => [p.name, p.url]),
+    ]);
+    const orgs = [...doc.querySelectorAll("section:last-of-type li a")].map((a) => [a.textContent, a.getAttribute("href")]);
+    expect(orgs).toEqual(RESUME.education.map((e) => [e.org, e.url]));
+  });
+
   it("renders jobs with ul/li bullets", () => {
     expect(doc.querySelectorAll("h3").length).toBe(RESUME.jobs.length + RESUME.projects.length);
     const sm = RESUME.jobs[0];
