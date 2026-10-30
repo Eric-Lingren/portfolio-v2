@@ -48,7 +48,7 @@ export function startStaticServer(root) {
       return;
     }
     const type = TYPES[extname(file)] ?? "application/octet-stream";
-    // Netlify serves text assets brotli-compressed; do the same so transfer sizes are realistic.
+    // Cloudflare Pages serves text assets brotli-compressed; do the same so transfer sizes are realistic.
     if (COMPRESSIBLE.has(extname(file)) && String(req.headers["accept-encoding"] ?? "").includes("br")) {
       let body = brotliCache.get(file);
       if (!body) {

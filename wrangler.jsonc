@@ -1,0 +1,9 @@
+{
+  // Static Next.js export served as Workers static assets. No Worker script.
+  "name": "portfolio-v2",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
