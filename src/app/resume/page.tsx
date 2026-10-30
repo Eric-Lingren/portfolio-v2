@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ResumeDocument } from "@/components/ResumeDocument";
 import { RESUME } from "@/content/resume";
+import "@/components/resume.css";
 
 export const metadata: Metadata = {
   title: "Eric Lingren | Resume",

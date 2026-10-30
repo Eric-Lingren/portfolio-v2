@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Resume } from "@/content/resume";
 
 type Props = {
@@ -6,17 +7,41 @@ type Props = {
   phone?: string;
 };
 
-/** Plain, server-renderable resume. Semantic markup only; styling comes later. */
+/** Numeric tokens in a bullet: 22%, 84, 5.2s. Skips compounds like '15-engineer'. */
+const PROOF_NUMBER = /\d+(?:\.\d+)?(?:%|s)?(?![\w-])/g;
+
+/** Wraps proof numbers in a non-bold span that resume.css colors coral. */
+export function withProofNumbers(text: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  for (const m of text.matchAll(PROOF_NUMBER)) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    out.push(
+      <span key={m.index} className="resume-num">
+        {m[0]}
+      </span>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+/** Server-renderable resume. Styled by resume.css (imported by the page, inlined by the PDF task). */
 export function ResumeDocument({ resume, phone }: Props) {
   return (
-    <article>
-      <header>
-        <h1>{resume.name}</h1>
-        <p>{resume.headline}</p>
-        {resume.stackLines.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-        <ul>
+    <article className="resume">
+      <header className="resume-top">
+        <div className="resume-id">
+          <p className="resume-eyebrow">{resume.headline}</p>
+          <h1 className="resume-name">{resume.name}</h1>
+          {resume.stackLines.map((line) => (
+            <p key={line} className="resume-stack">
+              {line}
+            </p>
+          ))}
+        </div>
+        <ul className="resume-reach">
           <li>{resume.location}</li>
           {phone ? <li>{phone}</li> : null}
           <li>
@@ -31,21 +56,21 @@ export function ResumeDocument({ resume, phone }: Props) {
       </header>
 
       <section>
-        <h2>Summary</h2>
-        <p>{resume.summary}</p>
+        <h2 className="resume-section-title">Summary</h2>
+        <p className="resume-summary">{resume.summary}</p>
       </section>
 
       <section>
-        <h2>Experience</h2>
+        <h2 className="resume-section-title">Experience</h2>
         {resume.jobs.map((job) => (
-          <div key={job.company}>
-            <h3>{job.company}</h3>
-            <p>
-              {job.title} &middot; {job.dates}
+          <div key={job.company} className="resume-item">
+            <h3 className="resume-item-title">{job.company}</h3>
+            <p className="resume-meta">
+              {job.title} &middot; <span className="resume-dates">{job.dates}</span>
             </p>
-            <ul>
+            <ul className="resume-bullets">
               {job.bullets.map((b) => (
-                <li key={b}>{b}</li>
+                <li key={b}>{withProofNumbers(b)}</li>
               ))}
             </ul>
           </div>
@@ -53,16 +78,17 @@ export function ResumeDocument({ resume, phone }: Props) {
       </section>
 
       <section>
-        <h2>Projects</h2>
+        <h2 className="resume-section-title">Projects</h2>
         {resume.projects.map((project) => (
-          <div key={project.name}>
-            <h3>{project.name}</h3>
-            <p>
-              {project.role} &middot; {project.dates} &middot; <a href={project.url}>{project.url.replace(/^https?:\/\//, "")}</a>
+          <div key={project.name} className="resume-item">
+            <h3 className="resume-item-title">{project.name}</h3>
+            <p className="resume-meta">
+              {project.role} &middot; <span className="resume-dates">{project.dates}</span> &middot;{" "}
+              <a href={project.url}>{project.url.replace(/^https?:\/\//, "")}</a>
             </p>
-            <ul>
+            <ul className="resume-bullets">
               {project.bullets.map((b) => (
-                <li key={b}>{b}</li>
+                <li key={b}>{withProofNumbers(b)}</li>
               ))}
             </ul>
           </div>
@@ -70,19 +96,19 @@ export function ResumeDocument({ resume, phone }: Props) {
       </section>
 
       <section>
-        <h2>Skills</h2>
-        <ul>
+        <h2 className="resume-section-title">Skills</h2>
+        <ul className="resume-list">
           {resume.skills.map((group) => (
             <li key={group.label}>
-              {group.label}: {group.items.join(", ")}
+              <span className="resume-skill-label">{group.label}:</span> {group.items.join(", ")}
             </li>
           ))}
         </ul>
       </section>
 
       <section>
-        <h2>Education</h2>
-        <ul>
+        <h2 className="resume-section-title">Education</h2>
+        <ul className="resume-list">
           {resume.education.map((line) => (
             <li key={line}>{line}</li>
           ))}
