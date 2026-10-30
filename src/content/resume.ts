@@ -1,0 +1,153 @@
+import { EXPERIENCE, type ExperienceRole } from "./experience";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_URL } from "./site";
+
+export type ResumeJob = {
+  company: string;
+  title: string;
+  dates: string;
+  bullets: readonly string[];
+};
+
+export type ResumeProject = {
+  name: string;
+  role: string;
+  dates: string;
+  url: string;
+  bullets: readonly string[];
+};
+
+export type ResumeSkillGroup = { label: string; items: readonly string[] };
+
+export type ResumeContactLink = { label: string; href: string };
+
+export type Resume = {
+  name: string;
+  headline: string;
+  stackLines: readonly string[];
+  location: string;
+  email: string;
+  links: readonly ResumeContactLink[];
+  summary: string;
+  jobs: readonly ResumeJob[];
+  projects: readonly ResumeProject[];
+  skills: readonly ResumeSkillGroup[];
+  education: readonly string[];
+};
+
+/** 'Mar 2022 to present' becomes 'Mar 2022 – Present'. */
+export function toDisplayDates(dates: string): string {
+  const [start, end] = dates.split(" to ");
+  const endLabel = end.toLowerCase() === "present" ? "Present" : end;
+  return `${start} – ${endLabel}`;
+}
+
+/** 'https://www.github.com/Eric-Lingren' becomes 'github.com/Eric-Lingren'. */
+export function shortUrl(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
+}
+
+/** Bullets per job, keyed by company. Company, title and dates come from experience.ts. */
+const JOB_BULLETS: readonly { company: string; bullets: readonly string[] }[] = [
+  {
+    company: "Standard Metrics",
+    bullets: [
+      "Led a frontend platform re-architecture across a 15-engineer team. Design system share of new UI code rose from 22% to 84%.",
+      "Led the KPI cadence project so firms can request each KPI at its own cadence in one Information Request. One firm had needed 84 separate requests, and about half of customers now adjust cadences.",
+      "Built spreadsheet-grade keyboard navigation, in-cell editing and Excel paste for the metrics grid. The beta reached 35 users across 11 firms before launch.",
+      "Led auto-submit from proposal to release ahead of reporting season. 20 portfolio companies adopted it in week one.",
+      "Presented my AI development workflow to the engineering team. Teammates adopted parts of it, and I contributed skills to the team's shared skills marketplace.",
+    ],
+  },
+  {
+    company: "InsideOut Development",
+    bullets: [
+      "Led front-end render performance work. Largest contentful paint dropped from 5.2s to 2.0s, and Lighthouse score rose from 47 to 82.",
+      "Cut marketing tech spend by 25% by moving from SlideShare, HubSpot and UberFlip to a Strapi and Pardot stack.",
+    ],
+  },
+  {
+    company: "Bryan University",
+    bullets: [
+      "Taught hundreds of students full-stack development with React, REST APIs and Python, with recorded video feedback on assignments.",
+    ],
+  },
+];
+
+const PROJECTS: readonly ResumeProject[] = [
+  {
+    name: "AI Development Toolkit",
+    role: "Creator",
+    dates: "Nov 2025 – Present",
+    url: "https://github.com/Eric-Lingren/claude-code-toolkit",
+    bullets: [
+      "Built a multi-agent Claude Code pipeline that takes work from planning interview to reviewed PR, with test-first build agents and separate test and browser verification agents.",
+      "Tiered models by cost of error. Haiku runs lookups and tests, Sonnet builds and reviews, Opus handles planning and debugging.",
+      "Built LLM evals with multi-judge scoring, plus a learning loop that turns review misses into measured fixes to the skills that caused them. Used the pipeline to build ericlingren.com end to end.",
+    ],
+  },
+];
+
+const SKILLS: readonly ResumeSkillGroup[] = [
+  {
+    label: "Frontend",
+    items: [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "Next.js",
+      "HTML",
+      "CSS",
+      "Storybook",
+      "shadcn/ui",
+      "design systems",
+      "accessibility (a11y)",
+    ],
+  },
+  { label: "Backend", items: ["Node.js", "Python", "Django", "PostgreSQL", "REST APIs"] },
+  {
+    label: "AI",
+    items: [
+      "Claude Code",
+      "Anthropic API/SDK",
+      "multi-agent orchestration",
+      "LLM evals",
+      "LLM-as-judge",
+      "MCP",
+      "prompt engineering",
+    ],
+  },
+  {
+    label: "Testing and tooling",
+    items: ["Vitest", "Jest", "Playwright", "Biome", "ts-morph codemods", "Git", "CI/CD", "AWS", "Cloudflare"],
+  },
+];
+
+const EDUCATION: readonly string[] = [
+  "V School · Full Stack Web Development · 2018",
+  "IBM · Data Science Professional Certificate · 2022",
+  "Cisco · CCENT · 2018",
+];
+
+/** Builds the resume from an experience list, so company, title and dates cannot drift from experience.ts. */
+export function buildResume(experience: readonly ExperienceRole[]): Resume {
+  return {
+    name: "Eric Lingren",
+    headline: "Senior Software Engineer",
+    stackLines: ["Frontend-focused full stack · React, TypeScript, Node", "AI agents and LLM tooling"],
+    location: "Remote · Seattle area",
+    email: EMAIL,
+    links: [SITE_URL, LINKEDIN_URL, GITHUB_URL].map((href) => ({ label: shortUrl(href), href })),
+    summary:
+      "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I lead frontend platform work and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
+    jobs: JOB_BULLETS.map(({ company, bullets }) => {
+      const role = experience.find((r) => r.company === company);
+      if (!role) throw new Error(`resume: "${company}" is missing from experience.ts`);
+      return { company: role.company, title: role.title, dates: toDisplayDates(role.dates), bullets };
+    }),
+    projects: PROJECTS,
+    skills: SKILLS,
+    education: EDUCATION,
+  };
+}
+
+export const RESUME: Resume = buildResume(EXPERIENCE);
