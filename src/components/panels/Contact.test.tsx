@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Home from "@/app/page";
 import { Footer } from "../Footer";
 import { Contact } from "./Contact";
+import { GITHUB_REPO_URL, GITHUB_URL, LINKEDIN_URL, TRAVEL_MAP_URL } from "@/content/site";
 
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
 const LAYOUT_PROPS = ["display", "position", "flex-direction", "padding-top", "min-height", "width", "height", "gap"];
@@ -159,5 +160,19 @@ describe("Footer", () => {
     expect(container.querySelector("main > footer.site-footer")).not.toBeNull();
     expect(container.textContent).toContain("Based near Seattle.");
     expect(container.textContent).toContain("Building something interesting? Let's talk.");
+  });
+});
+
+describe("external links", () => {
+  it("open every off-site link on the home page in a new tab, with no opener", () => {
+    const { container } = render(<Home />);
+    const external = [...container.querySelectorAll<HTMLAnchorElement>('a[href^="http"]')];
+    expect(external.map((a) => a.getAttribute("href"))).toEqual(
+      expect.arrayContaining([GITHUB_URL, LINKEDIN_URL, GITHUB_REPO_URL, TRAVEL_MAP_URL]),
+    );
+    for (const a of external) {
+      expect(a, a.href).toHaveAttribute("target", "_blank");
+      expect(a.getAttribute("rel"), a.href).toMatch(/noopener/);
+    }
   });
 });

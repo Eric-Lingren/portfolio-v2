@@ -93,14 +93,14 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
               </span>
             </div>
             <div className="contact-links section-actions">
-              <a className="btn btn-outline contact-btn" href={GITHUB_URL}>
+              <a className="btn btn-outline contact-btn" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                 <GitHubIcon />
                 GitHub
                 <span className="btn-arrow btn-arrow--out" aria-hidden="true">
                   ↗
                 </span>
               </a>
-              <a className="btn btn-outline contact-btn" href={LINKEDIN_URL}>
+              <a className="btn btn-outline contact-btn" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
                 <LinkedInIcon />
                 LinkedIn
                 <span className="btn-arrow btn-arrow--out" aria-hidden="true">

@@ -6,10 +6,17 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        Based near Seattle. Sailing, retro video games, and travel (<a href={TRAVEL_MAP_URL}>50+ countries</a>).
+        Based near Seattle. Sailing, retro video games, and travel (
+        <a href={TRAVEL_MAP_URL} target="_blank" rel="noopener noreferrer">
+          50+ countries
+        </a>
+        ).
       </p>
       <p>
-        Built with Next.js and CSS 3D. <a href={GITHUB_REPO_URL}>Source on GitHub</a>.
+        Built with Next.js and CSS 3D. <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
+          Source on GitHub
+        </a>
+        .
       </p>
     </footer>
   );

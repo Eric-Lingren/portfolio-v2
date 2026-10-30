@@ -26,6 +26,14 @@ describe("work route", () => {
     }
   });
 
+  it("opens off-site markdown links in a new tab", async () => {
+    const study = getStudy("fixture-study", { includeFixtures: true });
+    render(<CaseStudyView study={study!}>{await compileBody(study!.content)}</CaseStudyView>);
+    const link = screen.getByRole("link", { name: "the repo" });
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
   describe("back link", () => {
     const renderStudy = async () => {
       const study = getStudy("fixture-study", { includeFixtures: true });
