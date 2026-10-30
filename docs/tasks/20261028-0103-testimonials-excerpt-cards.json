@@ -1,0 +1,190 @@
+{
+  "schema_version": "2",
+  "producer": "to-tasks",
+  "source": {
+    "type": "seed",
+    "ref": "20261028-0059-testimonials-excerpt-cards.json"
+  },
+  "generated_at": "2026-10-28T08:03:47Z",
+  "branching": {
+    "strategy": "single",
+    "branch": "feat/portfolio-v2-3d-rebuild"
+  },
+  "tasks": [
+    {
+      "id": "T-0037",
+      "title": "Reduce the redaction script to images-only output",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "`npm run testimonials:redact` reads raw screenshots (png, jpg, jpeg, webp) from docs/private/testimonials/ and writes one flattened PNG per image to public/testimonials/<basename>.png. Output keeps the input dimensions, has alpha removed and carries no EXIF or other metadata. Eric now blacks out names by hand in Preview and re-screenshots, so regions.json becomes optional: when it has an entry for a file, `regions` are still painted with BLOCK_COLOR as today, and a file with no entry or with `regions: []` is simply flattened. The script no longer reads roleLabel or alt, no longer runs the personal-name check and no longer writes src/content/testimonials.json (card data is hand-written in T-0038). The CLI still prints `redacted N testimonial(s)` on success and exits 1 with a clear message on failure. `looksLikePersonalName` and ROLE_WORDS move unchanged into scripts/name-guard.mjs so the check-content gate can reuse them in T-0039. Characterization first: run the existing cases in src/lib/redact-testimonials.test.ts green (block colour fill, identical colour across images, raw files never copied to public output, docs/private git-ignored, looksLikePersonalName) and keep them as the safety net before restructuring, then update them for the new contract.",
+      "acceptance_criteria": [
+        "Test: an image with no regions.json entry and an image with `regions: []` are each written to the output dir as a PNG with the same width and height as the input and unchanged pixels.",
+        "Test: an input with EXIF metadata produces an output with no EXIF; alpha is removed.",
+        "Test: images that do have regions still get BLOCK_COLOR fill, identical across images, and other pixels are unchanged (existing cases kept).",
+        "Test: running the script writes no manifest file and the redactTestimonials() options no longer include manifestPath; roleLabel and alt in regions.json are ignored.",
+        "Test: non-image files (for example a .pdf or name-blocklist.txt) in the input dir are ignored, a dir with no images still errors, and raw files are never copied into public/testimonials/.",
+        "scripts/name-guard.mjs exports looksLikePersonalName with its existing tests moved (for example to src/lib/name-guard.test.ts) and passing; redact-testimonials.mjs no longer imports or runs it.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "03c3f5e7f6de4c51df30f1e9d3089cbd0a51e294",
+      "summary": "scripts/redact-testimonials.mjs now only flattens images: one PNG per input, same size, no alpha, no metadata. regions.json is optional, and a file with no entry or `regions: []` is only flattened. It no longer reads roleLabel or alt, no longer does the name check, and no longer writes a manifest or takes manifestPath. looksLikePersonalName and ROLE_WORDS moved unchanged to scripts/name-guard.mjs.",
+      "files_touched": [
+        "scripts/redact-testimonials.mjs",
+        "scripts/name-guard.mjs",
+        "src/lib/redact-testimonials.test.ts",
+        "src/lib/name-guard.test.ts"
+      ],
+      "tests": {
+        "passed": 368,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261028-0103-testimonials-excerpt-cards/T-0037.md"
+    },
+    {
+      "id": "T-0038",
+      "title": "Excerpt-card Testimonials panel backed by hand-written card data",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "End to end, the Testimonials panel (registry panel 6, id `testimonials`, between Experience and Contact, nav anchor unchanged) shows excerpt cards instead of inline screenshots. Replace src/content/testimonials.json and the manifest-shaped type with a hand-written src/content/testimonials.ts exporting `type Testimonial = { quote: string; roleLabel: string; sourceType: string; employer: string; year: number; original: string }` and `const TESTIMONIALS: readonly Testimonial[]`. `original` is the image id (file basename without extension) of a PNG in public/testimonials/. TESTIMONIALS ships empty here because Eric supplies the real quotes later (FU-001); never invent quotes. The data module must have no imports and use only `export type` / `export const` with plain type annotations, so T-0039 can load it with Node's native TypeScript stripping. Each card is an li.testimonial-card containing: a <blockquote> whose text is the quote wrapped in curly quotes, plain body text, no italics and no decorative quote glyph; one muted source line `<roleLabel> · <sourceType> · <employer> · <year>` with no icons; and a 'View original' button. The button reuses the shared .btn classes already used by an existing text button (for example the Contact panel's Resume button), no new variant or hover, with a leading FileIcon from src/components/icons.tsx. It is an <a> with href `/testimonials/<original>.png` and target=\"_blank\" so it opens the full redacted screenshot in a new tab, and its accessible name is 'View original screenshot' (aria-label that contains the visible text). Visual order is quote, then source line, then button. The grid is 2 columns on desktop and 1 column at max-width 600px (the breakpoint selected-work.css and contact.css already use), rows are equal height and the button is pinned to the bottom of each card (flex column, margin-top auto). Reuse the shared .section, .section-title and spacing tokens; add no per-panel layout overrides. Keep the sketch-layer contrast override for the muted source line. Remove the unused .testimonial-frame styles. While TESTIMONIALS is empty the panel renders 4 marked placeholder cards with the same card structure and `[ERIC: ...]` markers (data-testimonial-placeholder, no link), so the strict content gate stays the single production blocker. Update src/components/panels/Testimonials.test.tsx for the new contract.",
+      "acceptance_criteria": [
+        "Test: renders exactly 4 and exactly 6 uniform cards from a fixture; each has a blockquote with curly-quoted text, a source line with the four parts joined by ' · ', and no <img> element.",
+        "Test: each card's link has href /testimonials/<original>.png, target=\"_blank\", accessible name 'View original screenshot', a leading svg.btn-icon, and the same shared .btn classes as the existing text button.",
+        "Test: empty TESTIMONIALS renders 4 marked placeholder cards with the new structure and no link.",
+        "Test: geometry parity between the sketch and polished layers still holds for .testimonials, .testimonials-grid and .testimonial-card, and src/components/panels/section-layout.test.tsx still passes.",
+        "CSS review: grid-template-columns is 2 columns by default and 1 column at max-width 600px; cards stretch to equal row height with the button at the bottom; no italics or decorative quote glyph; no new button styles.",
+        "src/content/testimonials.json no longer exists, `src/content/testimonials.ts` has no imports, and nothing else in src/ imports PLACEHOLDER_COUNT from a removed export; the #testimonials anchor id is unchanged so Nav.test.tsx, flythrough.test.tsx and the #testimonials targets in scripts/perf-check.mjs still resolve.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0037"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "capture",
+            "name": "home"
+          },
+          {
+            "type": "click",
+            "locator": "role=link[name=\"Testimonials\"]"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "#testimonials",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "testimonials"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "Testimonials panel becomes a 2-column grid of equal-height text cards (quote, muted source line, View original button); 4 placeholder cards show until real quotes are added."
+      },
+      "commit": "2b4776a4c4bfa0bc5479d407136535275a6e3fba",
+      "summary": "Testimonials panel now renders excerpt cards (blockquote, muted source line, 'View original' .btn link with FileIcon) from a new import-free src/content/testimonials.ts (empty TESTIMONIALS); testimonials.json removed. Four [ERIC: ...] placeholder cards render while data is empty. Grid is 2 columns, 1 column at max-width 600px, with the button pinned to the card bottom. The strict content gate now counts `original:` entries in the .ts file as an interim step. Browser check not run (no auth/base server).",
+      "files_touched": [
+        "src/content/testimonials.ts",
+        "src/content/testimonials.json",
+        "src/components/panels/Testimonials.tsx",
+        "src/components/panels/testimonials.css",
+        "src/components/panels/Testimonials.test.tsx",
+        "scripts/check-content.mjs",
+        "scripts/check-content.test.mjs"
+      ],
+      "tests": {
+        "passed": 368,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261028-0103-testimonials-excerpt-cards/T-0038.md"
+    },
+    {
+      "id": "T-0039",
+      "title": "Tighten the check-content gate for testimonial cards",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "scripts/check-content.mjs validates the hand-written src/content/testimonials.ts instead of the old JSON manifest. It loads TESTIMONIALS as data (not by regexing the source text); Node 24 is installed, so a child `node` process using native TypeScript stripping fits, and checkContent should stay synchronous or all its callers and tests must be updated together. A missing testimonials.ts is ignored as before; a file that cannot be loaded is a `testimonials-placeholder` error. Checks, all strict errors: (1) exactly 4 or 6 cards, rule `testimonials-placeholder`; (2) every card has non-empty quote, roleLabel, sourceType, employer, an integer year, and an `original` matching [A-Za-z0-9_-]+, rule `testimonials-card`; (3) every `original` resolves to an existing public/testimonials/<original>.png, rule `testimonials-card`; (4) every quote is 30 words or fewer (whitespace-split), rule `testimonials-card`; (5) every *.png in public/testimonials/ is used by some card's `original`, so no image no card uses can ship, rule `testimonials-card`; (6) name guard, rule `testimonials-name`: roleLabel runs through looksLikePersonalName from scripts/name-guard.mjs with the blocklist; quote text is checked for whole-word, case-insensitive blocklist matches and for emails, @handles and URLs (not for digits, so '2x faster' passes). The site owner's own name (Eric, Eric Lingren) is always allowed even if it is on the blocklist. The blocklist is docs/private/testimonials/name-blocklist.txt (one name per line, # comments ignored); it is gitignored, so when it is absent the term match is skipped and a warn-level (non-failing) finding says so, while pattern checks still run. Add the new rule ids to STRICT_RULES and replace the old manifest-based branch and the testimonials.json reference.",
+      "acceptance_criteria": [
+        "Test: 4 cards and 6 cards pass strict; 0, 3, 5 and 7 cards fail strict with `testimonials-placeholder`; a missing testimonials.ts is ignored; an unloadable one fails.",
+        "Test: an `original` with no matching PNG fails, and a PNG in public/testimonials/ that no card uses fails.",
+        "Test: a 30-word quote passes and a 31-word quote fails; a card with an empty field or a non-integer year fails.",
+        "Test: a blocklisted name in a quote or a roleLabel like 'Jane Doe' fails with `testimonials-name`; a quote containing 'Eric' and one containing '2x faster' pass; an email, @handle or URL in a quote fails.",
+        "Test: with no name-blocklist.txt present the gate does not fail on terms and reports a warn-level finding, while pattern checks still run.",
+        "check-content.mjs no longer references src/content/testimonials.json and its header comment describes the new checks.",
+        "`node scripts/check-content.mjs --strict` still exits 1 on the empty TESTIMONIALS list, and `npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0037",
+        "T-0038"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "gh pr create --base master --head feat/portfolio-v2-3d-rebuild",
+      "commit": "a698a6e8ec4a158684e4eec7333b48c4c9718182",
+      "summary": "check-content.mjs loads TESTIMONIALS from src/content/testimonials.ts through a child node process (native TS stripping, checkContent stays synchronous). It enforces 4 or 6 cards, card field and quote-length rules, PNG existence, no unused PNGs, and the name guard. The old regex and the testimonials.json reference are gone. Strict exits 1 on the empty list. No trace log was written for this task.",
+      "files_touched": [
+        "scripts/check-content.mjs",
+        "scripts/check-content.test.mjs"
+      ],
+      "tests": {
+        "passed": 382,
+        "failed": 0
+      }
+    },
+    {
+      "id": "T-0040",
+      "title": "Allow named testimonials where a person has explicitly agreed to full-name attribution",
+      "type": "AFK",
+      "task_type": "triage",
+      "description": "Allow named testimonials where a person has explicitly agreed to full-name attribution.\n\nRaised as an exception while settling the redaction list. Any such opt-in would need explicit consent from the person and a change to the redaction and name-guard rules.",
+      "acceptance_criteria": [
+        "Item has been exported to its destination by export-tasks"
+      ],
+      "blocked_by": [],
+      "status": "not_started",
+      "branch": null,
+      "pr": null,
+      "domain": "personal",
+      "deliverable": "code",
+      "seed_ref": "20261028-0059-testimonials-excerpt-cards.json",
+      "task_ref": "20261028-0103-testimonials-excerpt-cards.json"
+    }
+  ],
+  "follow_ups": [
+    {
+      "id": "FU-001",
+      "title": "Add the hand-redacted screenshots and approve the testimonial cards",
+      "steps": [
+        "Copy your hand-redacted screenshots (4 Standard Metrics, 2 review praise sections) into the gitignored input folder with short kebab-case names: `mkdir -p docs/private/testimonials && cp <your-redacted-files> docs/private/testimonials/` (for example sm-1.png, review-1.png). The filename without extension becomes a card's `original` id.",
+        "Optional: list names to block, one per line, in `docs/private/testimonials/name-blocklist.txt`. The gate reads it.",
+        "Run `npm run testimonials:redact`. Expected output: `redacted N testimonial(s)`, with flattened PNGs in `public/testimonials/`.",
+        "Open each PNG in `public/testimonials/` and confirm no person name, avatar, email, handle, URL or client name remains. If one does, black it out in Preview, re-screenshot, replace the file in `docs/private/testimonials/` and rerun `npm run testimonials:redact`.",
+        "Ask Claude to draft the cards into the `TESTIMONIALS` array in `src/content/testimonials.ts` from those PNGs: quote verbatim (about 30 words, 2 sentences at most, trimmed only with an ellipsis), roleLabel, sourceType, employer, year and `original`. Approve or edit every quote, pick exactly 4 or 6 cards, and confirm the real employer or institution name for the performance-review source.",
+        "Run `npm run content:check:strict` and confirm there are no `testimonials-*` findings.",
+        "Stage only the finished assets: `git add public/testimonials src/content/testimonials.ts`. Never add `docs/private/`."
+      ],
+      "trigger_task": "T-0038",
+      "source": "planned"
+    }
+  ]
+}

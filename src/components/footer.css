@@ -1,0 +1,18 @@
+/* Above the fixed fly-through stage so it shows at the end of the scroll spacer. */
+.site-footer {
+  position: relative;
+  z-index: 2;
+  padding: 2rem 1rem;
+  background: var(--po-bg);
+  color: var(--po-muted);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.site-footer p {
+  margin: 0.25rem 0;
+}
+
+.site-footer a {
+  color: var(--accent-2);
+}

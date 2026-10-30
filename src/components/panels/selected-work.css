@@ -1,0 +1,261 @@
+/* Selected work panel. Layout rules are layer-agnostic (parity); layers differ in color only. */
+/* Spacing and title come from .section (globals.css). */
+.work {
+  container-type: inline-size;
+}
+
+.work-grid {
+  /* Desktop: three across, the last two centered. Image on top, then text. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--block-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-item {
+  flex: 0 0 calc((100% - 2 * var(--block-gap)) / 3);
+}
+
+/*
+ * Short viewports in the 3D stage: every panel fits the room below the nav, so the two-row grid
+ * shrank its text to ~60% under 690px tall. One row of five fits at full size instead.
+ * Wide panels only; the flat classic page scrolls, so it keeps the grid.
+ */
+@media (max-height: 799px) {
+  @container (min-width: 800px) {
+    .fly-panel .work-item {
+      flex-basis: calc((100% - 4 * var(--block-gap)) / 5);
+    }
+  }
+}
+
+/* Tablet widths: two across with the same image-top card. */
+@container (max-width: 719px) {
+  .work-item {
+    flex-basis: calc((100% - var(--block-gap)) / 2);
+  }
+}
+
+.work-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 0.35rem 0;
+  height: 100%;
+  padding: 0;
+}
+
+.work-thumb {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.work-thumb-sketch,
+.work-thumb-real,
+.work-thumb-tint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-thumb-sketch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed var(--sk-line);
+  pointer-events: none;
+}
+
+/* Wireframe "image goes here" mark. The frame is filled with the sketch ground so the hatching stops at its edge. */
+.work-thumb-icon {
+  width: 3.5rem;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: var(--sk-line);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* Not inherited, so set on the shapes: the stroke stays 1.5px at every icon size. */
+.work-thumb-icon > * {
+  vector-effect: non-scaling-stroke;
+}
+
+.work-thumb-icon rect {
+  fill: var(--sk-bg);
+}
+
+.work-card-title,
+.work-card-outcome,
+.work-card-number {
+  margin: 0;
+  padding-inline: 0.875rem;
+}
+
+.work-card-outcome {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.work-card-number:last-child {
+  padding-bottom: 0.875rem;
+}
+
+.work-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.work-card-outcome,
+.work-card-number {
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.work-card-number strong {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+/* Small screens: smaller type. Layout switches by container width above, not here. */
+@media (max-width: 600px) {
+  .work-card-title {
+    font-size: 0.95rem;
+  }
+
+  .work-card-outcome,
+  .work-card-number {
+    font-size: 0.8rem;
+  }
+
+  .work-card-number strong {
+    font-size: 1.1rem;
+  }
+}
+
+/* Phones: one compact row per card, the same 2:1 crop at 112x56 beside the text. */
+@container (max-width: 559px) {
+  .work-item {
+    flex-basis: 100%;
+  }
+
+  /* Same gap as the stacked testimonial cards. */
+  .work-grid {
+    gap: calc(var(--block-gap) * 1.2);
+  }
+
+  .work-card {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    padding: 0.7rem;
+  }
+
+  .work-thumb {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    margin-bottom: 0;
+  }
+
+  .work-card-title,
+  .work-card-outcome,
+  .work-card-number {
+    grid-column: 2;
+    padding-inline: 0;
+  }
+
+  .work-card-number:last-child {
+    padding-bottom: 0;
+  }
+
+  .work-thumb {
+    border-radius: 4px;
+  }
+
+  .work-thumb-icon {
+    width: 2rem;
+  }
+}
+
+/* Layer color: polished */
+.panel-layer--polished .work-card-outcome,
+.panel-layer--polished .work-card-number span {
+  color: var(--po-muted);
+}
+.panel-layer--polished .work-card-number strong {
+  color: var(--accent);
+}
+.panel-layer--polished .work-thumb-sketch {
+  visibility: hidden;
+}
+
+/*
+ * Thumbs rest in the site palette and show their real color on hover or keyboard focus.
+ * The tinted copy (filters in WorkThumbFilters.tsx) sits over the real image and fades out.
+ */
+.panel-layer--polished .work-thumb-tint {
+  transition: opacity 0.5s ease;
+}
+.panel-layer--polished .work-thumb-tint[data-tone="light"] {
+  filter: url(#work-thumb-tint-light);
+}
+.panel-layer--polished .work-thumb-tint[data-tone="dark"] {
+  filter: url(#work-thumb-tint-dark);
+}
+.panel-layer--polished .work-card:focus-visible .work-thumb-tint {
+  opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .work-card:hover .work-thumb-tint {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-layer--polished .work-thumb-tint {
+    transition: none;
+  }
+}
+
+/* Hairline between the image and the card body (a full outline on phones, where the thumb sits beside the text). */
+.panel-layer--polished .work-thumb::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: var(--po-border);
+  pointer-events: none;
+}
+@container (max-width: 559px) {
+  .panel-layer--polished .work-thumb::after {
+    inset: 0;
+    height: auto;
+    border: 1px solid var(--po-border);
+    border-radius: inherit;
+    background: none;
+  }
+}
+.panel-layer--polished .work-thumb-missing {
+  background: var(--po-bg);
+  border: 1px solid var(--po-border-strong);
+}
+
+/* Layer color: sketch. The thumb draws as a wireframe (filter in WorkThumbFilters.tsx) over the grid paper. */
+.panel-layer--sketch .work-thumb-tint,
+.panel-layer--sketch .work-thumb-missing {
+  visibility: hidden;
+}
+.panel-layer--sketch img.work-thumb-real {
+  filter: url(#work-thumb-wire);
+}

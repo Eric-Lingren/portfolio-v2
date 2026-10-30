@@ -1,0 +1,64 @@
+---
+title: Cutting render time at InsideOut Development
+slug: render-performance
+role: Software Developer, InsideOut Development
+timeline: Aug 2021 to Oct 2021
+stack:
+  - React
+  - Node.js
+  - Lighthouse
+outcomes:
+  - "Lighthouse performance score from 47 to 82"
+  - "Largest contentful paint from 5.2s to 2.0s, first contentful paint from 4.0s to 1.3s"
+cardOutcome: "Largest contentful paint on the company site dropped from 5.2s to 2.0s after the images and loading were reworked."
+cardNumber: "2.0s"
+cardNumberLabel: "largest paint, down from 5.2s"
+thumbnail: /work/render-performance/thumb.webp
+order: 5
+---
+
+## Context
+
+At InsideOut Development I worked as a software developer from April 2019 to March 2022. InsideOut builds coaching and training software plus a learning management system.
+
+The performance work centered on the InsideOut Development website. The same site served the public marketing pages and the learning portal customers used behind a login paywall. It had just been rebuilt from new designs which was image-heavy and very resource-intensive.
+
+## Problem
+
+After the redesign, the site was slow for everyone. Customers across the app stared at a blank page while it loaded, and render times were far too long. The goal was to bring first contentful paint down to an acceptable level.
+
+## My role
+
+I led the render-time work on the front end, from the first Lighthouse profile to the final check before launch. Other engineers on the team helped with other changes like implementing Suspense.
+
+## Key decisions
+
+**Measure before changing anything.** I profiled the site with Lighthouse before touching the code. The baseline run scored 47 for performance, with a first contentful paint of 4.0s and a largest contentful paint of 5.2s.
+
+**Fix the largest cost first.** The biggest cost Lighthouse found was images. Its opportunities list for that run put properly sized images at about 6.36s of potential savings, next-gen image formats at about 2.4s, and render-blocking resources at about 0.9s, so images came first. They were resized and compressed before anything else.
+
+**Then change how the code loads.** After the images, we converted standard component imports to lazy imports and moved the mounting of components on each route to React Suspense. We made the third-party scripts load asynchronously and deferred the render-blocking resources that were left.
+
+**Ship in phases and benchmark each one.** The changes went out in phases, and we ran Lighthouse as each phase landed. Each phase got its own before-and-after numbers.
+
+**Targeted fixes, not a rewrite.** There was no big rewrite on the table. The work was a series of focused fixes, each aimed at getting the paint times down.
+
+## Impact
+
+Lighthouse on the test environment, run on October 28, 2021 and again on October 29. The second run was the final check before the changes merged for launch.
+
+<BeforeAfter
+  before="/work/render-performance/lighthouse-2021-10-28.webp"
+  after="/work/render-performance/lighthouse-2021-10-29.webp"
+  beforeAlt="Lighthouse report from October 28, 2021 for the test environment showing a performance score of 47 and a largest contentful paint of 5.2 seconds."
+  afterAlt="Lighthouse report from October 29, 2021 for the test environment showing a performance score of 82 and a largest contentful paint of 2.0 seconds."
+  caption="Lighthouse reports from October 28 (before) and October 29, 2021 (after). Performance score 47 to 82."
+/>
+
+These are two lab runs on the test environment, not production traces.
+
+## What I'd do next
+
+Images were the biggest cost, and we fixed them by hand. If I did this again, I would move resizing and modern image formats into the build. Every new image would be handled automatically, so new content could not bring the problem back.
+
+After that, I would go after main-thread work. Total Blocking Time barely moved, from 190ms to 150ms, because the fixes were mostly about images and loading order. The next target is JavaScript cost: splitting the bundles further and trimming third-party scripts.

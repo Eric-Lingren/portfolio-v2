@@ -1,0 +1,62 @@
+---
+title: Frontend Platform Design System Re-architecture
+slug: frontend-platform
+role: Frontend project lead, Standard Metrics
+timeline: Feb 2026 to Sep 2026
+stack: [React, TypeScript, shadcn/ui, Vitest, Storybook, Biome, ts-morph]
+outcomes:
+  - Three competing UI folders became one component tree with lint-enforced boundaries
+  - Jest to Vitest migration completed, with Vitest upgraded to v4
+  - Portfolio-company pages cut over to a new shell, one container per tab
+cardOutcome: Three competing UI folders became one component tree with lint rule enforcement.
+cardNumber: "84%"
+cardNumberLabel: of new UI code now built only on the design system, up from 22%
+thumbnail: /work/frontend-platform/thumb.webp
+order: 4
+---
+
+<Figure
+  src="/work/frontend-platform/storybook-button-variants.webp"
+  alt="A Storybook page titled All Button Types showing a grid of button variants, with None, Primary, Success, Warning and Danger columns across Filled, Outlined and Minimal rows, a Buttons with Icons block, a component list on the left and a controls panel below"
+  caption="The button variants in the team's Storybook."
+/>
+
+## Context
+
+Standard Metrics is a portfolio monitoring product for investment firms. By early 2026 the frontend had grown for several years, with over a dozen Front End engineers working in it, and the code showed it.
+
+## Problem
+
+Three separate folders held UI components, and each had its own conventions. A button could exist in all three with slightly different props. New engineers had to learn which folder was "current" by asking someone, and imports crossed folder lines in every direction.
+
+The test setup had the same shape. Jest ran the suite, a newer part of the codebase wanted Vitest, and the two did not share configuration. Page layout was split too. The portfolio-company pages carried their own legacy layout code that no longer matched the rest of the app.
+
+None of this broke anything on a given day. It slowed every change slightly and made each change a little riskier.
+
+AI coding tools made it urgent. With three folders and no clear rules, a tool had no reliable way to tell the current component from the legacy one. It would happily build on the wrong one. The structure had to make the right choice the obvious one for both people and for automated tools.
+
+## My role
+
+I led the migration and did nearly all of the work myself. I broke it into seven steps so each one could ship on its own, and wrote the plan. I also wrote the release note at each step so the rest of the frontend team knew what changed for them.
+
+## Key decisions
+
+**One design system, built on shadcn primitives.** A teammate had started a shadcn-based component library early in 2026. Instead of picking a winner among the three folders, I made that library the one place for new UI and moved the old components into a single legacy tree. Keeping our own in-house components meant maintaining accessibility, interaction behavior and state management ourselves. shadcn gave us well-supported, best-practice defaults for all of that. It also gave every component one aligned style definition, so new UI did not need custom one-off styling.
+
+**Rewrite imports with a codemod, in one pull request.** Hand-editing imports across the codebase would have produced a long-lived branch that conflicted with everyone. I wrote a one-off ts-morph codemod and covered it with 23 unit tests before pointing it at real code. The full run had to pass type-checking, the test suite and Biome, and a validation test confirmed no old import paths remained. It rewrote 1,853 imports across 1,046 files in a single PR, so the repo was never half-moved for long. Then I deleted it.
+
+**Lint rules enforce the boundaries.** A folder move decays unless something stops people from undoing it. I added Biome import rules that run in CI. Design-system components cannot reach into data fetching, the API layer or feature modules, and the component package cannot import app code at all. The structure is checked on every pull request instead of remembered, and the rules still catch code headed for the wrong place.
+
+**Move tests to Vitest.** I also helped moved the suite from Jest to Vitest and then upgraded to v4. The goal was one runner and one configuration for the whole codebase.
+
+## Impact
+
+The codebase now has one place for new UI components, one test runner, and lint-enforced rules about where code may import from. The portfolio-company pages run on a single shell.
+
+New UI work moved onto the design system. In new UI files added to the main branch, the share built only on design-system components rose from 22% in February to April 2026 to 84% from late August to October. Those 87 newer files came from 15 engineers, so this is the entire engineering team adopting the system.
+
+## What I'd do next
+
+The folder structure is settled, but the primitives are not documented as well as they should be. A short contribution guide with an example for each primitive would finish the job, because the lint rules say what is not allowed and say nothing about what to do instead.
+
+I would also finish the migration. The legacy components still live in their own tree. Moving each one onto the shadcn-based design system would let us fully deprecate that tree and the old directory structure we no longer need.

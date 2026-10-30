@@ -1,0 +1,372 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "title": "Portfolio v2: fly-through exploded-interface rebuild",
+  "slug": "portfolio-v2-rebuild",
+  "created": "2026-10-09T08:24:27Z",
+  "summary": "Rebuild Eric Lingren's ~4-year-stale CRA portfolio (last content update Jan 2022) as a Next.js static site aimed at hiring managers and engineering leads for senior frontend and frontend-leaning full-stack roles, with email contact as the single conversion goal. This seed merges the original grill seed (portfolio-v2-3d-rebuild), the /prototype outcome (portfolio-v2-fly-through, findings in docs/prototypes/20261009-0042-fidelity-progression-3d.md, PR #15), and a content grill held on feat/portfolio-v2-3d-rebuild. The prototype chose a fly-through: home page sections are real DOM panels placed in z-space with CSS 3D transforms, scroll flies the camera through them, and each panel is wiped from wireframe to polished as the camera arrives, with a thin 1-bit dither band riding the wipe edge. R3F and WebGL are dropped. The content grill settled substance for all 7 panels (Hero, Positioning, AI toolkit, Selected work, Experience, Testimonials, Contact), chose 5 case studies, cut the colophon, replaced the recruiter quick-view with an Interactive | Classic switch, and added a one-page resume to scope. A visual-system prototype (docs/prototypes/20261009-2119-visual-system.md, PR #16) then picked G 'Cyber Hearth': a cool paper blueprint sketch layer that builds into velvet obsidian, with coral for people-facing elements, cyan for technical ones, and Geist plus Geist Mono. It also chose a transform-only build wipe that held 60fps on Eric's phone in a scripted sweep. Analytics was dropped, Classic shares the reduced-motion flat layout, and a light/dark toggle waits until after launch. Content, not engineering, is the bottleneck.",
+  "decisions": [
+    "Primary audience is hiring managers and engineering leads for senior frontend roles and frontend-leaning full-stack roles. Primary goal is maximizing inbound email contact.",
+    "Core concept is the fly-through: the home page sections are real DOM panels placed along the z-axis, and scroll position drives a camera that flies through them. When the camera reaches a panel, the panel sits flat at z = 0 and reads like a normal page. This is how the grill's 'Exploded Interface' concept is realized: the exploded layers are the site's own sections. It replaces the round-1 approach of decorative WebGL geometry beside DOM text, which Eric found not immersive and lacking senior FE flair.",
+    "Rendering is CSS 3D transforms on DOM only. React Three Fiber, drei, WebGL, detect-gpu, and drei PerformanceMonitor are dropped from the stack.",
+    "Fly-through mechanics validated in the prototype: a fixed full-viewport stage with perspective around 1100px containing a preserve-3d world; panel i at z = -i * D with D around 1700px; panels alternate horizontal offsets and a yaw that eases to 0 on arrival; the camera lerps toward scroll progress times (N - 1) * D; camera X follows a smoothstep between neighboring panel offsets; panels fade out shortly after the camera passes them. Exact constants are tunable, and N is now 7.",
+    "Fidelity progression is per panel, not page-wide: each panel renders its section twice with an identical layout (sketch/wireframe and polished). Theme CSS may change only color, background, and border style so both versions align pixel for pixel. A build wipe clips the sketch layer from the top as the camera approaches, with a visible accent build line at the wipe edge.",
+    "The dither stage survives as a thin 1-bit dither band riding the build line between the wireframe and polished versions, keeping the idea, AI-assisted build, shipped product narrative. It must be implemented without WebGL.",
+    "Personality comes from blueprint annotations: each panel shows a component tag with its z position, and handwritten redline callouts float between panels. Sketch-mode sections carry redline notes that are absolutely positioned so they never affect layout.",
+    "Desktop gets a subtle mouse look-around (a few degrees of world rotation following the cursor). Touch devices get no replacement: scroll only, no gyroscope.",
+    "Home page section order: Hero, Positioning, AI toolkit, Selected work, Experience, Testimonials, Contact. Each section is one fly-through panel, 7 in total. AI toolkit is placed before Selected work so the narrative reads idea, process, result. Testimonials sit just before Contact so social proof lands right before the ask. Skimmers reach Work via the hero 'View work' CTA and nav anchors. Plus per-case-study routes /work/:slug in real DOM, fully polished and not in the fly-through. There is no /colophon page.",
+    "The hero keeps a 'View work' CTA so skimmers reach proof in one click.",
+    "Hero content: the eyebrow is 'FRONTEND-FIRST FULL-STACK ENGINEER', hyphenated exactly this way everywhere it appears, including GitHub. The big headline is the name 'Eric Lingren'. Under it sits one short punchy line, which is parked until case studies are drafted (see deferred). Then the 'View work' and email CTAs. The label keeps full-stack roles open while the frontend specialty reads first.",
+    "Eric's photo appears in the Contact panel next to the email CTA, not in the hero, so the hero stays typographic. Use the existing profile-round.jpg (300x300) unless Eric finds a better one; display it small (around 150px) to avoid softness. In the wireframe layer it renders as a hatched 1:1 image placeholder that builds into the photo.",
+    "Positioning has exactly 3 pillars: Frontend craft, Full-stack delivery, and AI-native workflow. Product/UX judgment is shown inside case studies instead of claimed as a pillar. Each pillar is a title, one sentence, and one proof point (a named result or a link to a case study). Technologies are not listed in pillars. Pillar sentences are drafted by Claude and proof points are filled after case studies exist. Proof-point sources: Metrics Tab v2 (spreadsheet-style editing shipped to all customers) for Frontend craft, and the Inside Out render-time work for performance.",
+    "AI toolkit panel is a static, hand-authored system diagram with scroll-driven stepping and click or tap on any node to inspect (contract excerpt, tier, inputs/outputs). Built in DOM/CSS inside its fly-through panel. No free orbit camera. Not a live LLM chatbot and not a replay of recorded agent runs. The home-page version stays tight (4 to 6 steps); deep detail lives in its case study route.",
+    "The AI toolkit story is idea to merged PR (grill, seed, tasks, build with TDD, lint, test and browser-check runners, code review, PR revise), closed by a final step where the learning loop (learning capture, grounding judge, skill and benchmark improvement) feeds back to the start. Model tiers (Haiku, Sonnet, Opus) show as badges on nodes. This site being built by the same pipeline is part of the story.",
+    "AI toolkit inspect panels link directly to the real skill and agent files in Eric's public dotfiles repo (github.com/Eric-Lingren/dotfiles), after a cleanup sweep that removes or generalizes anything employer-specific.",
+    "AI toolkit panel carries a stats strip of 3 to 4 numbers: model mix and tier adherence percentage (efficiency), and learnings captured to applied plus skill benchmark before to after (improvement). Volume is one line (for example skills and agents count). No cost or dollar figures. Data from the work profile appears only as percentages and before-and-after ratios, never raw counts or project names. The numbers are a snapshot produced by a script Eric runs before each deploy, since Netlify cannot read local analytics.",
+    "Selected work is a set of 5 case studies: three from Standard Metrics (KPI Granularity for Information Requests; Investor Report Makeover plus Auto-Submit toggle; Frontend platform re-architecture), the Inside Out render-time optimization, and the AI toolkit case study. All 5 are real /work/:slug routes. The Selected work panel shows 4 cards in this order: KPI Granularity, IR Makeover, Frontend platform, Inside Out. The AI case study is linked from the AI toolkit panel. No bootcamp-era or other old personal project gets a case study, and there is no site-itself case study.",
+    "Each case study is about 600 to 900 words, authored in MDX, with a summary box at the top (role, timeline, stack, headline outcomes) and sections Context, Problem, My role, Key decisions, Impact, What I'd do next. Claude drafts all five from Eric's research and marks every gap with an '[ERIC: ...]' prompt for Eric to fill. Each Selected work card shows a thumbnail screenshot, a title, a one-line outcome, and one number.",
+    "Case studies name Standard Metrics as the employer. They never name customers or colleagues, never include internal links (private GitHub, Linear, Notion, Slack), and quote praise attributed by role only. Screenshots come from Standard Metrics' demo instance, which Eric confirmed contains no real customer data, so they may be used publicly. No customer-identifying detail, revenue, or unreleased features.",
+    "Counts of PRs, files, or lines changed are not treated as impact. They may appear only as scale context inside case study body text where scale explains a decision (for example why a tested codemod was needed). They never appear in headlines, cards, pillars, the Experience panel, or the resume. Cards need an outcome, so the Frontend platform case study needs one measurable outcome that is Eric's own, or else its card leads with a short outcome sentence instead of a number.",
+    "The AI toolkit case study includes a section showing that this site was built by the pipeline it describes. This replaces a separate site case study and colophon.",
+    "Experience panel lists engineering and teaching roles from Eric's LinkedIn: Software Engineer at Standard Metrics (Mar 2022 to present), Software Developer at InsideOut Development (Apr 2019 to Mar 2022), Adjunct Instructor at Bryan University (Jun 2020 to Jun 2023), and MERN Instructor/TA at V School (Jan to Apr 2019). Each row is company, title, dates, one line of scope, and at most 2 or 3 highlights that link to case studies where they exist. Teaching is kept as a mentoring signal. A 'Download resume (PDF)' link sits at the bottom.",
+    "Career before engineering appears as one line at the bottom of Experience, for example international tech sales, account management, then long-haul trucking, then self-taught and V School in 2018. It is a footnote, never the hook. It is not on the resume.",
+    "A new one-page resume is in scope for this project. Claude drafts it from the two LinkedIn exports, the 2022 resume, and the case study material, and Eric reviews and exports the PDF. It positions Eric as frontend-first full-stack, not backend, uses outcomes not PR or file counts, and omits the phone number and town.",
+    "Testimonials get their own panel between Experience and Contact. Eric collects 6 to 8 praise screenshots and 4 to 6 are shown: 3 or 4 from Standard Metrics across different roles (for example product lead, fellow engineer, leadership), 1 from InsideOut, and 1 from teaching such as student feedback or a Bryan University note. Cards use one uniform redaction style, are framed in site styling, and carry a role label with no personal names.",
+    "Testimonial redaction is scripted: Eric places raw screenshots in docs/private/testimonials/ (never committed) and a script applies identical solid redaction blocks to the regions Eric marks, so every card looks the same. docs/private/ is gitignored.",
+    "Contact panel: primary CTA is email via a copy-email button plus a mailto link. The invitation line is 'Building something interesting? Let's talk.' with an open-invitation framing. The mailto subject is prefilled as 'Hello from ericlingren.com' so Eric can filter and attribute site-originated mail. Also GitHub, LinkedIn, and resume download. Eric does not want a public availability line, a Calendly or book-a-call CTA, or a role-fit block (it implied job-seeking).",
+    "Footer: one line, 'Based near Seattle. Sailing, vintage games, 50+ countries.', plus 'Built with Next.js and CSS 3D. Source on GitHub.' Phone number is not shown anywhere on the site.",
+    "The recruiter quick-view is replaced by an 'Interactive | Classic' segmented switch in the nav, naming both states so neither reads as a downgrade. 'Classic' disables the fly-through and shows the flat stacked page; it is shareable as ericlingren.com/?view=classic.",
+    "Conversion supporting features kept: the Interactive | Classic switch, impact numbers in case studies (outcome-based, see the counts rule), OG/link-preview image, and content painting before any motion code loads (no blocking preloader). Conversion analytics was dropped entirely after the content grill (see out_of_scope).",
+    "Fallback is a flat stacked page: the same section components rendered once, stacked, in polished mode. It serves prefers-reduced-motion, the Classic view, and any device downgraded for poor frame rate. This replaces the three GPU tiers planned before the prototype.",
+    "Performance budgets: text visible under 1s, LCP under 2.0s on a mid phone over 4G, fly-through code loaded after first paint. The earlier 1.5MB 3D asset budget no longer applies.",
+    "Cuts accepted by Eric: skills badge grid, 31-project grid with filters, long bio paragraph (replaced by the 2-line positioning and the footer line), multi-field contact form, blocking intro/preloader, travel map, old teaching videos, Space Invaders game in nav, blog, the /colophon page, and a separate site-itself case study.",
+    "Stack: Next.js App Router with static export, MDX for case studies, CSS 3D for the fly-through. The fly-through stage is a home-page concern; case study routes are plain polished DOM.",
+    "Launch is a single release after everything is built. Scope: fly-through home with 7 panels, per-panel build wipe and dither band, 5 case studies, AI diagram with inspect and stats strip, experience timeline with the new one-page resume PDF, testimonials panel, contact, Interactive | Classic switch, and flat fallback. No analytics.",
+    "Repository: rebuild in this repo as a fresh Next.js app on feat/portfolio-v2-3d-rebuild, replacing the CRA code. Preserve the old site under git tag v1-legacy and branch legacy/cra-site. Master keeps serving the old site until merge, and the merge is the cutover.",
+    "Eric's reusable existing content: name, email (ericlingren@gmail.com), GitHub and LinkedIn links, headshot (src/assets/about/profile-round.jpg), and the hobby/travel flavor. The old site has no hero headline, resume, testimonials, or experience section, so nearly all copy is new. Do not carry over the old Inventory Manager demo login, public myfxbook trading-account links, the localhost link, or the malformed Flickr OG image.",
+    "The fly-through was chosen over four alternatives in the prototype: round-1 WebGL fidelity boxes beside text, a fidelity lens, an inspect/X-ray mode, and a desk scene.",
+    "Visual system is G 'Cyber Hearth', chosen in the visual-system prototype (docs/prototypes/20261009-2119-visual-system.md, PR #16). It is dark only. The polished layer follows a 60/30/10 split: velvet obsidian #0c0a0e for the page, stage, and panels (60%); deep tech blue #111827 (gray-900) for cards, pillars, the case study meta strip, and the pull quote (30%); text #f9fafb, muted text #9ca3af, borders #252a36 and #3a4150. The 10% accent is split into two colors by role.",
+    "Accent roles are strict. Coral #ff5a36 is 'people': the hero eyebrow, the 'View work' button fill (with #0c0a0e text, 6.4:1), the case study pull-quote rule, the sketch-layer redline notes, and the dither band. Cyan #06b6d4 is 'tech': panel component tags, the email button outline and text, proof links and case study links, the card hover border and glow, and the hatching inside sketch image placeholders. The build line is a coral-to-cyan horizontal gradient. No third accent color is added.",
+    "The sketch layer is a cool paper blueprint that matches the polished palette: paper #eff1f4, dashed lines #1f2937, wireframe text #111827, a 24px grid, and image placeholders drawn as hatched X boxes. Redline notes use a darker coral #bd4328 because raw coral is only 2.7:1 on the paper.",
+    "Type pairing is Geist for headings and body, plus Geist Mono for the eyebrow, panel tags, card kickers, case study meta, and redline notes. Both the sketch and polished layers use the same fonts and sizes.",
+    "The build wipe uses the transform-only method: the sketch layer sits in an overflow-hidden box that is translated down by the built amount while its inner content is translated back up by the same amount. The build line and dither band ride the same translateY. On Eric's phone an 8-second scripted sweep held 60fps with 99% of frames under 20ms and a 33ms worst frame, versus 59fps, 99%, and a 50ms worst frame for a per-frame clip-path.",
+    "The Classic view uses the same flat stacked layout as the reduced-motion page. The resume link is not moved to the top, because the nav already has a resume link. On the flat page (Classic and reduced motion) the AI toolkit diagram shows all steps complete instead of scroll-stepped, so the diagram needs a 'complete' render mode.",
+    "Nav contains section anchors, the 'Interactive | Classic' switch, and a resume link.",
+    "The OG/link-preview image shows the name, the eyebrow, and a hero split half wireframe and half polished, using the G palette: cool paper sketch on one side, obsidian on the other, with the coral-to-cyan build line on the split.",
+    "Case study URLs are /work/kpi-granularity, /work/investor-reports, /work/frontend-platform, /work/render-performance, and /work/ai-toolkit."
+  ],
+  "open_threads": [],
+  "status": "ready",
+  "iteration": 4,
+  "disposed_threads": [
+    {
+      "id": "pt-001",
+      "text": "Which 3D concept feels immersive and shows senior FE flair: round-1 fidelity boxes, fidelity lens, fly-through, inspect mode, or desk scene?",
+      "disposition": "decided",
+      "iteration": 2
+    },
+    {
+      "id": "pt-002",
+      "text": "Rendering stack for the fly-through: CSS 3D only, CSS 3D plus an R3F background, or R3F for everything?",
+      "disposition": "decided",
+      "iteration": 2
+    },
+    {
+      "id": "pt-003",
+      "text": "Does the dither stage of the fidelity progression survive in the fly-through?",
+      "disposition": "decided",
+      "iteration": 2
+    },
+    {
+      "id": "pt-004",
+      "text": "What replaces mouse look-around on touch devices?",
+      "disposition": "decided",
+      "iteration": 2
+    },
+    {
+      "id": "pt-005",
+      "text": "Which role label and headline direction does the hero use?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-006",
+      "text": "Which 3 pillars does Positioning use, and what does each contain?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-007",
+      "text": "Which story do the AI toolkit steps tell, which stats does the panel show, and does it link to real source files?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-008",
+      "text": "Which employer projects become case studies, how deep are they, is the employer named, and which appear as cards?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-009",
+      "text": "How are Experience, the resume, pre-engineering career, testimonials, contact framing, and the footer line handled?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-010",
+      "text": "Do the colophon page and a separate site case study stay?",
+      "disposition": "rejected",
+      "iteration": 3
+    },
+    {
+      "id": "pt-011",
+      "text": "Does the recruiter quick-view stay, and what is it called?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-012",
+      "text": "Are PR, file, and line counts allowed as impact on the site?",
+      "disposition": "decided",
+      "iteration": 3
+    },
+    {
+      "id": "pt-013",
+      "text": "Which palette pairing, accent, and type pairing make the fly-through look best?",
+      "disposition": "decided",
+      "iteration": 4
+    },
+    {
+      "id": "pt-014",
+      "text": "Classic-mode layout tweaks: move the resume download to the top, and show the AI diagram with all steps complete?",
+      "disposition": "decided",
+      "iteration": 4
+    },
+    {
+      "id": "pt-015",
+      "text": "Which analytics tool and events does the site use?",
+      "disposition": "rejected",
+      "iteration": 4
+    },
+    {
+      "id": "pt-016",
+      "text": "Does the site launch with a light/dark toggle?",
+      "disposition": "deferred",
+      "iteration": 4
+    }
+  ],
+  "deferred": [
+    {
+      "text": "Space Invaders easter egg (e.g. Konami code) reviving the old site's game",
+      "rationale": "Low priority and not needed for the contact-conversion goal; excluded from the single launch scope.",
+      "context": "Old site had a canvas Space Invaders game under /game with sprites and audio in src/assets. Retro flavor was discussed as a possible hidden easter egg, not part of the main identity.",
+      "source_seed": null
+    },
+    {
+      "text": "Additional case studies beyond the initial 5",
+      "rationale": "Curation is a seniority signal and content gathering is the real bottleneck; more can be added after launch.",
+      "context": "Launch set is three Standard Metrics studies, the Inside Out study, and the AI toolkit study. Metrics Tab v2, Forecasts and Budgets scenarios, and Tear Sheets are candidates for later. Old personal projects were judged mostly backend, forex, or bootcamp work that muddies an FE-first story.",
+      "source_seed": null
+    },
+    {
+      "text": "Hosting default: stay on Netlify with ericlingren.com",
+      "rationale": "Proposed as a default near the end of the grill and Eric did not object. The analytics half of this item was removed when analytics was dropped entirely.",
+      "context": "Netlify is already wired to this repo and the domain.",
+      "source_seed": null
+    },
+    {
+      "text": "Reuse the inspect-mode X-ray (explode the real DOM into its component tree) or the fidelity lens as easter eggs",
+      "rationale": "Both were prototyped but not chosen; Eric did not ask for them as extras.",
+      "context": "Prototype code was deleted with the throwaway branch; mechanics are described in docs/prototypes/20261009-0042-fidelity-progression-3d.md Explorations.",
+      "source_seed": null
+    },
+    {
+      "text": "The hero's punchy line under the name",
+      "rationale": "Four rounds of drafts (slogans, plain sentences, short lines, concrete hooks) were all rejected. Eric agreed to park it until content is fleshed out, because the best line should come from a real outcome in the case studies.",
+      "context": "Constraints: punchy but not slogan-like or marketing-sounding; plain, outcome-focused tone; do not lead with the trucking career change; do not use PR, file, or line counts. It is a single string and does not block any build task. Revisit after the case study Impact sections are drafted, and ask Eric for his own rough wording if drafts miss twice.",
+      "source_seed": null
+    },
+    {
+      "text": "Pillar sentences and proof points for Positioning, and the AI panel intro copy",
+      "rationale": "Proof points come from the same material as the case studies, so they are written after the case studies are drafted.",
+      "context": "Claude drafts sentences; Eric supplies the facts behind proof points.",
+      "source_seed": null
+    },
+    {
+      "text": "Accent text legibility",
+      "rationale": "Eric approved the G palette but said the accent colors are still slightly hard to read and not as legible as he'd like, and chose to revisit it later rather than in the prototype.",
+      "context": "Both accents pass 4.5:1 (coral 6.4:1, cyan 8.1:1 on obsidian), so this is a perceived-legibility issue, mostly on small mono accent text (11 to 13px eyebrow, tags, links). Options from the prototype: brighter text-only tints of each accent (as done for electric blue with #7fa1ff), heavier weight or larger size for small accent text, or accent fills with dark text in place of accent-colored text.",
+      "source_seed": null
+    },
+    {
+      "text": "Light/dark toggle",
+      "rationale": "Eric chose no light/dark toggle at launch; it is a post-launch item.",
+      "context": "The launch theme is dark only (G Cyber Hearth). A light theme would need its own palette and accent contrast checks.",
+      "source_seed": null
+    }
+  ],
+  "next_action": "Run /to-tasks on this seed. Early tasks should build the fly-through shell with the G tokens and transform-only wipe, re-check it on Eric's phone with real touch scrolling across all 7 panels, and draft the five case studies with [ERIC: ...] gap markers from docs/private/eric-lingren-impact.html.",
+  "out_of_scope": [
+    {
+      "text": "Public 'open to roles' or availability badge and role-fit block",
+      "rationale": "Eric does not want to advertise job-seeking publicly."
+    },
+    {
+      "text": "Calendly or book-a-call CTA",
+      "rationale": "Eric wants contact by email only so he has context before any meeting lands on his calendar."
+    },
+    {
+      "text": "Live LLM 'ask about Eric' chatbot",
+      "rationale": "Cliche, costs money, needs abuse guardrails, and risks the model inventing facts for a hiring manager."
+    },
+    {
+      "text": "Replay of real recorded agent sessions in the AI section",
+      "rationale": "Real AI sessions run long; Eric chose a choreographed static diagram instead."
+    },
+    {
+      "text": "Scripted typing-prompt intro (code-to-render concept)",
+      "rationale": "Eric judged it added little value; pure Exploded Interface chosen."
+    },
+    {
+      "text": "Particle-field and refractive-glass 3D concepts, and a full navigable 3D world",
+      "rationale": "Not chosen over the Exploded Interface in a hybrid DOM-plus-canvas architecture."
+    },
+    {
+      "text": "Skills badge grid, 31-project grid with filters, long bio, multi-field contact form, blocking preloader, travel map, old teaching videos, game in nav, blog",
+      "rationale": "Accepted cuts that dilute the FE-first story or add conversion friction."
+    },
+    {
+      "text": "Full retro pixel aesthetic as the site's brand",
+      "rationale": "Reads as a side project to engineering leads and clashes with the exploded-interface concept; pixel/dither appears only as a stage in the fidelity progression."
+    },
+    {
+      "text": "WebGL / React Three Fiber in any part of the site",
+      "rationale": "Eric chose CSS 3D only for the fly-through."
+    },
+    {
+      "text": "Round-1 decorative WebGL geometry beside DOM text",
+      "rationale": "Eric found it not immersive and lacking senior FE flair."
+    },
+    {
+      "text": "Desk scene, fidelity lens, and inspect mode as the primary concept",
+      "rationale": "Prototyped in round 2; Eric picked the fly-through."
+    },
+    {
+      "text": "Gyroscope or tilt look-around on mobile",
+      "rationale": "Eric chose scroll only on touch."
+    },
+    {
+      "text": "A /colophon page and a separate site-itself case study",
+      "rationale": "They overlap with the site itself, the AI toolkit case study, and the public repo. The site-built-by-the-pipeline story lives as a section inside the AI toolkit case study, and the footer links to source."
+    },
+    {
+      "text": "Case studies for old bootcamp-era or personal projects",
+      "rationale": "They pull perceived level down next to the Standard Metrics work. Curating to five strong studies is itself a seniority signal."
+    },
+    {
+      "text": "PR, file, or line counts as headline metrics, card numbers, pillar proof, or resume content",
+      "rationale": "Eric does not consider them a true measure of impact. They are allowed only as scale context inside case study body text."
+    },
+    {
+      "text": "Cost or dollar figures in the AI toolkit stats",
+      "rationale": "Reads as either a toy or extravagant, and part of Eric's usage is on an employer account."
+    },
+    {
+      "text": "Phone number on the site or the new resume",
+      "rationale": "Contact is by email only."
+    },
+    {
+      "text": "Customer names, colleague names, and colleagues' metrics in any case study or testimonial",
+      "rationale": "Confidentiality and attribution: customers are described generically, praise is attributed by role, and other engineers' results are not claimed as Eric's."
+    },
+    {
+      "text": "Leading the site's positioning with the pre-engineering trucking career",
+      "rationale": "Eric does not want it as the main hook. It stays a one-line footnote in Experience."
+    },
+    {
+      "text": "Analytics of any kind (Plausible, Umami, or event tracking on CTAs, scroll depth, or case study opens)",
+      "rationale": "Eric dropped analytics entirely after the seed was written. The prefilled mailto subject still lets Eric filter site-originated mail."
+    },
+    {
+      "text": "Visual-system options that lost in the prototype: Instrument Serif headings, dark blueprint to light polished, paper sketch to warm light polished, redline #ff4b1f, acid lime, electric blue, slate and navy with terracotta, slate with warm teal, and warm obsidian with amber",
+      "rationale": "Eric compared them on the hero, Selected work, and case study surfaces and picked G Cyber Hearth."
+    },
+    {
+      "text": "Neon Fusion styling on top of G: gradient text on the name, a '//' eyebrow prefix, 8px buttons, chip kickers, and 25% hover glows on every card",
+      "rationale": "Prototyped as variant H. Eric kept G's quieter treatment; gradient name text also reads like a common template."
+    },
+    {
+      "text": "Copy and structure from pasted palette specs: a slogan headline, a 'foster culture' subtitle, 'Let's Build Together', 'Download Resume', or GitHub as the primary CTA, a culture or mentorship section, and invented skills",
+      "rationale": "They conflict with locked decisions: the name is the headline, the punchy line is parked, the CTAs are 'View work' and email, and the 7 panels are fixed. Only the colors and role ideas were taken."
+    }
+  ],
+  "implementation_decisions": [
+    "Do not put large planes (such as a floor grid) in the same preserve-3d context as the panels. In the prototype, Chrome sorted a floor plane in front of the panels and hid half of a panel's sketch layer.",
+    "Coplanar layers inside a panel (polished and sketch copies) need a small translateZ offset, such as 1px, to avoid z-fighting.",
+    "Use a wipe, not an opacity crossfade, for sketch to polished; the prototype's opacity crossfade looked muddy gray at the midpoint. Implement the wipe with transforms only (see decisions), not a clip-path written every frame, which repaints.",
+    "Panels scale down below about 1240px viewport width; narrow screens may need flatter yaw or smaller offsets, to be tuned during the build.",
+    "Motion is driven purely by scroll position, so scrolling up reverses it. This must be checked by eye during the build.",
+    "Accessibility defaults: all content stays real DOM in reading order; inspectable AI nodes are keyboard-focusable buttons with visible focus rings; prefers-reduced-motion uses the flat fallback.",
+    "Supporting library defaults: Lenis for smooth scroll is optional; GSAP is optional since the prototype used a plain requestAnimationFrame loop; Tailwind or CSS modules for styling.",
+    "Theme tokens from the visual-system prototype, as CSS custom properties: --po-bg #0c0a0e, --po-surface #111827, --po-ink #f9fafb, --po-muted #9ca3af, --po-border #252a36, --po-border-strong #3a4150, --accent #ff5a36, --accent-2 #06b6d4, --on-accent #0c0a0e, --sk-bg #eff1f4, --sk-line #1f2937, --sk-ink #111827, --sk-grid rgba(31,41,55,.11), --sk-hatch rgba(8,145,178,.28), --accent-ink-sk #bd4328. Build line: linear-gradient(90deg, #ff5a36, #06b6d4) with a 0 0 18px 2px coral glow. Card hover (polished layer only): cyan border plus box-shadow 0 0 0 1px #06b6d4, 0 0 28px of cyan at 40%, 0.2s transition.",
+    "Case studies are authored in MDX; /work/:slug routes must be real, deep-linkable DOM.",
+    "The Interactive | Classic switch is driven by the view query parameter (?view=classic) and reuses the flat fallback component tree, so there is one flat version to maintain.",
+    "AI stats come from a local script run before each deploy that writes a static JSON snapshot consumed at build time. It must emit only percentages and before/after ratios for work-profile data.",
+    "The testimonial redaction script takes raw images from docs/private/testimonials/ plus a per-image list of regions and outputs uniformly redacted images into public site assets. docs/private/ is gitignored, so raw screenshots never reach git.",
+    "Standard Metrics demo-instance screenshots currently sit unprocessed in the private research folder. Selected ones are copied into public assets, optimized, and given alt text during the build.",
+    "Layout parity rule from the prototype: any CSS rule that changes layout must apply to both the sketch and polished layers. Border widths stay identical (1.5px in both, solid vs dashed). Only color, background, border color, and border style differ.",
+    "Accent text colors are computed and checked against 4.5:1 on each background they sit on. Coral is 6.4:1 on obsidian and 5.7:1 on the gray-900 surface; cyan is 8.1:1 and 7.3:1. Coral needs the darker #bd4328 on the paper sketch.",
+    "Handle Safari's address-bar resize without layout thrash: use stable viewport units (svh/lvh) for the scroll spacer and panel sizing, and avoid reading layout (offsetHeight) on scroll-driven resize events. The prototype re-measured every panel on each resize.",
+    "Hero type scale from the prototype: the name at clamp(52px, 10vw, 136px) on two lines with line-height 0.92, Geist 600 with -0.035em tracking; the eyebrow in Geist Mono 500 at 13px with +0.14em tracking; case study body 18px with 1.68 line-height in a 720px column."
+  ],
+  "risks_and_tradeoffs": [
+    "Phone performance is only partly verified. The visual-system prototype (3 panels) passed a scripted 8-second sweep on Eric's phone at 60fps with the transform-only wipe. Real finger scrolling was rougher: live readings dipped to about 43fps, likely from iOS momentum scrolling and Safari's address bar resizing the page. The full 7-panel build must be re-checked on the phone with real touch input; the flat fallback is the safety net.",
+    "The 3-second hook is unconfirmed. Eric was unsure about the round-1 hero, the fly-through hero was not judged on first load, and the punchy hero line is still unwritten, so the first-load hook currently rests on the name, the eyebrow, and the build animation.",
+    "A dither band without WebGL needs a CSS technique (for example a Bayer-pattern mask on a band at the wipe edge) that stays stable and does not shimmer during motion.",
+    "Chrome preserve-3d depth sorting is fragile with intersecting or large planes; keep the world to panels and small annotations.",
+    "Putting AI before Work risks managers stopping at the AI section; mitigated by the hero 'View work' CTA and nav anchors.",
+    "Redacted testimonial and case study material may leak employer details if redaction is inconsistent. The case study drafts need a pass for customer names, colleague names, and internal links before publishing.",
+    "Linking AI toolkit nodes to the public dotfiles repo sends visitors there. Four skill files in that repo mention Standard Metrics or its internal product names, so a sweep must remove or generalize employer-specific content before launch.",
+    "Eric has not yet confirmed whether his employment agreement or any social media policy restricts describing shipped work in a portfolio. This should be checked before the case studies go live.",
+    "The Frontend platform re-architecture has only qualitative outcomes so far, and Eric must not claim test-speed gains that came from a colleague's separate work. Its card may need an outcome sentence in place of a number.",
+    "The Inside Out '300% render improvement' claim is from the old site and is unverified; Eric needs to confirm how it was measured before it is used as a proof point or case study headline.",
+    "The Metrics Tab v2 work has no public credit naming Eric, so any claim about it must rest on his own PR history, not on public announcements.",
+    "Content is the real bottleneck (five case studies, impact numbers, redacted screenshots, experience copy, resume PDF), not engineering.",
+    "LinkedIn is currently out of step with the new positioning: the Standard Metrics role has no description and the About section is a dated tech list. Updating it after the site copy lands keeps the story consistent.",
+    "Two accents make G busier than a single-accent theme. On the hero, the coral eyebrow, coral button, and cyan email button sit close together. Keeping the coral and cyan roles strict is the mitigation.",
+    "The case study page in G was checked only for rendering, not read by eye. The first case study build should confirm that 18px #f9fafb body text on #0c0a0e does not glare over long reads.",
+    "The cyan card hover glow is desktop only, since touch has no hover. Whether a tap gives any visual feedback is not decided.",
+    "Light Standard Metrics demo screenshots stand out strongly on obsidian cards. The prototype kept this as a deliberate proof signal."
+  ],
+  "further_notes": [
+    "Eric's content checklist: (1) collect 6 to 8 praise screenshots into docs/private/testimonials/; (2) find one measurable outcome for the Frontend platform re-architecture, or accept an outcome sentence; (3) provide Inside Out material: what changed and whether the 300% figure holds; (4) optionally find a better photo, with the current one as fallback; (5) review the four dotfiles skill files that mention the employer before the AI panel links to the repo; (6) check the employment agreement or social media policy; (7) update LinkedIn after the site copy is done.",
+    "Claude drafts: the five case studies with [ERIC: ...] gap markers, pillar sentences and proof points, Experience copy, the one-page resume, AI panel copy, the hero punchy line once case studies exist, and the testimonial redaction script.",
+    "Source material for case studies: docs/private/eric-lingren-impact.html (gitignored; contains demo-instance screenshots and internal links, so never commit or quote the links) and a research summary of the six top Standard Metrics projects gathered in this session. The three chosen studies are KPI Granularity, IR Makeover plus Auto-Submit, and Frontend platform re-architecture; Metrics Tab v2 and Inside Out serve as pillar proof points, and Inside Out also becomes a case study.",
+    "Career data for Experience and the resume: two LinkedIn PDF exports and docs from Eric's Downloads folder (Eric Lingren _ LinkedIn.pdf, Eric Lingren _ LinkedIn1.pdf, Eric Lingren Resume 2022.pdf). The 2022 resume pitched Eric as a backend developer and lists a phone number; the new resume reverses the first and omits the second.",
+    "Old-site content audit: 31 projects, 25 unlabeled skill badges, no hero copy, a 55-word bio, and remote-hosted screenshots. Nothing from the old project grid is reused except as optional footer links to GitHub.",
+    "Current repo facts: CRA + React 17 + React Router 5 + SASS + GSAP 3.4, deployed on Netlify at ericlingren.com; last content commit Jan 2022, only build fixes in Feb 2026. Rebuild from scratch rather than porting code.",
+    "Prototype findings: docs/prototypes/20261009-0042-fidelity-progression-3d.md (fly-through mechanics, merged via PR #15) and docs/prototypes/20261009-2119-visual-system.md (visual system, PR #16 into feat/portfolio-v2-3d-rebuild). The original grill seed and the post-prototype seed were merged into this file; iteration 3 merged the content grill and iteration 4 merged the visual-system prototype plus decisions from docs/handoffs/20261009-2118-visual-system-prototype.md."
+  ],
+  "condensed_from": [
+    "20261009-0035-portfolio-v2-3d-rebuild.json",
+    "20261009-0117-portfolio-v2-fly-through.json"
+  ],
+  "verification": {
+    "iteration": 4,
+    "personas": [
+      "grounding",
+      "accuracy",
+      "completeness",
+      "coherence"
+    ],
+    "refutations_upheld": 0,
+    "refutations_screened": 8,
+    "clean": true,
+    "status": "verified"
+  }
+}

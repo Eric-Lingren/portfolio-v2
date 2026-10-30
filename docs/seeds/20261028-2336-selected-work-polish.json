@@ -1,0 +1,138 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": { "type": "session", "ref": null },
+  "title": "Selected Work polish: assets, card redesign, detail pages",
+  "slug": "selected-work-polish",
+  "created": "2026-10-29T06:36:36Z",
+  "iteration": 1,
+  "summary": "Finish the Selected Work panel so it shows Eric's senior front-end skills. All 5 current cards stay (kpi-granularity, investor-reports, metrics-tab-v2, frontend-platform, render-performance). Today 0 of 5 thumbnails exist and the strict content gate fails on 90 [ERIC: markers in scope. This grill settled asset sources for every card, a card redesign (3+2 image-top on desktop, compact rows on phone), a repo image-build script, two MDX components for detail pages, five new content-gate checks, an interview order for the copy gaps, and the done criteria. The 5 detail pages are in scope; the ai-toolkit page is not.",
+  "decisions": [
+    "No design decisions were made outside this thread before the grill. Everything started open.",
+    "Keep all 5 cards on the panel as the final roster: kpi-granularity, investor-reports, metrics-tab-v2, frontend-platform, render-performance. ai-toolkit stays off the panel, matching the earlier rejected thread dt-004 in docs/seeds/20261019-0021-ai-panel-stepper-rebuild.json.",
+    "All screenshots in docs/private/eric-lingren-impact.html are sandbox/staging data per Eric, so they are publishable as-is. Captions carry no internal links (Slack, Linear, Notion, private GitHub).",
+    "frontend-platform keeps its re-architecture framing (not reframed as design-system work). Its visual is a new staging screenshot of the shadcn primitives in Storybook, which Eric captures himself.",
+    "render-performance visual source is the 3 Lighthouse reports from the v1 site entry (workData.js id 21), currently hosted only on user-images.githubusercontent.com. They are downloaded as raw sources and processed into committed outputs.",
+    "render-performance headline number is LCP 5.2s to 2.0s, taken from the clean 10-28-21 (score 47) to 10-29-21 (score 82) Lighthouse pair. The '300%' claim is removed from the copy.",
+    "Desktop card layout becomes 3 cards over 2 (3+2), image on top at 2:1 (about 284x142px), outcome text capped at 2 lines. This replaces the 2-across layout with the 96x60 side thumb. Eric rejected the current slot as too small.",
+    "Phone layout (container under 560px) uses compact rows: thumb about 112x56 on the left using the same 2:1 crop, title and card number on the right, outcome clamped to 2 lines. Same markup, CSS-only switch.",
+    "Thumbnails are produced by a repo script, scripts/build-work-images.mjs, driven by a per-slug crop manifest (source file, crop rect, output names). Raw sources live in gitignored docs/private/work/. Only processed WebP outputs are committed under public/work/<slug>/ (thumb.webp at 2:1 and 2x, plus full-size detail images). The script also writes width/height to a manifest.",
+    "Each card thumb is a single 'after' crop, not a before/after split. Subjects: kpi-granularity = per-KPI granularity configure UI (650x432 shot); investor-reports = masthead after, cropped to its left logo/title region; metrics-tab-v2 = focused cell plus Datum Tracer; frontend-platform = Storybook shadcn primitives grid; render-performance = 10-29 Lighthouse score ring plus 4 metric rows. Exact crop rects are tuned in the manifest.",
+    "The 5 detail pages (/work/<slug>) are in scope. Minimum scope: images placed with captions and alt text, a back link to /#selected-work, every [ERIC: marker resolved or its sentence cut, and the strict content gate passing for all 5 slugs. The ai-toolkit detail page stays out of scope.",
+    "Detail-page images use two new MDX components wired into the @mdx-js/mdx evaluate() call: <Figure src alt caption /> and <BeforeAfter before after caption />. Width/height come from the image script's manifest. Full-res image opens in a new tab, as Testimonials does. No lightbox.",
+    "<BeforeAfter> renders two images side by side with 'Before' and 'After' labels, stacked on phone. It is used by render-performance (Lighthouse 47 to 82) and investor-reports (masthead before and after).",
+    "Copy gaps are resolved by a per-page interview, run as its own session after this grill, in this order: render-performance, metrics-tab-v2, kpi-granularity, investor-reports, frontend-platform. Claude prefills every marker the sources answer and cites the source line. Remaining markers go to Eric in one batch per page. Rule per marker: answer it or cut the sentence.",
+    "If cuts push a page under the 600-word floor, the floor for that page drops to 450 rather than padding.",
+    "Eric's saved copy-voice rules apply to all copy: business outcomes over features, no slogans, no PR/file/line counts as impact. Per those rules, if a page's copy misses twice it is parked rather than churned.",
+    "Add five checks to scripts/check-content.mjs in strict mode: (1) every card's thumbnail file exists in public/; (2) every <Figure> and <BeforeAfter> in work MDX has non-empty alt, a caption, and src files that exist; (3) no orphan files in public/work/; (4) no internal URLs (Slack, Linear, Notion, private GitHub org) in captions or MDX; (5) cardOutcome has no [ERIC: marker, already covered by the general marker rule. The .work-thumb-missing empty-frame fallback stays in the component for dev only.",
+    "Done criteria: (1) check-content --strict passes with zero findings in selected-work scope; (2) unit tests and typecheck pass; (3) out/ rebuilt and Eric checks :3000 on desktop (1440x900) and a real phone, in both fly-through and ?view=classic, with no content-fit scaling on the panel at 1440x900; (4) Lighthouse on /work/render-performance shows LCP under 2.5s; (5) each detail page has images rendering, a working back link, and no visible [ERIC: text."
+  ],
+  "implementation_decisions": [
+    "Carried forward from Eric's saved preferences and stated to him during the grill, not separately confirmed: hover/active use the shared .card rules only (no image zoom or per-card effect); no new motion; card thumbs keep alt=\"\" because the link already names the project; add role=\"list\" to the flex ul for Safari; every img gets width, height, loading=\"lazy\" and decoding=\"async\"; the sketch-layer hatched X placeholder is resized to match the new 2:1 image box.",
+    "Keep .work-thumb-sketch and .work-thumb-real in the same box. SelectedWork.test.tsx geometry test only compares display, position, padding, gap and border-width across layers, so new sizes and aspect ratios are allowed. Keep the .card:hover and .card:active selectors in globals.css and the 5 a.work-card in slug order with data-card and href tests.",
+    "Panel height is fixed by --panel-h and overflow scales the whole panel via --content-fit. At 1440x900 the card grid has roughly 580px of room, so the new 3+2 layout must stay near that with outcomes capped at 2 lines.",
+    "Phones get the fixed-height fly-through (the flat scrolling fallback is only for reduced motion, ?view=classic, or frame-rate downgrade), which is why phone uses compact rows rather than stacked image-top cards.",
+    "Eric manually captures one Storybook screenshot of shadcn primitives on staging. All other images come from existing sources: 7 base64 JPEGs in the gitignored impact HTML (kpi-granularity 2, investor-reports 4 crops, metrics-tab-v2 1) and the 3 Lighthouse PNGs."
+  ],
+  "testing_decisions": [
+    "Content gate (scripts/check-content.mjs) gains the five strict checks above. Existing work tests already assert alt text per slug and no PR/file/line counts, so images added to MDX are checked by them."
+  ],
+  "success_metrics": [
+    "check-content --strict reports zero selected-work-scope findings (was 90 [ERIC: lines).",
+    "Unit tests and typecheck pass.",
+    "Panel shows no content-fit scaling at 1440x900, in fly-through and ?view=classic, on desktop and a real phone.",
+    "/work/render-performance Lighthouse LCP under 2.5s.",
+    "All 5 detail pages render images, have a working back link, and show no [ERIC: text."
+  ],
+  "evidence": "Scout findings. Panel renders 5 cards from generated src/content/work-cards.json; 0 of 5 thumbnails exist (no public/work/); render-performance cardOutcome is a placeholder; the original seed said 4 cards but the panel ships 5. Strict gate shows 90 selected-work-scope [ERIC: findings. The impact HTML has 11 embedded JPEGs and no Inside Out or render-performance section; it answers 7 of 90 markers fully and 7 partly. The '300% render improvement' text comes from the v1 site (git tag v1-legacy, workData.js:249-256), not the impact HTML or LinkedIn. The v1 entry's 3 images are Lighthouse reports of dev.insideoutdev.com: 10-28-21 score 47 (FCP 4.0s, LCP 5.2s), 10-29-21 score 82 (FCP 1.3s, LCP 2.0s), 11-1-21 score 84 (FCP 1.0s, LCP 1.8s); the 11-1 run has portrait filmstrip frames so it was likely a different (mobile) preset. All three URLs returned HTTP 200 when fetched.",
+  "risks_and_tradeoffs": [
+    "Tablet widths were assumed to use 2-across image-top cards. Eric did not explicitly confirm this; verify during the 1440x900 and tablet checks.",
+    "The 11-1-21 Lighthouse run looks like a different preset, so it is not used for the before/after headline. Only the 10-28 to 10-29 pair is a clean comparison.",
+    "The three Lighthouse images live only on GitHub's image host, not in any repo. They must be downloaded into docs/private/work/ and processed into public/work/render-performance/ so they cannot vanish.",
+    "The script reads gitignored sources, so a fresh clone cannot regenerate images. Committed outputs mean the site still builds anywhere.",
+    "Whether the Storybook-for-Figma PR (#14532 in the impact HTML) was Eric's work is unconfirmed. The impact HTML credits the 23% test-speed and 48% Storybook CI gains to a coworker and excludes them. Do not claim those gains.",
+    "frontend-platform copy cites '1,853 imports across 1,046 files', a file count that Eric's copy-voice rules reject as impact. Flag it in that page's interview.",
+    "Open follow-up FU-006 in docs/tasks/20261009-2216-portfolio-v2-rebuild.json (employment and social policy check before publishing) was not revisited in this grill.",
+    "Taller cards risk triggering --content-fit scaling of the whole panel, which shrinks text. Outcome capping and a fit check at 1440x900 are the guard."
+  ],
+  "further_notes": [
+    "Case-study body word counts today are about 650 to 870 against a 600 to 900 gate.",
+    "Source for images and metrics is the gitignored docs/private/eric-lingren-impact.html. Its unmapped sections (Scenarios, Metrics Repository) hold 4 more images that are not used.",
+    "Existing patterns to follow: scripts/redact-testimonials.mjs uses sharp for testimonial images, and the gate already checks testimonial PNG existence and orphans at scripts/check-content.mjs:155-197. sharp is in devDependencies; next.config sets output export and images.unoptimized.",
+    "Separate from this pass: the shipped public/eric-lingren-resume.pdf line 21 and content/resume/resume.mdx:15-16 contain a literal '[ERIC: what was slow, with before and after numbers]' placeholder under InsideOut Development. The Lighthouse numbers can fill it."
+  ],
+  "deferred": [
+    {
+      "text": "Fix the [ERIC: ...] placeholder in the shipped resume PDF and resume.mdx (InsideOut Development bullet).",
+      "rationale": "Not part of the Selected Work polish done criteria. Eric was told it is a separate quick fix.",
+      "context": "public/eric-lingren-resume.pdf line 21 and content/resume/resume.mdx:15-16 hold the literal marker. The Lighthouse before/after numbers from this grill can supply the content.",
+      "source_seed": "docs/seeds/20261028-2336-selected-work-polish.json"
+    }
+  ],
+  "out_of_scope": [
+    {
+      "text": "ai-toolkit detail page polish (8 [ERIC: markers).",
+      "rationale": "Not on the panel. It is linked from the AI panel only and was explicitly left out."
+    },
+    {
+      "text": "Keeping the current 96x60 side-thumb slot, or just enlarging it to about 170x106.",
+      "rationale": "Eric said the current slot is too small and the cards need a redesign."
+    },
+    {
+      "text": "List-with-large-preview layout and featured-plus-4 layout for the cards.",
+      "rationale": "Not chosen. 3+2 image-top was selected; featured-plus-4 also edges toward per-card variants, which Eric's saved rules reject."
+    },
+    {
+      "text": "Split before/after composite thumbnails.",
+      "rationale": "Eric chose a single after crop. A split gives each half too little room at 284x142. Before/after pairs live on detail pages."
+    },
+    {
+      "text": "Hand-cropped thumbnails in an image editor.",
+      "rationale": "Repo script with a crop manifest was chosen so crops are re-tunable and dimensions stay consistent."
+    },
+    {
+      "text": "Raw <figure><img> HTML in each MDX file, and a lightbox or zoom component.",
+      "rationale": "The component set was chosen so the gate can validate one thing. Full-res in a new tab covers zoom."
+    },
+    {
+      "text": "Horizontal swipe row of image-top cards on phone, and stacked image-top cards on phone.",
+      "rationale": "Compact rows were chosen. Stacked cards would scale the fixed-height panel to about 0.4; swipe costs discoverability and risks gesture conflicts with the fly-through."
+    },
+    {
+      "text": "Reframing frontend-platform as design-system or Storybook work, and a before/after dependency-graph visual for it.",
+      "rationale": "Re-architecture framing kept. Storybook gains belong to a coworker, so a Storybook-centered story carries attribution risk."
+    },
+    {
+      "text": "Using the '300%' figure or a Lighthouse score (47 to 84) as the render-performance headline.",
+      "rationale": "LCP in seconds was chosen. 300% is ambiguous as a percent and the score reads as a vanity number."
+    }
+  ],
+  "next_action": "Run /to-tasks on this seed to slice the work (image build script and manifest, card redesign, MDX components, content-gate checks, Storybook capture, per-page copy interviews in the agreed order).",
+  "disposed_threads": [
+    { "id": "dt-001", "text": "Were any design decisions made outside this thread that override what is in the repo?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-002", "text": "Which cards form the final Selected Work roster?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-003", "text": "What redaction policy applies to screenshots of the employer's product UI?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-004", "text": "Should frontend-platform be reframed as design-system work?", "disposition": "rejected", "iteration": 1 },
+    { "id": "dt-005", "text": "Which visual does render-performance use when no screenshots were known to exist?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-006", "text": "Which number is the render-performance card headline?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-007", "text": "Do card thumbnails stay at the current slot size or does the card layout grow?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-008", "text": "Script with crop manifest versus hand-cropped images?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-009", "text": "Split before/after thumbnails or a single after crop?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-010", "text": "Are the 5 detail pages in scope?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-011", "text": "MDX component set versus raw HTML for detail-page images?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-012", "text": "How are the remaining [ERIC: gaps resolved?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-013", "text": "What card layout is used on phone given the fixed panel height?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-014", "text": "Should the strict content gate fail on missing or broken work images?", "disposition": "decided", "iteration": 1 },
+    { "id": "dt-015", "text": "What counts as done for this pass?", "disposition": "decided", "iteration": 1 }
+  ],
+  "open_threads": [],
+  "status": "ready",
+  "verification": {
+    "iteration": 1,
+    "personas": ["grounding", "accuracy", "completeness", "coherence"],
+    "refutations_upheld": 1,
+    "refutations_screened": 7,
+    "clean": false,
+    "status": "verified"
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "title": "Testimonials panel: excerpt cards with redacted originals",
+  "slug": "testimonials-excerpt-cards",
+  "created": "2026-10-28T07:53:19Z",
+  "summary": "Rework the existing Testimonials panel (#6, between Experience and Contact) from placeholder redacted-screenshot cards into 4 or 6 equal-size excerpt cards. Each card shows a verbatim pull-quote as plain curly-quoted text, a muted source line (Role, Source type, Employer, Year), and a shared-style 'View original' button that opens the full redacted screenshot PNG in a new tab. Sources are 4 Standard Metrics screenshots plus 2 screenshots of the freeform-praise sections of performance reviews. LinkedIn recs (about 2013) are excluded. Eric redacts by hand in Preview and re-screenshots. The redaction script is reduced to flattening images into public/testimonials/, and card data moves into a hand-written src/content/testimonials.ts guarded by a tightened check-content gate.",
+  "decisions": [
+    "No out-of-thread decisions override this design. Saved prefs are settled givens: one shared .section layout and spacing for every panel, every button shares one look and hover, no slogans or vanity metrics in copy, zero animation, CSS over three.js.",
+    "Keep the Testimonials panel where it is: registry panel #6 between Experience and Contact, with its existing nav anchor and the shared .section layout. Panel title stays the plain label 'Testimonials'.",
+    "Keep the existing screenshot-based redaction pipeline. All sources are image screenshots. Eric is not uploading PDFs, so the script needs no PDF support. Screenshots of PDFs are flat pixels with no hidden text layer.",
+    "Source pool is 4 Standard Metrics screenshots plus 2 screenshots of the freeform-praise final section of performance reviews (each with roughly 6 to 8 quotes). The 2 LinkedIn recommendations are dropped because they date from about 2013.",
+    "Redaction is done by hand: Eric blacks out names in Preview and re-screenshots, which also clears the annotation layer. The script then runs a pass with regions: [] on those images to flatten, strip metadata and write the PNGs.",
+    "Redaction list applies to every source. Black out: every person's name including first names (writer and anyone mentioned), avatars and profile photos, emails, @handles, phone numbers, URLs, customer or client company names, internal Slack channels, ticket IDs, codenames and internal tool names, and customer or business numbers such as dollar amounts or customer counts. Keep: the praise text, dates, the employer name, and Eric's own name.",
+    "Writer role is shown in the card's roleLabel caption, not left in the image next to a name. Attribution is by role only, with no colleague or customer names (matches the original rebuild seed).",
+    "Each card shows a verbatim excerpt. Cut only with an ellipsis. Never paraphrase and never join non-adjacent sentences without marking the cut. Short comments are used whole as the excerpt text with no trimming. Longer review content may be trimmed.",
+    "Excerpt limits: about 30 words and at most 2 sentences so card heights stay level. Prefer outcome lines (what changed for the team or business) over generic praise. Redacted words become a bracketed role such as [our PM] or are cut. Real names are never put back into text.",
+    "Workflow for excerpts: Claude drafts them from the redacted images and Eric approves or edits each one.",
+    "No per-person cap on cards. Cards are anonymous so a visitor cannot tell speakers apart. Pick the strongest 4 or 6 quotes from the whole pool by outcome clarity.",
+    "Card layout: exactly 4 or 6 cards, 2 columns on desktop (2x2 or 2x3), 1 column below the breakpoint the other panels use, equal heights within a row, and the button pinned to the bottom of each card.",
+    "Each card carries a source line: '<Role> · <Source type> · <Employer> · <Year>'. It is small, muted, one line, under the role, with no icons. The year is included. Cards will age and quotes get swapped over time.",
+    "'View original' is a plain link to the full redacted PNG that opens in a new tab. No overlay or dialog, so nothing interacts with the FlyStage click and snap handler. It uses the shared button look with a leading FileIcon from icons.tsx.",
+    "Because the review screenshots show only the freeform-praise section, not ratings or HR wording, the whole redacted screenshot is safe to link as the original. Several cards may link the same screenshot.",
+    "Quote styling: plain body text wrapped in curly quotes inside a <blockquote>, no italics and no decorative quote glyph. Visual order is quote, then muted source line, then button.",
+    "Split data from images. The redaction script only reads docs/private/testimonials/ and writes flattened PNGs to public/testimonials/<id>.png. It no longer writes the card manifest.",
+    "Card data lives in a hand-written, committed src/content/testimonials.ts with entries shaped { quote, roleLabel, sourceType, employer, year, original } where original is an image id. This matches how experience.ts and positioning.ts are written.",
+    "Tighten the check-content gate. Fail unless there are exactly 4 or 6 cards. Fail if any original does not point to an existing PNG. Fail if any quote exceeds 30 words. Fail if any published image is not used by a card, so nothing unchosen goes public.",
+    "The card no longer renders the image inline, so alt text on the image is not the quote carrier. The link gets an accessible label such as 'View original screenshot'. The quote itself is real text for screen readers and search.",
+    "The personal-name guard moves from the redaction script into the check-content gate. It runs looksLikePersonalName against docs/private/testimonials/name-blocklist.txt over every roleLabel and quote in src/content/testimonials.ts. It is a backstop, since Eric has already redacted the screenshots by hand."
+  ],
+  "open_threads": [],
+  "iteration": 1,
+  "disposed_threads": [
+    {
+      "id": "dt-001",
+      "text": "Are there design decisions made outside this thread that override the grill?",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-002",
+      "text": "Are real quotes in hand or still to collect, and should placeholders ever ship?",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-003",
+      "text": "Typed text with link to LinkedIn original vs redacted screenshots as the display format",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-004",
+      "text": "How to handle mixed-format sources (full-page vs small snippet): excerpt cards plus original, crop to one shape, or masonry",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-005",
+      "text": "View original: new tab vs overlay",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-006",
+      "text": "PDF handling: script rasterizes vs manual export vs publishing redacted PDFs",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-007",
+      "text": "Who draws redaction boxes: script coordinates vs Eric by hand in Preview",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-008",
+      "text": "What to redact and what to keep, first names included",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-009",
+      "text": "Pull-quote rules: verbatim only, length cap, outcome preference, bracketed roles",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-010",
+      "text": "How many cards to show and which sources feed them",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-011",
+      "text": "One card per person cap across sources",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-012",
+      "text": "Include a source line on each card",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-013",
+      "text": "Include LinkedIn recs from about 2013",
+      "disposition": "rejected",
+      "iteration": 1
+    },
+    {
+      "id": "dt-014",
+      "text": "Include the year in the source line",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-015",
+      "text": "Lock shown count to 4 or 6 in a 2-column grid",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-016",
+      "text": "Split script output (images only) from hand-written card data file",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-017",
+      "text": "Panel title wording",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "dt-018",
+      "text": "Quote typography: plain curly quotes vs decorative glyph",
+      "disposition": "decided",
+      "iteration": 1
+    },
+    {
+      "id": "ot-001",
+      "text": "Where does the personal-name guard (looksLikePersonalName plus docs/private/testimonials/name-blocklist.txt) run after the data split? It currently checks roleLabel inside the redaction script, but roleLabel and quote text now live in src/content/testimonials.ts. Options include moving it into the check-content gate over roleLabel and quote, or dropping it.",
+      "disposition": "decided",
+      "iteration": 1
+    }
+  ],
+  "deferred": [
+    {
+      "text": "Allow named testimonials where a person has explicitly agreed to full-name attribution.",
+      "rationale": "Current rule is anonymous, role-only attribution. A named opt-in is a separate permission decision that Eric did not take up.",
+      "context": "Raised as an exception while settling the redaction list. Any such opt-in would need explicit consent from the person and a change to the redaction and name-guard rules.",
+      "source_seed": null
+    }
+  ],
+  "out_of_scope": [
+    {
+      "text": "Showing screenshots inline in the card, or any per-card screenshot crop to a fixed shape.",
+      "rationale": "Mixed source formats (full page vs small snippet) cannot share one card size. Cards use text excerpts with a link to the original instead."
+    },
+    {
+      "text": "Masonry or variable-size card grid.",
+      "rationale": "Uneven sizes break the one-look rule for panels."
+    },
+    {
+      "text": "Overlay or dialog viewer for originals.",
+      "rationale": "Would need focus trapping, scroll lock and coexistence with FlyStage click handling. A new-tab link is enough for a proof click."
+    },
+    {
+      "text": "Publishing redacted PDFs or adding PDF input support to the script.",
+      "rationale": "Drawn black boxes over PDFs can leave a copyable text layer. No PDFs are being uploaded, so only flattened images are used."
+    },
+    {
+      "text": "LinkedIn recommendations as cards or as links to the original LinkedIn post.",
+      "rationale": "Recs date from about 2013 and a LinkedIn link would expose names. Contact panel already links LinkedIn."
+    },
+    {
+      "text": "A per-person limit on cards.",
+      "rationale": "Cards are anonymous, so a visitor cannot tell whether two quotes came from one person."
+    },
+    {
+      "text": "Decorative oversized quote glyph, italics, or animation on cards.",
+      "rationale": "Stock testimonial flourish that breaks the restrained one-look style and the zero-animation preference."
+    },
+    {
+      "text": "Paraphrased or reworded quotes.",
+      "rationale": "Visitors can compare the excerpt against the original, so wording must be verbatim."
+    },
+    {
+      "text": "A 3-column grid or an odd card count (5).",
+      "rationale": "Three columns squeeze ~30-word quotes into tall narrow blocks and an odd count leaves a hole in the last row."
+    }
+  ],
+  "implementation_decisions": [
+    "Existing code: panel at src/components/panels/Testimonials.tsx (renders img.testimonial-frame plus roleLabel, placeholders when manifest is empty), styles at src/components/panels/testimonials.css, manifest src/content/testimonials.json (currently []), type and PLACEHOLDER_COUNT in src/content/testimonials.ts, redaction script scripts/redact-testimonials.mjs (npm run testimonials:redact), gate in scripts/check-content.mjs (rule testimonials-placeholder, currently allows 4 to 6).",
+    "Replace testimonials.json and the manifest-writing path with a hand-written TESTIMONIALS array in src/content/testimonials.ts. Remove the PLACEHOLDER_COUNT placeholder-card behavior or reconcile it with the 4-or-6 gate.",
+    "The script currently requires a regions.json entry per image and copies roleLabel and alt into the manifest. After the split it should not emit a manifest, so those fields move out of regions.json. Verify the script accepts an empty regions array, since redaction is now done by hand.",
+    "Script safety steps stay: flatten to PNG with removeAlpha, drop EXIF via sharp, keep output dimensions, write to public/testimonials/<id>.png from raw inputs in docs/private/testimonials/ (gitignored).",
+    "Card markup: <blockquote> with curly-quoted quote text, a muted one-line source element, and an anchor styled with the shared button class, FileIcon leading, target=\"_blank\", href set to /testimonials/<original>.png.",
+    "Reuse the shared .section layout, .section-title and button classes. Do not add per-panel layout overrides. src/components/panels/section-layout.test.tsx enforces title, actions and no CSS override.",
+    "Equal-height rows: use a CSS grid with 2 columns, align-items stretch, and push the button to the card bottom (for example flex column with margin-top: auto). Collapse to 1 column at the same breakpoint the other panels use.",
+    "Update dependent tests and checks: Testimonials.test.tsx, check-content.test.mjs manifest rules, redact-testimonials.test.ts, and the #testimonials perf targets in scripts/perf-check.mjs.",
+    "Per the scriptable-code rule, the gate checks (count 4 or 6, original resolves to an existing PNG, quote word count at most 30, no unused published images) live in scripts/check-content.mjs with real tests, not in prose.",
+    "Name guard in check-content must allow Eric's own name, since kept quotes mention 'Eric'. The blocklist lives in gitignored docs/private/, so the gate needs defined behavior when the file is absent (for example in CI)."
+  ],
+  "testing_decisions": [
+    "Gate tests cover: 4 and 6 pass, 3, 5 and 7 fail, original pointing to a missing PNG fails, a quote over 30 words fails, an unreferenced PNG in public/testimonials/ fails.",
+    "Component test covers: renders blockquote, source line with all four parts, and a new-tab link with an accessible label per card; layout parity with other panels."
+  ],
+  "risks_and_tradeoffs": [
+    "Inconsistent hand redaction can leak details (carried from the original rebuild seed). Mitigation agreed in discussion: a final manual look at each output PNG before commit.",
+    "Source-line years age. In 2 to 3 years the year will look old, so quotes need periodic swapping.",
+    "Unverified gap: Eric named the review-screenshot source as 'Brian University'. The exact employer or institution name for the source line's Employer field should be confirmed before cards are written.",
+    "Showing the whole redacted screenshot as 'original' relies on the redaction list being applied to every source, including text beside the chosen quote. Only the praise section was screenshotted for the reviews."
+  ],
+  "further_notes": [
+    "Eric's raw screenshots go in docs/private/testimonials/ (gitignored). After the seed, Claude can mark what to black out file by file once they are there.",
+    "Existing tasks docs/tasks/20261009-2216-portfolio-v2-rebuild.json still hold the old 'collect 6 to 8 screenshots' step and the original redaction and panel tasks. This work supersedes their card design.",
+    "Unverified: whether the Contact panel links LinkedIn. It was asserted during the grill but not confirmed in code."
+  ],
+  "next_action": "Run /to-tasks on this seed to slice the build: simplify the redaction script, add testimonials.ts and the excerpt-card panel, tighten the check-content gate, and update tests.",
+  "status": "ready",
+  "verification": {
+    "iteration": 1,
+    "personas": [
+      "grounding",
+      "accuracy",
+      "completeness",
+      "coherence"
+    ],
+    "refutations_upheld": 5,
+    "refutations_screened": 6,
+    "clean": false,
+    "status": "verified"
+  }
+}

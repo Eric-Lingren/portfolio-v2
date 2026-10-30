@@ -1,0 +1,81 @@
+---
+title: Investor Report Makeover
+slug: investor-reports
+role: Core engineer, auto-submit lead, at Standard Metrics
+timeline: Sep 2023 to Aug 2024
+stack:
+  - React
+  - TypeScript
+outcomes:
+  - Twenty portfolio companies switched to auto-submit in its first week
+  - Auto-submit went from idea to release in a couple of weeks, ahead of a reporting season
+cardOutcome: Rebuilt the page portfolio companies use to report to their investors with a full facelift and new auto-submit ability.
+cardNumber: "20"
+cardNumberLabel: portfolio companies adopted auto-submitting metrics in week one
+thumbnail: /work/investor-reports/thumb.webp
+order: 2
+---
+
+<BeforeAfter
+  before="/work/investor-reports/masthead-before.webp"
+  after="/work/investor-reports/masthead-after.webp"
+  beforeAlt="Investor report header before the redesign, with status and due date in a single crowded row"
+  afterAlt="Investor report header after the redesign, with reporting period, due date and status grouped on the right"
+  caption="The report masthead before and after the redesign."
+/>
+
+## Context
+
+Standard Metrics gives investment firms one place to collect performance data from their portfolio companies. Each reporting period, a firm sends an investor report request. Every portfolio company fills in its own page: financials, KPIs, and sometimes documents and commentary.
+
+Every portfolio company on the platform reports through this page, so for them it is the whole product. They are finance leads and founders with a quarterly chore. How the page felt decided whether that chore got done on time.
+
+## Problem
+
+Firms depend on complete, on-time reports. A late or partial report leaves a gap in the data they use to track their investments. The page was working against that. Submitting was unclear, so people were not sure whether they had finished. Partial submits were hidden, so a firm could believe it had data that was incomplete. The progress bar was confusing enough that people could not tell how much was left.
+
+It was also hard to tell what the firm actually needed. Required and optional metrics looked alike, and the page needed stronger checks to catch bad data before it reached the firm.
+
+Separately, most companies reported the same way every period. Each one still had to come back and click submit by hand. When someone forgot, the firm waited longer for its data.
+
+## My role
+
+The rebuild had two to three engineers, including me, plus a product manager and a designer. I worked across the masthead, submit bar, progress tracking, completion banners, and success modals. I then led the auto-submit work from the first proposal through release.
+
+## Key decisions
+
+**Rebuild the page in pieces instead of one big release.** The work shipped as a series of changes: a new masthead layout, redesigned data tables with granularity built in, footer progress trackers, a new save panel, and updated completion states. People use this page under deadline, so every piece shipped behind a feature flag. Each one could roll out on its own and roll back without touching the rest.
+
+**Make requirements and checks obvious.** The redesign made it clear which metrics a firm required and which were optional. We also added data validations and guardrails, so mistakes showed up on the page instead of in the firm's data.
+
+**Make progress honest.** The footer progress tracker shows what is done and what is left, and partial submits are visible instead of silent. We chose to show the uncomfortable state over a clean-looking one. A report that looks finished and is not costs the firm more than one that looks incomplete.
+
+<Figure
+  src="/work/investor-reports/footer-progress-tracker.webp"
+  alt="Footer progress tracker showing 10 of 11 items complete, 7 of 8 required metrics and 3 of 3 required documents"
+  caption="The footer progress tracker shows what is done and what is left."
+/>
+
+**Put auto-submit on the report itself.** The obvious home for a setting like this is an account page. We put the toggle on the report, at the moment the person is deciding whether to submit by hand again. Once it is on, data goes to the firm as soon as it is entered. There is no separate submit step. If required data is still missing, the firm does not get it, and the company is reminded by email and in-app notification that work is still open.
+
+<Figure
+  src="/work/investor-reports/auto-submit-state.webp"
+  alt="Progress bar reading 5 of 14 required metrics, with a red notice that data will be auto-submitted and 8 days left"
+  caption="The auto-submit notice on a report that is still in progress."
+/>
+
+**Keep the first version small.** Auto-submit went from proposal to release in a couple of weeks because the first version was narrow. It was one toggle and one clear state, built on the save and progress work that already existed.
+
+## Impact
+
+Twenty portfolio companies switched to auto-submit in the first week after release. The release landed in time for the reporting season that was already underway. Their data now reaches the firm as soon as it is entered, with no submit button to forget.
+
+The project retro called the first phase of the makeover a "major improvement from the user perspective," with "a lot of positive feedback from users."
+
+One gap: no before-and-after completion rate was ever recorded as part of this project. 
+
+## What I'd do next
+
+First, talk to the companies that stayed manual. They might have good reasons, such as wanting a final review before data goes out. Those reasons could shape a better review step, or show where auto-submit needs to earn more trust.
+
+Second, show firms who is on auto-submit. A firm should be able to see which companies send data as soon as it is entered and which ones still have required data missing. Then the firm only chases the companies that actually need a nudge.

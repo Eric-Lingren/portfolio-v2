@@ -1,0 +1,681 @@
+:root {
+  --po-bg: #0c0a0e;
+  --po-surface: #111827;
+  --po-ink: #f9fafb;
+  --po-muted: #9ca3af;
+  --po-border: #252a36;
+  --po-border-strong: #3a4150;
+  --accent: #ff6b57;
+  --accent-2: #06b6d4;
+  --on-accent: #0c0a0e;
+  /* Filled CTAs: the brand coral with white text. */
+  --accent-fill: #ff6b57;
+  --on-accent-fill: #ffffff;
+  --cyan-glow: 0 0 0 1px #06b6d4, 0 0 28px rgba(6, 182, 212, 0.4);
+  --coral-glow: 0 0 0 1px #ff6b57, 0 0 28px rgba(255, 107, 87, 0.45);
+
+  /*
+   * Section rhythm, shared by every panel: heading block, then content, then actions,
+   * each separated by --section-gap. Content blocks inside a section use --block-gap.
+   */
+  --section-gap: clamp(2rem, 7vh, 4.5rem);
+  --section-max: 72rem;
+  --block-gap: 1.25rem;
+  --action-gap: 1rem;
+  --title-size: clamp(2rem, 4vw, 3rem);
+
+  --sk-bg: #eff1f4;
+  --sk-line: #1f2937;
+  --sk-ink: #111827;
+  --sk-grid: rgba(31, 41, 55, 0.11);
+  --sk-hatch: rgba(8, 145, 178, 0.28);
+
+  color-scheme: dark;
+}
+
+/* Phones: same rhythm, tighter, so tall panels shrink less to fit. */
+@media (max-width: 600px) {
+  :root {
+    --section-gap: clamp(1.5rem, 4vh, 2.25rem);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Screen-reader-only text. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--po-bg);
+  color: var(--po-ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * A returning reader sees the dark page, not the hero, until their scroll is restored (scroll-memory.ts).
+ * Opacity, not visibility: descendants that set visibility: visible (hero redlines, stage panels) would
+ * show through a hidden parent. Body, so the footer is covered too; the html background stays.
+ */
+html[data-restoring-scroll] body {
+  opacity: 0;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* Build line: coral to cyan wipe with a coral glow. */
+.build-line {
+  height: 2px;
+  background: linear-gradient(90deg, #ff6b57, #06b6d4);
+  box-shadow: 0 0 18px 2px #ff6b57;
+}
+
+/*
+ * Build wipe (stage only). Everything that moves is transform-only and set by
+ * flythrough/wipe.ts: the sketch box and the edge translate down by the built
+ * amount, the sketch content translates back up by the same amount.
+ */
+.panel-wipe,
+.panel-wipe-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.panel-wipe {
+  overflow: hidden;
+  transform: translateZ(1px);
+}
+
+.panel-wipe-inner {
+  height: 100%;
+  will-change: transform;
+}
+
+.panel-wipe-inner .panel-layer {
+  height: 100%;
+}
+
+.panel-wipe-edge {
+  transform: translateZ(2px);
+  visibility: hidden;
+}
+
+.panel-wipe-edge .build-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: -1px;
+}
+
+/* 1-bit coral dither riding below the line: static ordered-dither tiles, no WebGL. */
+.dither-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  image-rendering: pixelated;
+}
+
+.dither-band--dense {
+  top: 1px;
+  background: conic-gradient(#ff6b57 25%, transparent 0 50%, #ff6b57 0 75%, transparent 0) 0 0 / 4px 4px;
+}
+
+.dither-band--sparse {
+  top: 5px;
+  background: radial-gradient(circle at 1px 1px, #ff6b57 0.9px, transparent 1.1px) 0 0 / 4px 4px;
+}
+
+/* Card hover glow: 3D stage only (not the flat classic page), polished layer, desktop hover. */
+@media (hover: hover) and (pointer: fine) {
+  .fly-panel .panel-layer--polished {
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .fly-panel .panel-layer--polished:hover {
+    border-color: var(--accent-2);
+    box-shadow: var(--cyan-glow);
+  }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * Layout parity rule: any rule that changes layout applies to both layers
+ * (.panel-layer). Layer modifiers below change only color, background,
+ * border-color and border-style.
+ */
+.panel {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.panel-layer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  border: 1.5px solid;
+}
+
+.panel-layer--polished {
+  background: var(--po-bg);
+  color: var(--po-ink);
+  border-color: transparent;
+  border-style: solid;
+}
+
+/* The card outline belongs to the 3D stage. On the flat classic page, stacked panels would draw lines between sections. */
+.fly-panel .panel-layer--polished {
+  border-color: var(--po-border);
+}
+
+.panel-layer--sketch {
+  background-color: var(--sk-bg);
+  background-image:
+    linear-gradient(var(--sk-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sk-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--sk-ink);
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-tag {
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--accent-2);
+}
+
+/*
+ * Standard section layout. Every panel but the hero is a .section: a .section-head
+ * (title plus optional subline), its content, and an optional .section-actions row.
+ * Panels add only their own content styles, never their own outer spacing or title type.
+ */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  width: 100%;
+  max-width: var(--section-max);
+  margin-inline: auto;
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--title-size);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--action-gap);
+}
+
+/*
+ * Shared clickable card (work cards, testimonial cards). One shape, surface, depth and
+ * hover/focus/tap state everywhere. Panels add only the card's inner layout.
+ */
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid;
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*
+ * Polished surface: a faint lift, a near-invisible outline and a coral-to-cyan hairline on top.
+ * --card-depth gives it slight physical depth: a lit top edge, a shaded bottom edge and a soft
+ * drop shadow. Hover, focus and tap rings layer on top of it so the card never flattens.
+ */
+.panel-layer--polished .card {
+  --card-depth: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.45), 0 10px 24px -8px rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 55%), var(--po-surface);
+  box-shadow: var(--card-depth);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.panel-layer--polished .card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  opacity: 0.85;
+}
+
+/* Sketch layer: dashed wireframe outline, no fill. */
+.panel-layer--sketch .card {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+.panel-layer--polished .card:focus-visible {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 1px var(--accent-2), var(--card-depth);
+  outline: none;
+}
+
+/* Desktop-only hover glow. */
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .card:hover {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 1px var(--accent-2), 0 0 24px rgba(6, 182, 212, 0.35), var(--card-depth);
+  }
+}
+
+/* Touch: visible tap state. */
+@media (hover: none) {
+  .panel-layer--polished .card:active {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 2px var(--accent-2), var(--card-depth);
+    transform: scale(0.98);
+  }
+}
+
+/* Image placeholder: hatched box, sketch layer only. */
+.sketch-image {
+  background: repeating-linear-gradient(45deg, var(--sk-hatch) 0 1px, transparent 1px 8px);
+  border: 1.5px dashed var(--sk-line);
+}
+
+.hero {
+  --hero-gap: var(--section-gap);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--hero-gap);
+  width: 100%;
+  max-width: var(--section-max);
+  margin-inline: auto;
+}
+
+.hero-name-wrap {
+  position: relative;
+}
+
+/*
+ * Hero redlines: coral design-markup notes. They are absolutely positioned (no
+ * layout effect, so layer parity holds) and painted on the sketch layer only.
+ * The build wipe sweeps them away with the rest of the sketch.
+ */
+.hero-redline {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.panel-layer--sketch .hero-redline {
+  visibility: visible;
+}
+
+/* Left alignment guide shared by eyebrow, name and CTAs. */
+.hero-redline--guide {
+  top: -2rem;
+  bottom: -2rem;
+  left: -1px;
+  border-left: 1px dashed var(--accent);
+}
+
+/* Selection box with corner handles around the name. */
+.hero-redline--select {
+  inset: -10px;
+  background:
+    linear-gradient(var(--accent) 0 0) left top / 6px 6px no-repeat,
+    linear-gradient(var(--accent) 0 0) right top / 6px 6px no-repeat,
+    linear-gradient(var(--accent) 0 0) left bottom / 6px 6px no-repeat,
+    linear-gradient(var(--accent) 0 0) right bottom / 6px 6px no-repeat;
+}
+
+.hero-redline--select::before {
+  content: "";
+  position: absolute;
+  inset: 2.5px;
+  border: 1px solid var(--accent);
+}
+
+/* Spacing markers: a bar with end ticks spanning the gap above and below the name. */
+.hero-redline--gap {
+  left: 70%;
+  height: var(--hero-gap);
+  border-left: 1px solid var(--accent);
+}
+
+.hero-redline--gap::before,
+.hero-redline--gap::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  width: 9px;
+  border-top: 1px solid var(--accent);
+}
+
+.hero-redline--gap::before {
+  top: 0;
+}
+
+.hero-redline--gap::after {
+  bottom: 0;
+}
+
+.hero-redline--above {
+  bottom: calc(100% + 10px);
+  height: calc(var(--hero-gap) - 10px);
+}
+
+.hero-redline--below {
+  top: calc(100% + 10px);
+  height: calc(var(--hero-gap) - 10px);
+}
+
+.hero-redline--gap .hero-redline__label {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  translate: 0 -50%;
+}
+
+/* Type spec with a leader line off the right edge of the selection box. */
+.hero-redline--spec {
+  top: 50%;
+  left: calc(100% + 10px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  translate: 0 -50%;
+}
+
+.hero-redline--spec::before {
+  content: "";
+  width: 2rem;
+  border-top: 1px solid var(--accent);
+}
+
+@media (max-width: 700px) {
+  .hero-redline--spec {
+    display: none;
+  }
+}
+
+/* Sketch state of the hero: the name is a hollow outline and the CTAs are dashed wireframes. Paint only. */
+/* Stroke under a paper-colored fill: the fill hides strokes on the font's overlapping inner contours. */
+.panel-layer--sketch .hero-name {
+  color: var(--sk-bg);
+  -webkit-text-stroke: 3px var(--sk-ink);
+  paint-order: stroke fill;
+}
+
+.panel-layer--sketch .btn {
+  background: transparent;
+  border-color: var(--sk-line);
+  border-style: dashed;
+  color: var(--sk-ink);
+}
+
+.hero-eyebrow {
+  margin: 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 600;
+  font-size: clamp(14px, 1.4vw, 18px);
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.hero-name {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(52px, 10vw, 136px);
+  line-height: 0.92;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+/* Every CTA shares this shape: 6px corners, 1.5px border. */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: 1.5px solid;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: var(--on-accent-fill);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+/*
+ * Button hover, shared by every .btn: the button glows in its own
+ * colour and its arrow nudges toward where it goes (→ in page, ↗ out, ⤓ download).
+ * A leading .btn-icon (src/components/icons.tsx) says what the button is at a glance.
+ * Keyboard focus gets the same. The arrow is decorative. All buttons stay identical.
+ */
+.btn {
+  transition:
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+.btn-primary:is(:hover, :focus-visible) {
+  box-shadow: var(--coral-glow);
+}
+.btn-outline:is(:hover, :focus-visible) {
+  box-shadow: var(--cyan-glow);
+  background-color: rgba(6, 182, 212, 0.08);
+}
+.btn-icon {
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.5em;
+  vertical-align: -0.2em;
+  transition: transform 160ms ease;
+}
+/* Icon-only action beside inline text (Contact email): bare icon, no chrome; lifts and brightens on hover. */
+.icon-btn {
+  display: inline-flex;
+  padding: 0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--accent-2);
+  font: inherit;
+  line-height: 0;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+.icon-btn .btn-icon {
+  width: 1.35em;
+  height: 1.35em;
+  margin-right: 0;
+}
+.icon-btn:is(:hover, :focus-visible) {
+  color: var(--po-ink);
+}
+.icon-btn:is(:hover, :focus-visible) .btn-icon {
+  transform: translateY(-2px);
+}
+.icon-btn:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+.panel-layer--sketch .icon-btn {
+  color: var(--sk-ink);
+}
+.btn-arrow {
+  display: inline-block;
+  margin-left: 0.45em;
+  transition: transform 160ms ease;
+}
+.btn:is(:hover, :focus-visible) .btn-arrow {
+  transform: translateX(4px);
+}
+.btn:is(:hover, :focus-visible) .btn-arrow--out {
+  transform: translate(2px, -2px);
+}
+.btn:is(:hover, :focus-visible) .btn-arrow--down {
+  transform: translateY(3px);
+}
+/* The sketch wireframe stays flat: no glow or tint bleeds onto it mid-wipe. */
+.panel-layer--sketch .btn:is(:hover, :focus-visible) {
+  box-shadow: none;
+  background-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .icon-btn,
+  .btn-icon,
+  .btn-arrow {
+    transition: none;
+  }
+}
+
+/* Fly-through stage (enhancement layer; flat stack paints first). */
+.fly-stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--po-bg);
+}
+
+.fly-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  /* The world box shares a plane with the settled panel; it must not take 3D hit-tests (hover/cursor flicker). */
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Centered in the room below the fixed nav; `translate` runs after the JS-driven transform. */
+.fly-panel {
+  position: absolute;
+  top: calc(50% + var(--nav-clearance, 0px) / 2);
+  left: 50%;
+  width: min(960px, 92vw);
+  margin-left: calc(min(960px, 92vw) / -2);
+  translate: 0 -50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+/* --fit (FlyStage) shrinks the last panel as the footer scrolls in so it stays clear of it. */
+.fly-panel > .panel {
+  scale: var(--fit, 1);
+}
+
+/*
+ * Every panel shares one box: full width and the room below the nav (--panel-h, set by FlyStage).
+ * `safe`: content taller than the box starts at the top padding instead of centering out past it, where
+ * the title would ride up into the z tag. --content-fit then shrinks it toward the title.
+ */
+.fly-panel .panel-layer {
+  height: var(--panel-h, 70svh);
+  min-height: 0;
+  justify-content: safe center;
+}
+
+/*
+ * Optical centering: spare room splits 2:3 above and below the content, so short panels sit a
+ * little above the middle and titles move less between panels than with true centering.
+ * Panels that fill the box get no spare room and sit at the top. The hero, the cover, stays centered.
+ */
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::before,
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::after {
+  content: "";
+  flex: 2 1 0;
+}
+
+.fly-panel .panel:not([data-panel="Hero"]) .panel-layer::after {
+  flex-grow: 3;
+}
+
+/* Content that has to shrink (--content-fit below) shrinks toward the title, not the middle. */
+.fly-panel .panel:not([data-panel="Hero"]) .panel-body {
+  transform-origin: top center;
+}
+
+/* --content-fit (FlyStage) shrinks content taller than the box so the box itself never grows. */
+.fly-panel .panel-body {
+  flex: none;
+  scale: var(--content-fit, 1);
+}
+
+@media (max-width: 600px) {
+  .fly-panel .panel-layer {
+    padding: 2.25rem 1rem 1.25rem;
+  }
+}
+
+.fly-spacer {
+  pointer-events: none;
+}
+

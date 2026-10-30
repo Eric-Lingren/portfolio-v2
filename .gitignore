@@ -1,23 +1,32 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules/
+
+# next.js build output
+.next/
+out/
 
 # testing
 /coverage
 
-# production
-/build
-
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+# private research material (employer screenshots, internal links). never commit.
+/docs/private/
+
+# Claude Code agent worktrees (each is its own git repo)
+/.claude/worktrees/
+
+# stray Claude Code config dir from an unexpanded "$HOME" path. Holds account config, never commit.
+/$HOME/
+
+# local agent notes and workflow output (perf screenshots, handoffs, PR snippets)
+/AGENTS.md
+/docs/browser-checks/
+/docs/handoffs/
+/docs/visual-changes/

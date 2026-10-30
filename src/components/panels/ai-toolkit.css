@@ -1,0 +1,236 @@
+.ai-stage-num {
+  display: inline-block;
+  min-width: 1.2em;
+  text-align: center;
+}
+
+/* ---- stage track: five title cards with arrows, wide screens ---- */
+.ai-track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.ai-stage {
+  position: relative;
+  padding: 1.1rem 0.9rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 1rem;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+/* Arrow into the next stage, centred in the gap. */
+.ai-stage:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  top: 50%;
+  right: -1.25rem;
+  width: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/*
+ * ---- flat strip: replaces the track on narrow screens ----
+ * All five stages stay on one row: number above label, equal widths when they fit.
+ * Fits from a 343px viewport up; anything narrower scrolls the row sideways instead of wrapping.
+ */
+.ai-strip {
+  display: none;
+  gap: 0.3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ai-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.ai-strip-stage {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: max-content;
+  padding: 0.45rem 0.4rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ai-strip-stage .ai-stage-num {
+  min-width: 0;
+  text-align: left;
+}
+
+/* ---- stage picker + card: one content block ---- */
+.ai-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--block-gap);
+}
+
+.ai-card-stack {
+  display: grid;
+}
+
+/* Every stage's card sits in one cell. Hidden copies hold the cell at the tallest stage, so switching never resizes the row. */
+.ai-card-stack > * {
+  grid-area: 1 / 1;
+}
+
+.ai-card-ghost {
+  visibility: hidden;
+}
+
+.ai-card {
+  padding: 1rem 1.3rem;
+  border: 1.5px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.ai-card-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.ai-summary {
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.ai-skill-list {
+  display: grid;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-skill-list li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.ai-skill-name {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+}
+
+/* Model tag beside each skill name. */
+.ai-skill-model {
+  justify-self: start;
+  padding: 0 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+.ai-stage:focus-visible,
+.ai-strip-stage:focus-visible,
+.ai-skill-name:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* ---- polished layer colors ---- */
+.panel-layer--polished .ai-card {
+  background: #0b1220;
+  border-color: var(--po-border);
+}
+
+.panel-layer--polished .ai-stage,
+.panel-layer--polished .ai-strip-stage {
+  background: rgba(11, 18, 32, 0.88);
+  border-color: var(--po-border-strong);
+}
+
+/* Hover and focus pick the step, so the current step is the hover state: coral border, title and number, no glow. */
+.panel-layer--polished .ai-stage[aria-current="step"],
+.panel-layer--polished .ai-strip-stage[aria-current="step"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.panel-layer--polished .ai-stage:not(:last-child)::after {
+  color: var(--accent-2);
+  opacity: 0.6;
+}
+
+.panel-layer--polished .ai-stage-num,
+.panel-layer--polished a.ai-skill-name {
+  color: var(--accent-2);
+}
+
+.panel-layer--polished [aria-current="step"] .ai-stage-num {
+  color: var(--accent);
+}
+
+.panel-layer--polished .ai-skill-tip {
+  color: #cbd5e1;
+}
+
+.panel-layer--polished .ai-skill-model {
+  border-color: var(--po-border-strong);
+  color: #cbd5e1;
+}
+
+/* ---- sketch layer: geometry shared, color dashed only ---- */
+.panel-layer--sketch .ai-card,
+.panel-layer--sketch .ai-stage,
+.panel-layer--sketch .ai-strip-stage,
+.panel-layer--sketch .ai-skill-model {
+  border-color: var(--sk-line);
+  border-style: dashed;
+}
+
+@media (max-width: 700px) {
+  .ai-track {
+    display: none;
+  }
+
+  .ai-strip {
+    display: flex;
+  }
+}
+
+@media (max-width: 800px) {
+  .ai-skill-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Name and model share a line, the tip wraps below. */
+  .ai-skill-list li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.6rem;
+  }
+
+  .ai-skill-tip {
+    flex-basis: 100%;
+  }
+}

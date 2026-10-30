@@ -1,6 +1,11 @@
 [build]
-  command = "CI= npm run build"
-  publish = "build"
+  command = "npm run build"
+  publish = "out"
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Launch gate: production deploys must pass the strict content check.
+# Branch deploys and deploy previews keep the plain build.
+[context.production]
+  command = "npm run content:check:strict && npm run build"

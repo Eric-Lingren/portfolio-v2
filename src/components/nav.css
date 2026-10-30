@@ -1,0 +1,206 @@
+/* Blueprint-style nav: mono labels, numbered sections, active section marked as you move. */
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding: 0.6rem 1.25rem;
+  background: color-mix(in srgb, var(--po-bg) 82%, transparent);
+  border-bottom: 1px solid var(--po-border);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.site-nav a,
+.site-nav button {
+  color: var(--po-muted);
+  text-decoration: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+}
+.site-nav a:hover,
+.site-nav button:hover {
+  color: var(--po-ink);
+}
+.site-nav a:focus-visible,
+.site-nav button:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+.site-nav .site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--po-ink);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  padding-left: 0;
+}
+.site-nav__mark {
+  height: 1.375rem;
+  width: auto;
+  flex: none;
+}
+.site-nav__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+.site-nav__links {
+  flex: 1;
+}
+.site-nav__links a {
+  position: relative;
+}
+.site-nav__num {
+  margin-right: 0.45em;
+  color: var(--accent-2);
+}
+.site-nav__links a[aria-current="location"] {
+  color: var(--po-ink);
+}
+/* Active marker: a short cyan rule under the label. */
+.site-nav__links a[aria-current="location"]::after {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: -0.15rem;
+  height: 2px;
+  background: var(--accent-2);
+}
+/* View switch: small and out of the way, pinned to the viewport's bottom-right corner. */
+.view-switch {
+  position: fixed;
+  right: 1rem;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 50;
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--po-border-strong);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--po-bg) 82%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.view-switch button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  color: var(--po-muted);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.view-switch button:hover {
+  color: var(--po-ink);
+}
+.view-switch button[aria-checked="true"] {
+  background: var(--po-ink);
+  color: var(--po-bg);
+}
+.view-switch button:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+/*
+ * Below desktop the bar stays one line: the links become a single row that scrolls sideways
+ * (Nav keeps the active one in view and flags data-overflow) instead of wrapping.
+ */
+@media (max-width: 1100px) {
+  .site-nav {
+    flex-wrap: nowrap;
+  }
+  .site-nav__links {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  /* Fade the clipped edges, only when something is clipped, so they read as "more this way". */
+  .site-nav__links[data-overflow] {
+    mask-image: linear-gradient(to right, transparent, #000 0.75rem, #000 calc(100% - 1.25rem), transparent);
+  }
+  .site-nav__links::-webkit-scrollbar {
+    display: none;
+  }
+  .site-nav__links a,
+  .site-nav .site-nav__brand {
+    flex: none;
+    white-space: nowrap;
+  }
+}
+
+/* Menu toggle: phones only. */
+.site-nav__toggle {
+  display: none;
+  align-items: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/*
+ * Phones (mode.ts MOBILE_QUERY): brand left, Menu right. The links fold into a panel under
+ * the bar, opened by the toggle. No view switch: phones always get Classic.
+ */
+@media (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
+  .site-nav {
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+  }
+  .site-nav .site-nav__toggle {
+    display: inline-flex;
+    margin-right: -0.6rem;
+    padding: 0.6rem;
+  }
+  .site-nav .site-nav__links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+    padding: 0.25rem 0.75rem 0.75rem;
+    background: var(--po-bg);
+    border-bottom: 1px solid var(--po-border);
+    mask-image: none;
+  }
+  .site-nav[data-open] .site-nav__links {
+    display: flex;
+  }
+  .site-nav .site-nav__links a {
+    padding: 0.85rem 0.6rem;
+    font-size: 0.8125rem;
+  }
+  /* Active marker moves to a short rule on the left edge of the row. */
+  .site-nav__links a[aria-current="location"]::after {
+    left: 0;
+    right: auto;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 2px;
+    height: auto;
+  }
+  .view-switch {
+    display: none;
+  }
+}
