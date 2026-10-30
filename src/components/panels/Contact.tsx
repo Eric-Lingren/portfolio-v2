@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, MAILTO_URL, PROFILE_IMAGE_PATH } from "@/content/site";
-import { CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, MailIcon } from "../icons";
+import { CheckIcon, CopyIcon, FileTextIcon, GitHubIcon, LinkedInIcon, MailIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./contact.css";
 
@@ -105,6 +105,13 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
                 LinkedIn
                 <span className="btn-arrow btn-arrow--out" aria-hidden="true">
                   ↗
+                </span>
+              </a>
+              <a className="btn btn-outline contact-btn" href="/resume">
+                <FileTextIcon />
+                Resume
+                <span className="btn-arrow" aria-hidden="true">
+                  →
                 </span>
               </a>
             </div>

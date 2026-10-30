@@ -79,7 +79,7 @@ describe("Contact", () => {
   it("gives every Contact button a decorative icon first", () => {
     const { container } = render(<Contact />);
     const buttons = container.querySelectorAll(".contact :is(.btn, .icon-btn)");
-    expect(buttons).toHaveLength(4);
+    expect(buttons).toHaveLength(5);
     for (const b of buttons) {
       expect(b.firstElementChild).toHaveClass("btn-icon");
       expect(b.firstElementChild).toHaveAttribute("aria-hidden", "true");
@@ -101,14 +101,21 @@ describe("Contact", () => {
     }
   });
 
-  it("links GitHub and LinkedIn as shared buttons, with no resume", () => {
-    render(<Contact />);
-    for (const name of ["GitHub", "LinkedIn"]) {
-      expect(screen.getByRole("link", { name })).toHaveClass("btn", "btn-outline");
+  it("links GitHub, LinkedIn and Resume as shared buttons, icon then label", () => {
+    const { container } = render(<Contact />);
+    for (const name of ["GitHub", "LinkedIn", "Resume"]) {
+      const link = screen.getByRole("link", { name });
+      expect(link).toHaveClass("btn", "btn-outline", "contact-btn");
+      expect(link.parentElement).toHaveClass("contact-links");
+      expect(link.firstElementChild).toHaveClass("btn-icon");
+      expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");
     }
+    expect(container.querySelectorAll(".contact-links .btn")).toHaveLength(3);
     expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://www.github.com/Eric-Lingren");
     expect(screen.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", expect.stringContaining("linkedin.com"));
-    expect(screen.queryByRole("link", { name: "Resume" })).toBeNull();
+    const resume = screen.getByRole("link", { name: "Resume" });
+    expect(resume).toHaveAttribute("href", "/resume");
+    expect(resume).not.toHaveAttribute("target");
   });
 
   it("shows the invitation line and the photo at 200px", () => {
