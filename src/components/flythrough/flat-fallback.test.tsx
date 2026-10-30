@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FlatStack } from "./FlatStack";
 import { FlyThroughLoader } from "./FlyThroughLoader";
 import { FrameMonitor, MONITOR_CONFIG } from "./frame-monitor";
-import { isFlat, perfDebugEnabled, resolveMode } from "./mode";
+import { isFlat, MOBILE_QUERY, perfDebugEnabled, resolveMode } from "./mode";
 
 const stageLoaded = vi.fn();
 vi.mock("./FlyStage", () => {
@@ -13,7 +13,7 @@ vi.mock("./FlyStage", () => {
 });
 
 describe("resolveMode", () => {
-  const base = { search: "", reducedMotion: false, downgraded: false };
+  const base = { search: "", reducedMotion: false, downgraded: false, mobile: false };
   it("defaults to interactive", () => {
     expect(resolveMode(base)).toBe("interactive");
     expect(isFlat("interactive")).toBe(false);
@@ -24,6 +24,10 @@ describe("resolveMode", () => {
   it("reduced motion beats the default and ?view=classic", () => {
     expect(resolveMode({ ...base, reducedMotion: true })).toBe("reduced");
     expect(resolveMode({ ...base, reducedMotion: true, search: "?view=classic" })).toBe("reduced");
+  });
+  it("phones get classic, and reduced motion still wins", () => {
+    expect(resolveMode({ ...base, mobile: true })).toBe("classic");
+    expect(resolveMode({ ...base, mobile: true, reducedMotion: true })).toBe("reduced");
   });
   it("downgrade is flat", () => {
     expect(resolveMode({ ...base, downgraded: true })).toBe("downgraded");
@@ -46,10 +50,10 @@ describe("flat tree", () => {
   });
 });
 
-function mockEnv(search: string, reduced: boolean) {
+function mockEnv(search: string, reduced: boolean, mobile = false) {
   window.history.pushState({}, "", `/${search}`);
   window.matchMedia = vi.fn((q: string) => ({
-    matches: reduced && q.includes("reduced-motion"),
+    matches: (reduced && q.includes("reduced-motion")) || (mobile && q === MOBILE_QUERY),
   })) as unknown as typeof window.matchMedia;
 }
 
@@ -72,6 +76,18 @@ describe("FlyThroughLoader", () => {
 
   it("does not request the fly-through chunk in Classic mode", async () => {
     mockEnv("?view=classic", false);
+    render(
+      <FlyThroughLoader>
+        <p>flat</p>
+      </FlyThroughLoader>,
+    );
+    await flushFrames();
+    expect(stageLoaded).not.toHaveBeenCalled();
+    expect(screen.getByText("flat")).toBeInTheDocument();
+  });
+
+  it("does not request the fly-through chunk on a phone", async () => {
+    mockEnv("", false, true);
     render(
       <FlyThroughLoader>
         <p>flat</p>

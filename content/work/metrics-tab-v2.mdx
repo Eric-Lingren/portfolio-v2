@@ -1,17 +1,18 @@
 ---
-title: Spreadsheet-style editing in Metrics Tab v2
+title: Metrics Table Interactions
 slug: metrics-tab-v2
-role: Interaction engineer, Standard Metrics
-timeline: Apr 2026 to Oct 2026
+role: Frontend engineer, Standard Metrics
+timeline: Apr 2026 to Jul 2026
 stack:
-  - "[ERIC: confirm the stack, for example React and TypeScript]"
+  - React
+  - TypeScript
 outcomes:
   - Keyboard navigation, in-cell editing and paste from Excel in one grid
   - Beta reached 35 users across 11 firms before launch
   - Shipped to all customers
-cardOutcome: The metrics grid now edits like a spreadsheet, with keyboard navigation and paste from Excel, live for all customers.
-cardNumber: null
-cardNumberLabel: ""
+cardOutcome: The metrics grid now edits like a true spreadsheet with full keyboard navigation and interactions.
+cardNumber: "11 firms"
+cardNumberLabel: wanted to be included in the beta run before official launch
 thumbnail: /work/metrics-tab-v2/thumb.webp
 order: 3
 ---
@@ -22,50 +23,42 @@ order: 3
   caption="Focusing a cell opens the Detailed Datum Tracer beside the grid."
 />
 
-{/* [ERIC: the screenshot above covers the Datum Tracer. Still open: a cell in edit mode and a paste from Excel landing in the grid, saved under public/work/metrics-tab-v2/ with real alt text. Confirm none show real customer data. The source has no such images.] */}
-
 ## Context
 
-Standard Metrics is a portfolio monitoring product for investment firms. The Metrics Tab is where a firm sees the numbers its portfolio companies report, one company at a time, laid out as a grid of metrics over reporting periods.
+Standard Metrics is a portfolio monitoring product for investment firms. The Metrics Tab is where a firm sees the numbers its portfolio companies report, one company at a time, laid out as a grid of metrics over reporting periods. Finance analysts and finance leads work in it day to day.
 
-The first version of the tab was mostly for reading. Metrics Tab v2 rebuilt it as a workspace where people could also change the numbers in place. [ERIC: one sentence on who uses the tab day to day, by role, such as an analyst at a firm or a finance lead at a company.]
+The first version of the tab let people edit numbers, but it was cumbersome, laggy, and it had no keyboard interactions beyond tab. Metrics Tab v2 rebuilt it as a workspace where people could change the numbers in place, the way they already do in a spreadsheet.
 
 ## Problem
 
 People who work with financial data already know how a spreadsheet behaves. They expect arrow keys to move between cells, a double-click or a keystroke to start editing, and a paste from Excel to land where they put it. A grid that looks like a spreadsheet but does not behave like one feels broken, even when every feature technically works.
 
-The old tab did not meet that bar. [ERIC: what did people do instead before v2? For example, export to Excel, edit there, and upload again. Only include what you can state plainly.]
+The old tab did not meet that quality bar. Every edit took more clicks than it should, and none of the keyboard habits people rely on worked.
 
-There was also a product goal on top of the interaction goal. The new tab had to open the Detailed Datum Tracer from any cell, so a person could see where a number came from without leaving the grid. [ERIC: confirm this was part of the original scope and not added later.]
+The rebuild also had to keep what already worked. The old tab could open the Detailed Datum Tracer, which shows an audit trail of where a number came from. The new grid had to support it from any cell, without getting in the way of editing.
 
 ## My role
 
-I built the grid's interaction model. That covered keyboard navigation, mouse behavior, cell editing, paste, delete, and reporting-currency display. I also wired the Detailed Datum Tracer to open from any cell.
-
-The launch announcements did not name individual engineers, so the claim here rests on my own work in the codebase. [ERIC: name the other roles on the project, such as a product manager, a designer, or other engineers, by role only. Say what you owned versus what you shared.]
+Four engineers worked on the rebuild, including me, with a product manager. I owned every keyboard interaction in the grid. That covered arrow keys, Tab and Enter, editing inside a cell, cut, copy and paste for single cells and bulk selections, and interactions inside nested cells for dropdowns, etc.
 
 ## Key decisions
 
-**One state machine for every interaction.** Keyboard, mouse, editing and paste all change the same few things: which cell is selected, whether it is being edited, and what value it holds. I put those transitions in a single reducer-driven state machine instead of spreading them across event handlers. Each input becomes an action, and the reducer decides what happens next. That made the edge cases testable one at a time, such as pressing Escape mid-edit or pasting over a selection. [ERIC: one concrete edge case the state machine caught or made easy to fix.]
+**One state machine for every interaction.** Keyboard, mouse, editing and paste all change the same few things: which cell is selected, whether it is being edited, and what value it holds. I put those transitions in a single reducer-driven state machine instead of spreading them across event handlers. Each input becomes an action, and the reducer decides what happens next. There were a lot of edge cases, and pressing Escape mid-edit caused the most surprises. With every transition in one place, each case could be reproduced and fixed on its own.
 
-**Match spreadsheet habits, not a custom model.** Click selects a cell. Double-click or typing starts an edit. Delete in select mode clears the value. Arrow keys move the selection. I matched what people already do in Excel rather than inventing a new pattern they would have to learn. [ERIC: anything you deliberately did differently from Excel, and why.]
+**Match spreadsheet habits, not a custom model.** Click selects a cell. Double-click or typing starts an edit. Delete in select mode clears the value. Arrow keys, Tab and Enter move the selection. We copied Excel's most intuitive keyboard behavior as closely as we could, so there was nothing new to learn.
 
-**Paste from Excel as a first-class path.** Many people keep their numbers in a spreadsheet first. Paste had to take a block copied from Excel and place it across the right cells, not drop it all into one. [ERIC: how you handled a paste that did not fit the grid, such as too many rows or a text value in a number cell.]
+**Paste from Excel as a first-class path.** Many people keep their numbers in a spreadsheet first. Paste had to take a block copied from Excel and place it across the right cells, not drop it all into one. Cut, copy and paste work the same way on a bulk selection. A paste larger than the grid is truncated to fit.
 
-**Show values in the reporting currency.** A firm often looks at companies that report in different currencies. The grid displays values in the reporting currency, so the numbers on screen match what the firm compares. [ERIC: confirm whether editing happens in the reporting currency or the original one.]
+**Edit in the reporting currency.** A firm often looks at companies that report in different currencies. The grid shows and edits values in the reporting currency, so the numbers on screen match what the firm compares. If the firm picks a different currency on that page, edits follow that choice.
 
-**Ship the core loop first.** The MVP delivered a full end-to-end editing workflow before anything else, and that moved the project into beta. [ERIC: was this sequencing your call or agreed with product? Say which.]
+**Ship the core loop first.** We built one complete editing workflow, from selecting a cell to saving a change, before adding anything else. That loop was enough to start the beta.
 
 ## Impact
 
-The beta reached 35 users across 11 firms, including a firm user who reviewed tear sheets in the new tab. After the beta, the new Metrics Tab went live for all customers.
-
-[ERIC: one sentence on what changed for users after launch, such as fewer exports to Excel or fewer support requests about editing. Only if you can support it.]
-
-[ERIC: optional reaction from the beta, attributed by role only, for example "an analyst at a beta firm".]
+The beta reached 35 users across 11 firms. At one beta firm, some users made the new tab their primary workspace before it had even launched. After the beta, the new Metrics Tab went live for all customers.
 
 ## What I'd do next
 
-The grid now behaves like a spreadsheet for one company at a time. The next step I would push for is [ERIC: the real gap you saw, such as multi-cell fill, undo history, or editing across companies].
+There were a lot of edge cases, and most of them came up during the build. If I did it again, I'd start with a table: every key, in select mode and edit mode, with the expected result. Each row becomes a test, so the gaps show up before the code does.
 
-I would also measure what the beta could only suggest. Tracking how often people edit in place versus export would show whether the grid replaced the spreadsheet round trip or only shortened it. [ERIC: confirm or cut.]
+I would also put undo in the first release. It shipped later, as a follow-on. In a grid where people edit financial numbers, Ctrl+Z is a safety net, not a nice-to-have. Every edit already passed through one reducer, which is a natural place to keep that history.

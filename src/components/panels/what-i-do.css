@@ -535,8 +535,10 @@
 }
 
 @container (max-width: 640px) {
+  /* Stacked: same gap as the testimonial cards. */
   .pillars {
     grid-template-columns: 1fr;
+    gap: calc(var(--block-gap) * 1.2);
   }
 
   .viz {

@@ -28,8 +28,8 @@ async function quadrantPng(file, w = 400, h = 200) {
   fs.writeFileSync(file, buf);
 }
 
-async function flatPng(file, w, h) {
-  const buf = await sharp({ create: { width: w, height: h, channels: 3, background: "#336699" } }).png().toBuffer();
+async function flatPng(file, w, h, background = "#336699") {
+  const buf = await sharp({ create: { width: w, height: h, channels: 3, background } }).png().toBuffer();
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, buf);
 }
@@ -66,6 +66,37 @@ describe("thumb", () => {
     const meta = await sharp(file).metadata();
     expect([meta.format, meta.width, meta.height]).toEqual(["webp", 568, 284]);
     for (const [x, y] of [[0, 0], [567, 0], [0, 283], [567, 283]]) near(await pixel(file, x, y), [0, 255, 0]);
+  });
+
+  it("records tone from mean luminance so the card picks the matching tint", async () => {
+    await flatPng(path.join(sourceRoot, "light", "light.png"), 400, 200, "#f4f5f7");
+    await flatPng(path.join(sourceRoot, "dark", "dark.png"), 400, 200, "#202124");
+    const rect = { left: 0, top: 0, width: 400, height: 200 };
+    const { dims } = await run({
+      light: [{ source: "light/light.png", kind: "thumb", rect }],
+      dark: [{ source: "dark/dark.png", kind: "thumb", rect }],
+    });
+    expect(dims["/work/light/thumb.webp"].tone).toBe("light");
+    expect(dims["/work/dark/thumb.webp"].tone).toBe("dark");
+  });
+
+  it("writes a retina thumb-2x at the crop width, capped at 1136x568", async () => {
+    await flatPng(path.join(sourceRoot, "demo", "mid.png"), 800, 400);
+    await flatPng(path.join(sourceRoot, "big", "big.png"), 2000, 1000);
+    const { dims } = await run({
+      demo: [{ source: "demo/mid.png", kind: "thumb", rect: { left: 0, top: 0, width: 792, height: 396 } }],
+      big: [{ source: "big/big.png", kind: "thumb", rect: { left: 0, top: 0, width: 2000, height: 1000 } }],
+    });
+    expect(dims["/work/demo/thumb-2x.webp"]).toEqual({ width: 792, height: 396 });
+    expect(dims["/work/big/thumb-2x.webp"]).toEqual({ width: 1136, height: 568 });
+    expect(dims["/work/big/thumb.webp"]).toMatchObject({ width: 568, height: 284 });
+  });
+
+  it("skips thumb-2x when the crop is not wider than 568px", async () => {
+    await run({
+      demo: [{ source: "demo/quad.png", kind: "thumb", rect: { left: 0, top: 0, width: 400, height: 200 } }],
+    });
+    expect(fs.readdirSync(path.join(outRoot, "demo"))).toEqual(["thumb.webp"]);
   });
 
   it("strips metadata", async () => {
@@ -128,7 +159,7 @@ describe("detail and work-images.json", () => {
     expect(Object.keys(json)).toHaveLength(3);
     for (const [published, size] of Object.entries(json)) {
       const meta = await sharp(path.join(outRoot, published.replace(/^\/work\//, ""))).metadata();
-      expect(size).toEqual({ width: meta.width, height: meta.height });
+      expect(size).toMatchObject({ width: meta.width, height: meta.height });
     }
   });
 

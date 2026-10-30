@@ -28,18 +28,6 @@ export const fileUrl = (path: string) => `${REPO_URL}/${path.endsWith("/") ? "tr
 
 export const HEADING = "How I build with AI";
 
-/** Terms the toolkit actually uses, shown as one quiet line under the heading. */
-export const KEYWORDS = [
-  "Claude Code",
-  "Multi-agent orchestration",
-  "LLM-as-judge evals",
-  "Model tiering",
-  "Guardrail hooks",
-  "JSON Schema contracts",
-  "TDD",
-  "Playwright",
-] as const;
-
 const SK = "skills/";
 const AG = "agents/";
 

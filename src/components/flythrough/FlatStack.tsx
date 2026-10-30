@@ -3,8 +3,9 @@
 import { useEffect } from "react";
 import { setActiveSection } from "../active-section";
 import { RenderModeContext } from "./render-mode";
-import { hashPanelIndex } from "./hash-target";
+import { hashPanelIndex, syncHashToActiveSection } from "./hash-target";
 import { PANELS } from "./registry";
+import { pendingScrollTop } from "./scroll-memory";
 import "./flat.css";
 
 /**
@@ -13,13 +14,19 @@ import "./flat.css";
  * render mode. No stage, no sketch layer, no 3D.
  */
 export function FlatStack() {
-  // A hash naming a panel scrolls that panel into view, instantly.
+  // A returning reader goes back to where they were (see scroll-memory.ts). Otherwise a hash naming a
+  // panel scrolls that panel into view, instantly.
   useEffect(() => {
-    if (hashPanelIndex(window.location.hash) < 0) return;
-    document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" });
+    const restored = pendingScrollTop();
+    if (restored !== null) {
+      window.scrollTo({ top: restored, left: 0, behavior: "instant" });
+    } else if (hashPanelIndex(window.location.hash) >= 0) {
+      document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" });
+    }
   }, []);
 
-  // The section crossing the middle of the viewport is the active one.
+  // The section crossing the middle of the viewport is the active one, and the URL hash follows it.
+  useEffect(() => syncHashToActiveSection(), []);
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(

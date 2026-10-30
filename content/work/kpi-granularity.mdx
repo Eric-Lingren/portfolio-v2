@@ -1,16 +1,16 @@
 ---
-title: KPI Granularity for Information Requests
+title: Requesting Metric Granularity
 slug: kpi-granularity
 role: Project lead, Standard Metrics
 timeline: Jul 2024 to Oct 2025
-stack: [TypeScript, React, Node.js, GraphQL]
+stack: [TypeScript, React, Node.js]
 outcomes:
   - Each KPI in one Information Request can be requested at its own cadence
   - Company-specific metrics flow through the same request
   - Chosen cadences carry forward to the next request
 cardOutcome: Firms can ask each portfolio company for each KPI at its own cadence, inside one Information Request.
-cardNumber: null
-cardNumberLabel: ""
+cardNumber: "1 in 3"
+cardNumberLabel: Information Requests used custom KPI cadences in the first cycle
 thumbnail: /work/kpi-granularity/thumb.webp
 order: 1
 ---
@@ -25,23 +25,25 @@ order: 1
 
 At Standard Metrics, investment firms collect financial and operating data from their portfolio companies through Information Requests. A firm picks the KPIs it wants, picks the companies, and sends the request. Each company fills in its numbers.
 
-Until this project, a request had one reporting cadence. Every KPI in it was asked for monthly, or every KPI was asked for quarterly. [ERIC: confirm the stack list above matches what you actually touched, including the API layer.]
+Until this project, a request had one reporting cadence. Every KPI in it was asked for monthly, or every KPI was asked for the grnularity of the report. This project gave each KPI its own individual cadence.
 
 ## Problem
 
-Real portfolio data does not arrive on one schedule. A firm might want Net Burn monthly, revenue quarterly, and a headcount figure once a year. With a single cadence per request, the only way to get that was to send several requests to the same company, and the firm had to manage each one separately.
+Real portfolio data does not arrive on one schedule. A firm might want Net Burn monthly, revenue quarterly, and headcount once a year. With one cadence per request, the only way to get that was to send several requests to the same company. The firm then had to track each one separately.
 
-The effect was most obvious for firms with large portfolios. One firm had to create 84 separate Q3 requests, one per company, because the cadence settings could not vary by KPI or by company. Companies received more emails than they needed, and the firm did more setup work every reporting period. [ERIC: what did support or customer success tell you about how often this came up before you started? Only include what you can state plainly.]
+Firms asked for a fix often. It was a highly requested feature before we started.
+
+The cost grew with portfolio size. One firm created 84 separate Q3 requests to get the cadences it needed. Companies received more emails than they needed, and the firm repeated the same setup every reporting period.
 
 ## My role
 
-I led the project from July 2024 to October 2025, across three Linear projects. I owned the technical design and drove the implementation across the frontend and the API. I also ran the internal and external user acceptance testing and wrote the project updates the rest of the company read. [ERIC: confirm exactly what you wrote versus reviewed, and who else contributed, by role only.]
+I was the lead engineer on this project from July 2024 to October 2025. The work shipped in three phases, and I was on all three. Other engineers joined for parts of it, but I did most of the build. I owned the technical design and drove the implementation across the frontend and the API. I also ran the internal and external user acceptance testing and wrote the project updates the rest of the company read.
 
 ## Key decisions
 
-**Granularity belongs to the KPI, not the request.** The first design question was where the setting should live. Putting it on the request kept the data model simple but left the original problem in place. I moved it to the individual KPI inside a request, which meant the configure page, the validation, and the way companies see their asks all had to understand a cadence per KPI. [ERIC: describe the data model change in one or two sentences, in your own words.]
+**Granularity belongs to the KPI, not the request.** The first design question was where the setting should live. Keeping it on the request kept the data model simple, but it left the original problem in place. I moved it to each KPI inside a request. That meant new data models for the different cadence periods a granularity can carry. Those periods also had to feed through the Information Request and investor report models. The configure page, the validation, and the way companies see their asks all had to understand a cadence per KPI.
 
-**Ship in phases.** Phase 1 covered per-KPI granularity for the firm's standard metrics. Phase 2 added company-specific metrics, which had their own flow through the request and needed separate work.
+**Ship in phases.** Product split the work into phases. Phase 1 covered per-KPI granularity for the firm's standard metrics. Phase 2 added company-specific metrics, which had their own flow through the request and needed separate work.
 
 <Figure
   src="/work/kpi-granularity/company-specific-metrics.webp"
@@ -49,26 +51,22 @@ I led the project from July 2024 to October 2025, across three Linear projects. 
   caption="Company-specific metrics sit in the same request as standard KPIs, each with its own cadence."
 />
 
-Splitting them let firms start using the main feature while the harder case was still in design. [ERIC: was this split your call, or agreed with product? Say which.]
+The split let firms start using the main feature while the harder case was still in design.
 
-**Make bulk the default path.** The feature touches many KPIs across many companies at once, so I built a bulk endpoint for setting granularity instead of one call per KPI. That kept the configure page responsive for large portfolios. [ERIC: add one concrete detail about the bulk endpoint, such as how it handles partial failure.]
+**Make bulk the default path.** The feature touches many KPIs across many companies at once. I built a bulk endpoint for setting granularity instead of one call per KPI. That kept the configure page responsive, even for the largest portfolios.
 
-**Remember what the firm chose.** Early users were re-entering the same cadences every quarter. A follow-on change made the settings carry forward into the next request. A later one added semi-annual as a first-class option, with sensible defaults. [ERIC: confirm whether these came from user feedback, and from which role.]
-
-> [ERIC: optional pull quote. Praise is attributed by role only, for example "a customer-facing teammate said...". Delete this block if you have nothing you can attribute that way.]
+**Remember what the firm chose.** Users told us they were re-entering the same cadences every quarter. A follow-on change made the settings carry forward into the next request. Users also asked for semi-annual reporting, so a later change added it as a first-class option with sensible defaults.
 
 ## Impact
 
-After Phase 2, a firm could send one request with different cadences per KPI, where before it needed a separate request for each cadence. Before Phase 2, one firm needed 84 separate Q3 requests. Afterward, over 20 Q3 requests went out with Net Burn switched from monthly to quarterly.
+Before this work, a firm needed a separate request for each cadence. After Phase 2, one request could ask for each KPI at its own cadence, including company-specific metrics.
 
-Adoption showed up quickly after Phase 1: of 75 Q3 requests, 24 had changed granularities from the default. User acceptance testing, internal and external, passed with one rare bug.
+Adoption came fast. In the first cycle after Phase 1, 25% of all Q3 requests changed at least one cadence from the default. After Phase 2, about half of all customers were adjusting granularity.
 
-[ERIC: add one sentence on what changed for companies on the receiving end, such as fewer duplicate requests. Only if you can support it.]
+Carry-forward "rollovers" removed a large amount of repeated setup. For one large firm, that was about 1,500 manual cadence adjustments per request that no longer had to be redone each period.
+
+User acceptance testing, internal and external, passed with one rare bug.
 
 ## What I'd do next
 
-The cadence settings are still configured one request at a time. I would add firm-level defaults, so a firm sets Net Burn to monthly once and every new request starts there. [ERIC: is this what you would actually do, or is there a different next step?]
-
-I would also show companies why a KPI is asked at a given cadence. Right now they see the ask but not the reasoning. [ERIC: replace with the real gap you saw, if different.]
-
-Finally, I would add reporting on which cadences firms actually use, so the defaults can be based on data instead of guesses. [ERIC: confirm or cut.]
+Semi-annual reporting shipped as its own change, after the main phases were done. If I built this again, I would model cadence periods as data from day one. Each period would be defined by its length and where it starts. The Information Request and investor report models would then never need to know about a specific cadence. Adding the next one would be a configuration change, not another pass through every model that touches a request.

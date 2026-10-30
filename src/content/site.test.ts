@@ -7,7 +7,6 @@ import {
   MAILTO_SUBJECT,
   MAILTO_URL,
   PROFILE_IMAGE_PATH,
-  RESUME_PATH,
 } from "./site";
 
 describe("site constants", () => {
@@ -16,7 +15,6 @@ describe("site constants", () => {
     expect(GITHUB_URL).toBe("https://www.github.com/Eric-Lingren");
     expect(LINKEDIN_URL).toBe("https://www.linkedin.com/in/ericlingren/");
     expect(MAILTO_SUBJECT).toBe("Hello from ericlingren.com");
-    expect(RESUME_PATH).toBe("/eric-lingren-resume.pdf");
   });
 
   it("builds a mailto URL with the encoded subject", () => {

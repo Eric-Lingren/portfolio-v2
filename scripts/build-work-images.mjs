@@ -5,9 +5,12 @@
 //                   "rect": { "left", "top", "width", "height" }, "minSource": { "width", "height" } } ] }
 //  - minSource (optional): fail with a clear message when the source image is smaller than this.
 //  - thumb:  crop rect (must be 2:1 within 1px), resize to 568x284, write public/work/<slug>/thumb.webp.
+//            When the crop is wider than 568px, also write thumb-2x.webp for retina screens, at the crop's own
+//            width capped at 1136 (never upscaled).
 //  - detail: full-size WebP at public/work/<slug>/<name>.webp, max width 1600, never upscaled, aspect kept.
 //            An optional rect crops first.
 // Also writes src/content/work-images.json: published path -> { width, height } (read by <Figure>/<BeforeAfter>).
+// Thumb entries also carry tone: "light" | "dark" (mean luminance), which picks the card's tint filter.
 // Metadata is stripped (sharp drops it by default) and encoding is deterministic. Files in the output root that the
 // run did not produce are removed, so public/work only ever holds generated files.
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
@@ -17,6 +20,7 @@ import sharp from "sharp";
 
 export const THUMB_WIDTH = 568;
 export const THUMB_HEIGHT = 284;
+export const THUMB_2X_MAX_WIDTH = THUMB_WIDTH * 2;
 export const DETAIL_MAX_WIDTH = 1600;
 export const DEFAULT_MANIFEST = "scripts/work-images.manifest.json";
 export const DEFAULT_SOURCE_ROOT = "docs/private/work";
@@ -51,6 +55,23 @@ function validateRect(rect, label, bounds, requireTwoToOne) {
   }
 }
 
+async function toneOf(buffer) {
+  const { channels } = await sharp(buffer).greyscale().stats();
+  return channels[0].mean >= 128 ? "light" : "dark";
+}
+
+async function write({ slug, name, pipeline, outRoot, withTone = false }) {
+  const out = await pipeline.webp(WEBP).toBuffer();
+  const size = await sharp(out).metadata();
+  const file = `${name}.webp`;
+  const dest = within(outRoot, slug, file);
+  await mkdir(path.dirname(dest), { recursive: true });
+  await writeFile(dest, out);
+  const result = { publicPath: `/work/${slug}/${file}`, dest, width: size.width, height: size.height };
+  if (withTone) result.tone = await toneOf(out);
+  return result;
+}
+
 async function buildOne({ slug, entry, sourceRoot, outRoot }) {
   const kind = entry.kind;
   const name = kind === "thumb" ? "thumb" : entry.name;
@@ -80,29 +101,28 @@ async function buildOne({ slug, entry, sourceRoot, outRoot }) {
     );
   }
 
-  let pipeline = sharp(input);
   if (kind === "thumb") {
     validateRect(entry.rect, label, bounds, true);
-    pipeline = pipeline
-      .extract(entry.rect)
-      .resize(THUMB_WIDTH, THUMB_HEIGHT, { fit: "fill", kernel: "lanczos3" });
-  } else {
-    if (entry.rect) {
-      validateRect(entry.rect, label, bounds, false);
-      pipeline = pipeline.extract(entry.rect);
+    const crop = sharp(input).extract(entry.rect);
+    const resize = (w, h) => crop.clone().resize(w, h, { fit: "fill", kernel: "lanczos3" });
+    const results = [await write({ slug, name, pipeline: resize(THUMB_WIDTH, THUMB_HEIGHT), outRoot, withTone: true })];
+    const hiWidth = Math.min(entry.rect.width - (entry.rect.width % 2), THUMB_2X_MAX_WIDTH);
+    if (hiWidth > THUMB_WIDTH) {
+      results.push(await write({ slug, name: "thumb-2x", pipeline: resize(hiWidth, hiWidth / 2), outRoot }));
     }
-    const srcWidth = entry.rect ? entry.rect.width : bounds.width;
-    if (srcWidth > DETAIL_MAX_WIDTH) {
-      pipeline = pipeline.resize({ width: DETAIL_MAX_WIDTH, withoutEnlargement: true, kernel: "lanczos3" });
-    }
+    return results;
   }
-  const out = await pipeline.webp(WEBP).toBuffer();
-  const size = await sharp(out).metadata();
-  const file = `${name}.webp`;
-  const dest = within(outRoot, slug, file);
-  await mkdir(path.dirname(dest), { recursive: true });
-  await writeFile(dest, out);
-  return { publicPath: `/work/${slug}/${file}`, dest, width: size.width, height: size.height };
+
+  let pipeline = sharp(input);
+  if (entry.rect) {
+    validateRect(entry.rect, label, bounds, false);
+    pipeline = pipeline.extract(entry.rect);
+  }
+  const srcWidth = entry.rect ? entry.rect.width : bounds.width;
+  if (srcWidth > DETAIL_MAX_WIDTH) {
+    pipeline = pipeline.resize({ width: DETAIL_MAX_WIDTH, withoutEnlargement: true, kernel: "lanczos3" });
+  }
+  return [await write({ slug, name, pipeline, outRoot })];
 }
 
 async function listFiles(dir) {
@@ -134,10 +154,11 @@ export async function buildWorkImages({
     if (!SAFE_NAME.test(slug)) throw new Error(`invalid slug "${slug}"`);
     const seen = new Set();
     for (const entry of spec[slug]) {
-      const r = await buildOne({ slug, entry, sourceRoot, outRoot });
-      if (seen.has(r.publicPath)) throw new Error(`${slug}: duplicate output ${r.publicPath}`);
-      seen.add(r.publicPath);
-      results.push(r);
+      for (const r of await buildOne({ slug, entry, sourceRoot, outRoot })) {
+        if (seen.has(r.publicPath)) throw new Error(`${slug}: duplicate output ${r.publicPath}`);
+        seen.add(r.publicPath);
+        results.push(r);
+      }
     }
   }
   const produced = new Set(results.map((r) => r.dest));
@@ -146,7 +167,7 @@ export async function buildWorkImages({
   }
   const dims = {};
   for (const r of [...results].sort((a, b) => a.publicPath.localeCompare(b.publicPath))) {
-    dims[r.publicPath] = { width: r.width, height: r.height };
+    dims[r.publicPath] = r.tone ? { width: r.width, height: r.height, tone: r.tone } : { width: r.width, height: r.height };
   }
   await mkdir(path.dirname(jsonPath), { recursive: true });
   await writeFile(jsonPath, `${JSON.stringify(dims, null, 2)}\n`);

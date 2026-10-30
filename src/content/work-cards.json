@@ -1,47 +1,57 @@
 [
   {
     "slug": "kpi-granularity",
-    "title": "KPI Granularity for Information Requests",
+    "title": "Requesting Metric Granularity",
     "outcome": "Firms can ask each portfolio company for each KPI at its own cadence, inside one Information Request.",
-    "number": null,
-    "numberLabel": "",
+    "number": "1 in 3",
+    "numberLabel": "Information Requests used custom KPI cadences in the first cycle",
     "thumbnail": "/work/kpi-granularity/thumb.webp",
+    "thumbnailSrcSet": null,
+    "thumbnailTone": "light",
     "hasThumbnail": true
   },
   {
     "slug": "investor-reports",
-    "title": "Investor Report Makeover and the Auto-Submit toggle",
-    "outcome": "Rebuilt the page portfolio companies use to report to their investors, then added a toggle that lets them switch to auto-submit.",
+    "title": "Investor Report Makeover",
+    "outcome": "Rebuilt the page companies use to report to investors with a full facelift and new auto-submit ability.",
     "number": "20",
-    "numberLabel": "portfolio companies on the auto-submit toggle in week one",
+    "numberLabel": "portfolio companies adopted auto-submitting metrics in week one",
     "thumbnail": "/work/investor-reports/thumb.webp",
+    "thumbnailSrcSet": null,
+    "thumbnailTone": "light",
     "hasThumbnail": true
   },
   {
     "slug": "metrics-tab-v2",
-    "title": "Spreadsheet-style editing in Metrics Tab v2",
-    "outcome": "The metrics grid now edits like a spreadsheet, with keyboard navigation and paste from Excel, live for all customers.",
-    "number": null,
-    "numberLabel": "",
+    "title": "Metrics Table Interactions",
+    "outcome": "The metrics grid now edits like a true spreadsheet with full keyboard navigation and interactions.",
+    "number": "11 firms",
+    "numberLabel": "wanted to be included in the beta run before official launch",
     "thumbnail": "/work/metrics-tab-v2/thumb.webp",
+    "thumbnailSrcSet": "/work/metrics-tab-v2/thumb.webp 568w, /work/metrics-tab-v2/thumb-2x.webp 792w",
+    "thumbnailTone": "light",
     "hasThumbnail": true
   },
   {
     "slug": "frontend-platform",
-    "title": "Frontend platform re-architecture",
-    "outcome": "Three competing UI folders became one component tree, with lint rules that keep it that way.",
-    "number": null,
-    "numberLabel": "",
+    "title": "Frontend Platform Design System Re-architecture",
+    "outcome": "Three competing UI folders became one component tree with lint rule enforcement.",
+    "number": "84%",
+    "numberLabel": "of new UI code now built only on the design system, up from 22%",
     "thumbnail": "/work/frontend-platform/thumb.webp",
+    "thumbnailSrcSet": "/work/frontend-platform/thumb.webp 568w, /work/frontend-platform/thumb-2x.webp 1136w",
+    "thumbnailTone": "light",
     "hasThumbnail": true
   },
   {
     "slug": "render-performance",
-    "title": "Cutting render time at Inside Out Development",
+    "title": "Cutting render time at InsideOut Development",
     "outcome": "Largest contentful paint on the company site dropped from 5.2s to 2.0s after the images and loading were reworked.",
     "number": "2.0s",
     "numberLabel": "largest paint, down from 5.2s",
     "thumbnail": "/work/render-performance/thumb.webp",
+    "thumbnailSrcSet": null,
+    "thumbnailTone": "dark",
     "hasThumbnail": true
   }
 ]

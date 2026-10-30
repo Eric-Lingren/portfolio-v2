@@ -3,9 +3,14 @@
     "width": 1600,
     "height": 1062
   },
+  "/work/frontend-platform/thumb-2x.webp": {
+    "width": 1136,
+    "height": 568
+  },
   "/work/frontend-platform/thumb.webp": {
     "width": 568,
-    "height": 284
+    "height": 284,
+    "tone": "light"
   },
   "/work/investor-reports/auto-submit-state.webp": {
     "width": 746,
@@ -25,7 +30,8 @@
   },
   "/work/investor-reports/thumb.webp": {
     "width": 568,
-    "height": 284
+    "height": 284,
+    "tone": "light"
   },
   "/work/kpi-granularity/company-specific-metrics.webp": {
     "width": 881,
@@ -37,15 +43,21 @@
   },
   "/work/kpi-granularity/thumb.webp": {
     "width": 568,
-    "height": 284
+    "height": 284,
+    "tone": "light"
   },
   "/work/metrics-tab-v2/focused-cell-datum-tracer.webp": {
     "width": 1113,
     "height": 663
   },
+  "/work/metrics-tab-v2/thumb-2x.webp": {
+    "width": 792,
+    "height": 396
+  },
   "/work/metrics-tab-v2/thumb.webp": {
     "width": 568,
-    "height": 284
+    "height": 284,
+    "tone": "light"
   },
   "/work/render-performance/lighthouse-2021-10-28.webp": {
     "width": 984,
@@ -57,6 +69,7 @@
   },
   "/work/render-performance/thumb.webp": {
     "width": 568,
-    "height": 284
+    "height": 284,
+    "tone": "dark"
   }
 }

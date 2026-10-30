@@ -1,15 +1,17 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FlatStack } from "./FlatStack";
 import { FlyStage } from "./FlyStage";
 import { panelScrollTop } from "./camera";
-import { hashPanelIndex, initialScrollTop } from "./hash-target";
+import { setActiveSection } from "../active-section";
+import { hashPanelIndex, initialScrollTop, writeSectionHash } from "./hash-target";
 import { PANELS } from "./registry";
 
 const COUNT = PANELS.length;
 const WORK = PANELS.findIndex((p) => p.id === "work");
 
 afterEach(() => {
+  setActiveSection(null);
   window.history.replaceState({}, "", "/");
   vi.restoreAllMocks();
 });
@@ -80,5 +82,108 @@ describe("FlatStack hash", () => {
     Element.prototype.scrollIntoView = scrollIntoView;
     render(<FlatStack />);
     expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+});
+
+describe("FlyStage anchor click", () => {
+  beforeEach(() => {
+    window.matchMedia = vi.fn(() => ({ matches: false }) as MediaQueryList) as unknown as typeof window.matchMedia;
+    vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+  });
+
+  const click = (href: string) => {
+    const a = document.createElement("a");
+    a.setAttribute("href", href);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  it("writes the clicked panel's hash to the URL", () => {
+    window.history.replaceState({}, "", "/#work");
+    render(<FlyStage />);
+    click("#contact");
+    expect(window.location.hash).toBe("#contact");
+    click("#hero");
+    expect(window.location.hash).toBe("");
+    click("#work");
+    expect(window.location.hash).toBe("#work");
+  });
+
+  it("replaces the history entry instead of pushing one", () => {
+    window.history.replaceState({}, "", "/");
+    render(<FlyStage />);
+    const before = window.history.length;
+    click("#work");
+    expect(window.history.length).toBe(before);
+  });
+});
+
+describe("writeSectionHash", () => {
+  it("writes #id for a panel and clears the hash for the hero, keeping path and query", () => {
+    window.history.replaceState({}, "", "/?view=classic#work");
+    writeSectionHash("contact");
+    expect(window.location.search).toBe("?view=classic");
+    expect(window.location.hash).toBe("#contact");
+    writeSectionHash("hero");
+    expect(window.location.pathname + window.location.search + window.location.hash).toBe("/?view=classic");
+  });
+
+  it("never adds a history entry", () => {
+    const before = window.history.length;
+    writeSectionHash("work");
+    writeSectionHash("contact");
+    expect(window.history.length).toBe(before);
+  });
+});
+
+describe("FlyStage scroll hash", () => {
+  beforeEach(() => {
+    window.matchMedia = vi.fn(() => ({ matches: false }) as MediaQueryList) as unknown as typeof window.matchMedia;
+    vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+  });
+
+  it("follows the active section", () => {
+    window.history.replaceState({}, "", "/#work");
+    render(<FlyStage />);
+    act(() => setActiveSection("contact"));
+    expect(window.location.hash).toBe("#contact");
+    act(() => setActiveSection("hero"));
+    expect(window.location.hash).toBe("");
+  });
+
+  it("stops following after unmount", () => {
+    const { unmount } = render(<FlyStage />);
+    unmount();
+    act(() => setActiveSection("contact"));
+    expect(window.location.hash).toBe("");
+  });
+});
+
+describe("FlatStack scroll hash", () => {
+  let fire: (id: string) => void = () => {};
+  beforeEach(() => {
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(cb: IntersectionObserverCallback) {
+          fire = (id) =>
+            cb([{ isIntersecting: true, target: document.getElementById(id)! } as unknown as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("writes the section crossing the middle of the viewport to the hash", () => {
+    Element.prototype.scrollIntoView = vi.fn();
+    window.history.replaceState({}, "", "/#work");
+    render(<FlatStack />);
+    act(() => fire("experience"));
+    expect(window.location.hash).toBe("#experience");
+    act(() => fire("hero"));
+    expect(window.location.hash).toBe("");
   });
 });

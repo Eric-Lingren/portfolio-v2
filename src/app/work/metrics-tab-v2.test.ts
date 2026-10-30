@@ -17,7 +17,7 @@ describe("metrics-tab-v2 case study", () => {
     for (const key of REQUIRED_FRONTMATTER) expect(parsed.data).toHaveProperty(key);
     expect(parsed.data.slug).toBe("metrics-tab-v2");
     expect(parsed.data.order).toBe(3);
-    expect(parsed.data.cardNumber).toBeNull();
+    expect(parsed.data.cardNumber === null || typeof parsed.data.cardNumber === "string").toBe(true);
     expect(parsed.data.thumbnail).toMatch(/^\/work\/metrics-tab-v2\//);
     expect(Array.isArray(parsed.data.stack)).toBe(true);
     expect(parsed.data.outcomes.length).toBeGreaterThan(0);

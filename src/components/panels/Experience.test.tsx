@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
-import { RESUME_PATH } from "@/content/site";
 import { Experience } from "./Experience";
 
 const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
@@ -48,30 +47,10 @@ describe("Experience", () => {
     expect(container.querySelector(".experience-list a")).toBeNull();
   });
 
-  it("links the resume at the shared path", () => {
-    render(<Experience />);
-    expect(screen.getByRole("link", { name: "Resume" })).toHaveAttribute("href", RESUME_PATH);
-    // The same button as the nav's Resume: shared primary CTA, same label and arrow.
-    expect(screen.getByRole("link", { name: "Resume" })).toHaveClass("btn", "btn-primary");
-  });
-
-  it("gives the resume button the nav Resume's download arrow", () => {
-    render(<Experience />);
-    const link = screen.getByRole("link", { name: "Resume" });
-    expect(link).toHaveAttribute("download");
-    const arrow = link.querySelector(".btn-arrow--down");
-    expect(arrow).toHaveTextContent("⤓");
-    expect(arrow).toHaveAttribute("aria-hidden", "true");
-    expect(link.firstElementChild).toHaveClass("btn-icon");
-    expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");
-  });
-
-  it("ends with the resume button and no pre-engineering footnote", () => {
+  it("has no resume button and no pre-engineering footnote", () => {
     const { container } = render(<Experience />);
     expect(container.querySelector(".experience-footnote")).toBeNull();
-    const last = container.querySelector(".experience")!.lastElementChild!;
-    expect(last).toHaveClass("section-actions");
-    expect(last).toContainElement(screen.getByRole("link", { name: "Resume" }));
+    expect(screen.queryByRole("link", { name: "Resume" })).toBeNull();
     expect(container.textContent).not.toMatch(/trucks|tech sales/i);
   });
 
@@ -83,7 +62,7 @@ describe("Experience", () => {
     const sketch = container.querySelector('[data-layer="sketch"]')!;
     const polished = container.querySelector('[data-layer="polished"]')!;
     expect(geometry(sketch)).toBe(geometry(polished));
-    for (const sel of [".experience", ".experience-row", ".experience-role", ".btn"]) {
+    for (const sel of [".experience", ".experience-row", ".experience-role"]) {
       expect(geometry(sketch.querySelector(sel)!)).toBe(geometry(polished.querySelector(sel)!));
     }
   });

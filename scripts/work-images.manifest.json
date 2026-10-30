@@ -4,23 +4,23 @@
     { "source": "frontend-platform/storybook-primitives.png", "kind": "detail", "name": "storybook-button-variants" }
   ],
   "investor-reports": [
-    { "source": "investor-reports/masthead-after.jpg", "kind": "thumb", "rect": { "left": 238, "top": 0, "width": 494, "height": 247 } },
+    { "source": "investor-reports/masthead-after.jpg", "kind": "thumb", "rect": { "left": 975, "top": 15, "width": 420, "height": 210 } },
     { "source": "investor-reports/masthead-before.jpg", "kind": "detail", "name": "masthead-before" },
     { "source": "investor-reports/masthead-after.jpg", "kind": "detail", "name": "masthead-after" },
     { "source": "investor-reports/footer-progress-tracker.jpg", "kind": "detail", "name": "footer-progress-tracker" },
     { "source": "investor-reports/auto-submit-state.jpg", "kind": "detail", "name": "auto-submit-state" }
   ],
   "kpi-granularity": [
-    { "source": "kpi-granularity/configure-ui.jpg", "kind": "thumb", "rect": { "left": 30, "top": 70, "width": 600, "height": 300 } },
+    { "source": "kpi-granularity/configure-ui.jpg", "kind": "thumb", "rect": { "left": 50, "top": 80, "width": 500, "height": 250 } },
     { "source": "kpi-granularity/configure-ui.jpg", "kind": "detail", "name": "configure-ui" },
     { "source": "kpi-granularity/company-specific-metrics.jpg", "kind": "detail", "name": "company-specific-metrics" }
   ],
   "metrics-tab-v2": [
-    { "source": "metrics-tab-v2/focused-cell-datum-tracer.jpg", "kind": "thumb", "rect": { "left": 230, "top": 70, "width": 880, "height": 440 } },
+    { "source": "metrics-tab-v2/focused-cell-datum-tracer.jpg", "kind": "thumb", "rect": { "left": 288, "top": 120, "width": 792, "height": 396 } },
     { "source": "metrics-tab-v2/focused-cell-datum-tracer.jpg", "kind": "detail", "name": "focused-cell-datum-tracer" }
   ],
   "render-performance": [
-    { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "thumb", "rect": { "left": 88, "top": 212, "width": 880, "height": 440 } },
+    { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "thumb", "rect": { "left": 80, "top": 212, "width": 450, "height": 225 } },
     { "source": "render-performance/lighthouse-2021-10-28.png", "kind": "detail", "name": "lighthouse-2021-10-28" },
     { "source": "render-performance/lighthouse-2021-10-29.png", "kind": "detail", "name": "lighthouse-2021-10-29" }
   ]

@@ -14,8 +14,7 @@
     "testimonials:redact": "node scripts/redact-testimonials.mjs",
     "work:sources": "node scripts/extract-work-sources.mjs",
     "work:images": "node scripts/build-work-images.mjs",
-    "perf:check": "node scripts/perf-check.mjs",
-    "resume:pdf": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-resume.mjs"
+    "perf:check": "node scripts/perf-check.mjs"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",

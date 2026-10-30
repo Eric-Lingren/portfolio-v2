@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { setActiveSection } from "@/components/active-section";
-import { RESUME_PATH } from "@/content/site";
+import { MOBILE_QUERY } from "@/components/flythrough/mode";
 import { Nav, viewHref } from "./Nav";
 
 afterEach(() => {
@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("Nav", () => {
-  it("renders all anchors, the switch and the resume link", () => {
+  it("renders all anchors and the switch, with no resume link", () => {
     render(<Nav navigate={() => {}} />);
     for (const [label, id] of [
       ["What I do", "what-i-do"],
@@ -27,7 +27,7 @@ describe("Nav", () => {
     expect(screen.getByRole("radiogroup", { name: "View" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "Interactive" })).toBeChecked();
     expect(screen.getByRole("radio", { name: "Classic" })).not.toBeChecked();
-    expect(screen.getByRole("link", { name: "Resume" })).toHaveAttribute("href", RESUME_PATH);
+    expect(screen.queryByRole("link", { name: "Resume" })).toBeNull();
   });
 
   it("switching to Classic sets ?view=classic, and back removes it", () => {
@@ -55,13 +55,13 @@ describe("Nav", () => {
     render(<Nav navigate={() => {}} />);
     const order: [string, string][] = [
       ["link", "Eric Lingren"],
+      ["button", "Menu"],
       ["link", "What I do"],
       ["link", "Work"],
       ["link", "AI toolkit"],
       ["link", "Experience"],
       ["link", "Testimonials"],
       ["link", "Contact"],
-      ["link", "Resume"],
       ["radio", "Interactive"],
       ["radio", "Classic"],
     ];
@@ -96,28 +96,6 @@ describe("Nav", () => {
     expect(css).toMatch(/outline: 2px solid/);
   });
 
-  it("makes Resume the shared primary button, undoing the nav's mono caps and muted link color", () => {
-    render(<Nav navigate={() => {}} />);
-    expect(screen.getByRole("link", { name: "Resume" })).toHaveClass("btn", "btn-primary");
-    const css = readFileSync("src/components/nav.css", "utf8");
-    const color = /\.site-nav a\.site-nav__resume:hover\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
-    expect(color).toMatch(/color: var\(--on-accent-fill\)/);
-    const type = /\.site-nav a\.site-nav__resume\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
-    expect(type).toMatch(/text-transform: none/);
-    expect(type).toMatch(/letter-spacing: normal/);
-  });
-
-  it("marks Resume as a download with the shared decorative down arrow", () => {
-    render(<Nav navigate={() => {}} />);
-    const link = screen.getByRole("link", { name: "Resume" });
-    expect(link).toHaveAttribute("download");
-    const arrow = link.querySelector(".btn-arrow--down");
-    expect(arrow).toHaveTextContent("⤓");
-    expect(arrow).toHaveAttribute("aria-hidden", "true");
-    expect(link.firstElementChild).toHaveClass("btn-icon");
-    expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");
-  });
-
   it("keeps the view switch out of the top bar, pinned small to the viewport's bottom-right corner", () => {
     render(<Nav navigate={() => {}} />);
     expect(within(screen.getByRole("banner")).queryByRole("radiogroup")).toBeNull();
@@ -130,13 +108,55 @@ describe("Nav", () => {
     expect(css).toMatch(/\.view-switch button:focus-visible/);
   });
 
-  it("keeps the bar to one line below desktop: links in one sideways-scrolling row, brand hidden on phones", () => {
+  it("keeps the bar to one line below desktop: links in one sideways-scrolling row", () => {
     const css = readFileSync("src/components/nav.css", "utf8");
-    const narrow = css.slice(css.indexOf("@media (max-width: 1100px)"), css.indexOf("@media (max-width: 600px)"));
-    const phone = css.slice(css.indexOf("@media (max-width: 600px)"));
-    // Must out-rank the base `.site-nav .site-nav__brand { display: inline-flex }`.
-    expect(phone).toMatch(/\.site-nav \.site-nav__brand \{\s*display: none;/);
+    const narrow = css.slice(css.indexOf("@media (max-width: 1100px)"), css.indexOf("/* Menu toggle"));
     expect(narrow).toMatch(/\.site-nav__links \{[^}]*flex-wrap: nowrap;[^}]*overflow-x: auto;/);
     expect(narrow).toMatch(/\.site-nav \{[^}]*flex-wrap: nowrap;/);
+  });
+
+  it("Menu toggles the section links and says so with aria-expanded", () => {
+    render(<Nav navigate={() => {}} />);
+    const toggle = screen.getByRole("button", { name: "Menu" });
+    const header = screen.getByRole("banner");
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls", screen.getByRole("navigation", { name: "Sections" }).id);
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(header).toHaveAttribute("data-open");
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(header).not.toHaveAttribute("data-open");
+  });
+
+  it("closes the menu on a link tap, Escape (focus back on Menu) or a tap outside the bar", () => {
+    render(<Nav navigate={() => {}} />);
+    const toggle = screen.getByRole("button", { name: "Menu" });
+
+    fireEvent.click(toggle);
+    fireEvent.click(screen.getByRole("link", { name: "Work" }));
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(toggle);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(document.activeElement).toBe(toggle);
+
+    fireEvent.click(toggle);
+    fireEvent.pointerDown(screen.getByRole("link", { name: "Contact" }));
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    fireEvent.pointerDown(document.body);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("on phones shows Menu, folds the links into a panel and hides the view switch, using mode.ts's query", () => {
+    const css = readFileSync("src/components/nav.css", "utf8");
+    expect(/\.site-nav__toggle \{[^}]*display: none;/.test(css)).toBe(true);
+    const phone = css.slice(css.indexOf(`@media ${MOBILE_QUERY}`));
+    expect(phone.length).toBeLessThan(css.length);
+    expect(phone).toMatch(/\.site-nav \.site-nav__toggle \{[^}]*display: inline-flex;/);
+    expect(phone).toMatch(/\.site-nav \.site-nav__links \{[^}]*display: none;/);
+    expect(phone).toMatch(/\.site-nav\[data-open\] \.site-nav__links \{[^}]*display: flex;/);
+    expect(phone).toMatch(/\.view-switch \{[^}]*display: none;/);
   });
 });

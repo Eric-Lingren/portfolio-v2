@@ -49,8 +49,7 @@
   width: auto;
   flex: none;
 }
-.site-nav__links,
-.site-nav__right {
+.site-nav__links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -119,24 +118,6 @@
   outline-offset: 2px;
 }
 /*
- * Resume is the shared .btn-primary, the same button as the Experience panel's. Here it only
- * undoes the nav's mono caps and muted link color, and stays compact to fit the bar.
- */
-.site-nav a.site-nav__resume,
-.site-nav a.site-nav__resume:hover {
-  color: var(--on-accent-fill);
-}
-.site-nav a.site-nav__resume {
-  padding: 0.4rem 1rem;
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: normal;
-  text-transform: none;
-}
-
-/*
  * Below desktop the bar stays one line: the links become a single row that scrolls sideways
  * (Nav keeps the active one in view and flags data-overflow) instead of wrapping.
  */
@@ -162,21 +143,64 @@
     flex: none;
     white-space: nowrap;
   }
-  .site-nav__right {
-    flex: none;
-  }
 }
 
-/* Phones: the hero already shows the name, so the brand and section numbers go. */
-@media (max-width: 600px) {
+/* Menu toggle: phones only. */
+.site-nav__toggle {
+  display: none;
+  align-items: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/*
+ * Phones (mode.ts MOBILE_QUERY): brand left, Menu right. The links fold into a panel under
+ * the bar, opened by the toggle. No view switch: phones always get Classic.
+ */
+@media (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
   .site-nav {
-    gap: 0.5rem;
+    justify-content: space-between;
     padding: 0.5rem 0.75rem;
   }
-  .site-nav .site-nav__brand {
-    display: none;
+  .site-nav .site-nav__toggle {
+    display: inline-flex;
+    margin-right: -0.6rem;
+    padding: 0.6rem;
   }
-  .site-nav__num {
+  .site-nav .site-nav__links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+    padding: 0.25rem 0.75rem 0.75rem;
+    background: var(--po-bg);
+    border-bottom: 1px solid var(--po-border);
+    mask-image: none;
+  }
+  .site-nav[data-open] .site-nav__links {
+    display: flex;
+  }
+  .site-nav .site-nav__links a {
+    padding: 0.85rem 0.6rem;
+    font-size: 0.8125rem;
+  }
+  /* Active marker moves to a short rule on the left edge of the row. */
+  .site-nav__links a[aria-current="location"]::after {
+    left: 0;
+    right: auto;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 2px;
+    height: auto;
+  }
+  .view-switch {
     display: none;
   }
 }

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CaseStudyView } from "@/components/CaseStudyView";
 import { compileBody, getStudies, getStudy } from "@/lib/work";
 import { generateStaticParams } from "./[slug]/page";
@@ -26,10 +26,56 @@ describe("work route", () => {
     }
   });
 
-  it("links back to the Selected Work panel", async () => {
-    const study = getStudy("fixture-study", { includeFixtures: true });
-    render(<CaseStudyView study={study!}>{await compileBody(study!.content)}</CaseStudyView>);
-    expect(screen.getByRole("link", { name: "Back to selected work" })).toHaveAttribute("href", "/#work");
+  describe("back link", () => {
+    const renderStudy = async () => {
+      const study = getStudy("fixture-study", { includeFixtures: true });
+      render(<CaseStudyView study={study!}>{await compileBody(study!.content)}</CaseStudyView>);
+      return screen.getByRole("link", { name: "Back" });
+    };
+    const arriveFrom = (referrer: string, historyLength: number) => {
+      vi.spyOn(document, "referrer", "get").mockReturnValue(referrer);
+      vi.spyOn(window.history, "length", "get").mockReturnValue(historyLength);
+    };
+    const click = (link: HTMLElement, init: MouseEventInit = {}) =>
+      fireEvent(link, new MouseEvent("click", { bubbles: true, cancelable: true, button: 0, ...init }));
+
+    let back: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      back = vi.spyOn(window.history, "back").mockImplementation(() => {});
+    });
+    afterEach(() => vi.restoreAllMocks());
+
+    it("falls back to the Selected Work panel", async () => {
+      expect(await renderStudy()).toHaveAttribute("href", "/#work");
+    });
+
+    it("goes back in history when the reader came from this site, keeping mode and scroll", async () => {
+      arriveFrom(`${window.location.origin}/?view=classic`, 3);
+      const link = await renderStudy();
+      click(link);
+      expect(back).toHaveBeenCalledOnce();
+    });
+
+    it("follows the href on a direct visit, from another site, or in a fresh tab", async () => {
+      const link = await renderStudy();
+      for (const [referrer, length] of [
+        ["", 3],
+        ["https://www.linkedin.com/feed/", 3],
+        [`${window.location.origin}/`, 1],
+      ] as const) {
+        arriveFrom(referrer, length);
+        click(link);
+      }
+      expect(back).not.toHaveBeenCalled();
+    });
+
+    it("leaves modified clicks (open in new tab) to the browser", async () => {
+      arriveFrom(`${window.location.origin}/`, 3);
+      const link = await renderStudy();
+      click(link, { metaKey: true });
+      click(link, { ctrlKey: true });
+      expect(back).not.toHaveBeenCalled();
+    });
   });
 
   it("excludes fixtures from production studies and static params", () => {

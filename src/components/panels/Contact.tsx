@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL, MAILTO_URL, PROFILE_IMAGE_PATH, RESUME_PATH } from "@/content/site";
-import { CheckIcon, CopyIcon, FileIcon, GitHubIcon, LinkedInIcon, MailIcon } from "../icons";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, MAILTO_URL, PROFILE_IMAGE_PATH } from "@/content/site";
+import { CheckIcon, CopyIcon, GitHubIcon, LinkedInIcon, MailIcon } from "../icons";
 import { Panel, type PanelLayers } from "../Panel";
 import "./contact.css";
 
@@ -105,13 +105,6 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
                 LinkedIn
                 <span className="btn-arrow btn-arrow--out" aria-hidden="true">
                   ↗
-                </span>
-              </a>
-              <a className="btn btn-primary contact-btn" href={RESUME_PATH} download>
-                <FileIcon />
-                Resume
-                <span className="btn-arrow btn-arrow--down" aria-hidden="true">
-                  ⤓
                 </span>
               </a>
             </div>

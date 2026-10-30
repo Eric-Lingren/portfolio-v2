@@ -50,7 +50,7 @@ export const WORD_MIN = 600;
 export const WORD_MAX = 900;
 // Per-slug lower bound overrides (slug -> number). Empty until a page is cut
 // below WORD_MIN on purpose; the word-count check uses `override ?? WORD_MIN`.
-export const WORD_MIN_OVERRIDES = {};
+export const WORD_MIN_OVERRIDES = { "render-performance": 400 };
 export const wordMinFor = (slug) => WORD_MIN_OVERRIDES[slug] ?? WORD_MIN;
 
 const SCAN_DIRS = ["content", "src/content", "src/components/panels"];
@@ -71,11 +71,10 @@ export const STRICT_RULES = new Set([
 ]);
 // Case study frontmatter keys that surface as headlines or card copy.
 const HEADLINE_KEYS = new Set(["title", "cardOutcome", "cardNumber", "cardNumberLabel", "outcomes"]);
-// Files whose whole text is headline-class copy (pillars, Experience, resume).
+// Files whose whole text is headline-class copy (pillars, Experience).
 const HEADLINE_FILES = new Set([
   "src/content/positioning.ts",
   "src/content/experience.ts",
-  "content/resume/resume.mdx",
 ]);
 const isTestFile = (file) => /\.test\.[cm]?[jt]sx?$/.test(file);
 const TEXT_EXT = new Set([".md", ".mdx", ".ts", ".tsx", ".json", ".txt"]);
@@ -271,6 +270,10 @@ function checkWork(root, add) {
     for (const card of cards) {
       if (!card || typeof card.thumbnail !== "string") continue;
       referenced.add(card.thumbnail);
+      // The retina srcset ("<src> <w>w, <src> <w>w") references its thumb-2x too.
+      if (typeof card.thumbnailSrcSet === "string") {
+        for (const part of card.thumbnailSrcSet.split(",")) referenced.add(part.trim().split(/\s+/)[0]);
+      }
       if (!CARD_SLUGS.includes(card.slug)) continue;
       if (!publicHas(card.thumbnail)) {
         add(cardsFile, 1, "work-thumbnail-missing", `${card.slug}: public${card.thumbnail} does not exist`);

@@ -4,7 +4,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { HEADING, KEYWORDS, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
+import { HEADING, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
 import { AIToolkit } from "./AIToolkit";
 
 const skills = STAGES.flatMap((s) => s.skills);
@@ -54,7 +54,7 @@ describe("stage data", () => {
   });
 
   it("names no employer-specific terms", () => {
-    const text = JSON.stringify([STAGES, KEYWORDS]).toLowerCase();
+    const text = JSON.stringify(STAGES).toLowerCase();
     for (const w of ["standard metrics", "quaestor", "linear workspace", "portco", "bugbot"]) expect(text).not.toContain(w);
   });
 });
@@ -70,10 +70,10 @@ describe("AIToolkit", () => {
     expect(within(card()).getByText(STAGES[0].summary)).toBeTruthy();
   });
 
-  it("lists the toolkit keywords under the heading", () => {
-    render(<AIToolkit />);
-    const list = screen.getByRole("list", { name: /skills and tooling/i });
-    expect(within(list).getAllByRole("listitem").map((li) => li.textContent)).toEqual([...KEYWORDS]);
+  it("has no keyword tag line under the heading", () => {
+    const { container } = render(<AIToolkit />);
+    expect(container.querySelector(".section-head")!.children).toHaveLength(1);
+    expect(screen.queryByRole("list", { name: /skills and tooling/i })).toBeNull();
   });
 
   it("shows the model tag beside each skill in the stage card", () => {
@@ -125,6 +125,16 @@ describe("AIToolkit", () => {
     expect(card().getAttribute("data-stage")).toBe("review");
   });
 
+  it("keeps the strip on one row: no wrapping, sideways scroll when too narrow", () => {
+    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
+    const strip = /\.ai-strip \{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(strip).not.toMatch(/flex-wrap: wrap/);
+    expect(strip).toMatch(/overflow-x: auto/);
+    const stage = /\.ai-strip-stage \{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(stage).toMatch(/white-space: nowrap/);
+    expect(stage).toMatch(/min-width: max-content/);
+  });
+
   it("stacks a hidden copy of every stage behind the card so switching never resizes it", () => {
     const { container } = render(<AIToolkit />);
     const ghosts = container.querySelectorAll(".ai-card-stack > .ai-card-ghost");
@@ -144,6 +154,16 @@ describe("AIToolkit", () => {
   it("keeps the ai-diagram hook that perf:check tabs through", () => {
     render(<AIToolkit />);
     expect(within(screen.getByTestId("ai-diagram")).getAllByRole("button").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("marks the hovered or current step with a coral border, title and number, and no glow", () => {
+    const css = readFileSync(join(__dirname, "ai-toolkit.css"), "utf8");
+    const current = css.match(/\.panel-layer--polished \.ai-stage\[aria-current="step"\],\s*\.panel-layer--polished \.ai-strip-stage\[aria-current="step"\]\s*{([^}]*)}/)?.[1] ?? "";
+    expect(current).toMatch(/border-color: var\(--accent\);/);
+    expect(current).toMatch(/(^|[^-])color: var\(--accent\);/);
+    expect(current).not.toMatch(/box-shadow/);
+    expect(current).not.toMatch(/accent-2/);
+    expect(css).toMatch(/\[aria-current="step"\] \.ai-stage-num\s*{\s*color: var\(--accent\);/);
   });
 
   it("runs no animations, so the panel holds still", () => {

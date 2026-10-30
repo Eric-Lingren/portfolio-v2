@@ -2,14 +2,15 @@
 
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { startFrameMonitor } from "./frame-monitor";
-import { isFlat, perfDebugEnabled, resolveMode, type ViewMode } from "./mode";
+import { isFlat, MOBILE_QUERY, perfDebugEnabled, resolveMode, type ViewMode } from "./mode";
 import { PerfOverlay } from "./PerfOverlay";
 import { RenderModeContext } from "./render-mode";
+import { rememberScroll, settleScroll } from "./scroll-memory";
 
 /**
  * Renders the flat, server-rendered stack first (children). The mode is
- * resolved before anything is imported: reduced-motion and Classic users
- * never request the fly-through chunk. Otherwise, after first paint, it
+ * resolved before anything is imported: reduced-motion, Classic and phone
+ * users never request the fly-through chunk. Otherwise, after first paint, it
  * dynamically imports the stage and swaps it in, and a frame monitor can send
  * the page back to the flat stack if frame rate stays poor.
  */
@@ -19,10 +20,20 @@ export function FlyThroughLoader({ children }: { children: ReactNode }) {
   const [debug, setDebug] = useState(false);
   const [reading, setReading] = useState<{ fps: number; frameMs: number } | null>(null);
 
+  // The home page owns its scroll restoration (see scroll-memory.ts).
+  useEffect(() => rememberScroll(), []);
+
+  // The final tree is up: the stage swapped in, or a flat mode that never loads it. Child effects (the
+  // restore in FlatStack or FlyStage) have already run, so later remounts fall back to the hash rules.
+  useEffect(() => {
+    if (Stage || (mode && isFlat(mode))) settleScroll();
+  }, [Stage, mode]);
+
   useEffect(() => {
     const search = window.location.search;
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    const resolved = resolveMode({ search, reducedMotion, downgraded: false });
+    const mobile = window.matchMedia?.(MOBILE_QUERY).matches ?? false;
+    const resolved = resolveMode({ search, reducedMotion, downgraded: false, mobile });
     const showPerf = perfDebugEnabled(search);
     let cancelled = false;
     let stopMonitor = () => {};
@@ -42,7 +53,7 @@ export function FlyThroughLoader({ children }: { children: ReactNode }) {
             onReading: showPerf ? setReading : undefined,
             onDowngrade: () => {
               setStage(null);
-              setMode(resolveMode({ search, reducedMotion, downgraded: true }));
+              setMode(resolveMode({ search, reducedMotion, downgraded: true, mobile }));
             },
           });
         });

@@ -1,15 +1,15 @@
 ---
-title: Cutting render time at Inside Out Development
+title: Cutting render time at InsideOut Development
 slug: render-performance
 role: Software Developer, InsideOut Development
-timeline: Apr 2019 to Mar 2022
+timeline: Aug 2021 to Oct 2021
 stack:
   - React
   - Node.js
   - Lighthouse
 outcomes:
-  - "Performance score 47 to 82, measured with Lighthouse on dev.insideoutdev.com on 10-28-21 and 10-29-21."
-  - "Largest contentful paint 5.2s to 2.0s and first contentful paint 4.0s to 1.3s on the same two runs."
+  - "Lighthouse performance score from 47 to 82"
+  - "Largest contentful paint from 5.2s to 2.0s, first contentful paint from 4.0s to 1.3s"
 cardOutcome: "Largest contentful paint on the company site dropped from 5.2s to 2.0s after the images and loading were reworked."
 cardNumber: "2.0s"
 cardNumberLabel: "largest paint, down from 5.2s"
@@ -17,71 +17,48 @@ thumbnail: /work/render-performance/thumb.webp
 order: 5
 ---
 
-{/* DRAFT: every [ERIC: ...] marker is a fact only Eric can supply. */}
-
 ## Context
 
-At InsideOut Development I worked as a software developer from April 2019 to March 2022. [ERIC: what kind of company is this, and what did the team build? One or two sentences, no client names.]
+At InsideOut Development I worked as a software developer from April 2019 to March 2022. InsideOut builds coaching and training software plus a learning management system.
 
-The performance work centered on the Inside Out Development company site, a React app. The site had just been rebuilt from new designs, and the new version was image-heavy and resource-intensive. [ERIC: roughly how many people used it, and on what devices or networks?]
+The performance work centered on the InsideOut Development website. The same site served the public marketing pages and the learning portal customers used behind a login paywall. It had just been rebuilt from new designs which was image-heavy and very resource-intensive.
 
 ## Problem
 
-After the redesign, render times were poor enough that they had to be addressed. The goal was to bring first contentful paint under an acceptable threshold. [ERIC: what did slow look like in practice? A blank page, a frozen scroll, a laggy input?]
-
-[ERIC: how was the problem first noticed, and by whom, by role?]
-
-[ERIC: was there a specific number the team or the client wanted to hit?]
+After the redesign, the site was slow for everyone. Customers across the app stared at a blank page while it loaded, and render times were far too long. The goal was to bring first contentful paint down to an acceptable level.
 
 ## My role
 
-I handled the render-time work on the front end. [ERIC: did you own the investigation, pair with someone, or work from a ticket someone else wrote?]
-
-[ERIC: who else touched this, described by role only, such as a lead developer or a designer? Do not use names.]
+I led the render-time work on the front end, from the first Lighthouse profile to the final check before launch. Other engineers on the team helped with other changes like implementing Suspense.
 
 ## Key decisions
 
-**Measure before changing anything.** I profiled the site with Lighthouse and used the 10-28-21 run on dev.insideoutdev.com as the baseline. That run scored 47 for performance, with a first contentful paint of 4.0s and a largest contentful paint of 5.2s.
+**Measure before changing anything.** I profiled the site with Lighthouse before touching the code. The baseline run scored 47 for performance, with a first contentful paint of 4.0s and a largest contentful paint of 5.2s.
 
-**Fix the largest cost first.** The biggest cost Lighthouse found was images. Its opportunities list for that run put properly sized images at about 6.36s of potential savings, next-gen image formats at about 2.4s, and render-blocking resources at about 0.9s. So images came first: they were resized and compressed before anything else.
+**Fix the largest cost first.** The biggest cost Lighthouse found was images. Its opportunities list for that run put properly sized images at about 6.36s of potential savings, next-gen image formats at about 2.4s, and render-blocking resources at about 0.9s, so images came first. They were resized and compressed before anything else.
 
-**Then change how the code loads.** After the images, I converted standard component imports to lazy imports and moved the mounting of components on each route to React Suspense. I made the third-party scripts load asynchronously and deferred the render-blocking resources that were left. [ERIC: how did you ship these changes? One at a time, behind a flag, or in one release?]
+**Then change how the code loads.** After the images, we converted standard component imports to lazy imports and moved the mounting of components on each route to React Suspense. We made the third-party scripts load asynchronously and deferred the render-blocking resources that were left.
 
-> [ERIC: one sentence in your own words about the trade-off you weighed on this project. Optional pull quote.]
+**Ship in phases and benchmark each one.** The changes went out in phases, and we ran Lighthouse as each phase landed. Each phase got its own before-and-after numbers.
 
-**What I chose not to do.** [ERIC: was there a bigger rewrite on the table that you passed on, and why?]
+**Targeted fixes, not a rewrite.** There was no big rewrite on the table. The work was a series of focused fixes, each aimed at getting the paint times down.
 
 ## Impact
 
-Lighthouse on dev.insideoutdev.com, run on 10-28-21 and again on 10-29-21 after the changes:
+Lighthouse on the test environment, run on October 28, 2021 and again on October 29. The second run was the final check before the changes merged for launch.
 
 <BeforeAfter
   before="/work/render-performance/lighthouse-2021-10-28.webp"
   after="/work/render-performance/lighthouse-2021-10-29.webp"
-  beforeAlt="Lighthouse report from 10-28-21 for dev.insideoutdev.com showing a performance score of 47 and a largest contentful paint of 5.2 seconds."
-  afterAlt="Lighthouse report from 10-29-21 for dev.insideoutdev.com showing a performance score of 82 and a largest contentful paint of 2.0 seconds."
-  caption="Lighthouse reports for dev.insideoutdev.com, 10-28-21 before and 10-29-21 after. Performance score 47 to 82."
+  beforeAlt="Lighthouse report from October 28, 2021 for the test environment showing a performance score of 47 and a largest contentful paint of 5.2 seconds."
+  afterAlt="Lighthouse report from October 29, 2021 for the test environment showing a performance score of 82 and a largest contentful paint of 2.0 seconds."
+  caption="Lighthouse reports from October 28 (before) and October 29, 2021 (after). Performance score 47 to 82."
 />
 
-| Metric | 10-28-21 | 10-29-21 |
-| --- | --- | --- |
-| Performance score | 47 | 82 |
-| First contentful paint | 4.0s | 1.3s |
-| Largest contentful paint | 5.2s | 2.0s |
-| Speed Index | 6.1s | 1.6s |
-| Time to Interactive | 4.3s | 2.1s |
-| Total Blocking Time | 190ms | 150ms |
-
-These are two lab runs on the development site, not production traces. Largest contentful paint fell by 3.2s, and Speed Index fell by 4.5s. Total Blocking Time moved the least, from 190ms to 150ms.
-
-[ERIC: any change in how people used the site afterward, if you know of one.]
-
-[ERIC: did the client or leadership say anything specific about the result?]
+These are two lab runs on the test environment, not production traces.
 
 ## What I'd do next
 
-[ERIC: what is still slow or fragile on this project as you remember it?]
+Images were the biggest cost, and we fixed them by hand. If I did this again, I would move resizing and modern image formats into the build. Every new image would be handled automatically, so new content could not bring the problem back.
 
-If I were doing this work again, I would set up measurement first and keep it running, so a regression shows up the week it ships instead of months later. [ERIC: did you leave any monitoring or a performance budget in place at the time? If not, say so plainly.]
-
-[ERIC: one more thing you would change about how the work was scoped, communicated, or rolled out.]
+After that, I would go after main-thread work. Total Blocking Time barely moved, from 190ms to 150ms, because the fixes were mostly about images and loading order. The next target is JavaScript cost: splitting the bundles further and trimming third-party scripts.

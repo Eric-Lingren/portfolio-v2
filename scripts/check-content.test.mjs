@@ -259,13 +259,11 @@ describe("strict launch gate", () => {
   it.each([
     ["eric marker in json", { "src/content/work-cards.json": '{"note":"[ERIC: confirm card copy]"}' }, "eric-marker"],
     ["panel component marker", { "src/components/panels/X.tsx": "<p>[ERIC: fix]</p>" }, "eric-marker"],
-    ["resume marker", { "content/resume/resume.mdx": "- Cut render time on [ERIC: what]." }, "eric-marker"],
     ["placeholder testimonials", { "src/content/testimonials.ts": "export const TESTIMONIALS = [];" }, "testimonials-placeholder"],
     ["internal link", { "src/components/panels/X.tsx": '<a href="https://linear.app/x">x</a>' }, "internal-link"],
-    ["phone", { "content/resume/resume.mdx": "Call (555) 123-4567" }, "phone"],
+    ["phone", { "src/components/panels/X.tsx": "<p>Call (555) 123-4567</p>" }, "phone"],
     ["count in positioning", { "src/content/positioning.ts": 'const a = "Merged 300 PRs";' }, "headline-count"],
     ["count in experience", { "src/content/experience.ts": 'text: "Touched 40 files",' }, "headline-count"],
-    ["count in resume", { "content/resume/resume.mdx": "- Wrote 20,000 lines of code" }, "headline-count"],
     ["count in title", { "content/work/a.mdx": FM.replace("title: T", "title: 90 PRs later") + body() }, "headline-count"],
     [
       "count in outcomes list",
@@ -404,6 +402,18 @@ describe("work image and copy gate", () => {
       });
       expect(r.rules).toEqual([]);
     });
+
+    it("counts a thumb-2x referenced only by a card's srcset as used", () => {
+      const thumbnailSrcSet = "/work/kpi-granularity/thumb.webp 568w, /work/kpi-granularity/thumb-2x.webp 1136w";
+      const r = strict({
+        "src/content/work-cards.json": cardsJson([
+          card("kpi-granularity", "/work/kpi-granularity/thumb.webp", { thumbnailSrcSet }),
+        ]),
+        "public/work/kpi-granularity/thumb.webp": "x",
+        "public/work/kpi-granularity/thumb-2x.webp": "x",
+      });
+      expect(r.rules).toEqual([]);
+    });
   });
 
   describe("work-internal-url", () => {
@@ -441,7 +451,7 @@ describe("work image and copy gate", () => {
 describe("WORD_MIN_OVERRIDES", () => {
   it("lets a listed slug pass at 450 words while the same count fails without it", () => {
     const files = { "content/work/a.mdx": FM + body(450) };
-    expect(WORD_MIN_OVERRIDES).toEqual({});
+    expect(WORD_MIN_OVERRIDES.t).toBeUndefined();
     expect(rules(project(files))).toContain("word-count");
     WORD_MIN_OVERRIDES.t = 450;
     try {

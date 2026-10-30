@@ -70,6 +70,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * A returning reader sees the dark page, not the hero, until their scroll is restored (scroll-memory.ts).
+ * Opacity, not visibility: descendants that set visibility: visible (hero redlines, stage panels) would
+ * show through a hidden parent. Body, so the footer is covered too; the html background stays.
+ */
+html[data-restoring-scroll] body {
+  opacity: 0;
+}
+
 code,
 pre,
 kbd,
@@ -481,7 +490,7 @@ samp {
   letter-spacing: -0.035em;
 }
 
-/* Every CTA (hero, Experience, Contact, nav Resume) shares this shape: 6px corners, 1.5px border. */
+/* Every CTA shares this shape: 6px corners, 1.5px border. */
 .btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
@@ -506,7 +515,7 @@ samp {
 }
 
 /*
- * Button hover, shared by every .btn and the nav Resume: the button glows in its own
+ * Button hover, shared by every .btn: the button glows in its own
  * colour and its arrow nudges toward where it goes (→ in page, ↗ out, ⤓ download).
  * A leading .btn-icon (src/components/icons.tsx) says what the button is at a glance.
  * Keyboard focus gets the same. The arrow is decorative. All buttons stay identical.
@@ -566,13 +575,13 @@ samp {
   margin-left: 0.45em;
   transition: transform 160ms ease;
 }
-:is(.btn, .site-nav__resume):is(:hover, :focus-visible) .btn-arrow {
+.btn:is(:hover, :focus-visible) .btn-arrow {
   transform: translateX(4px);
 }
-:is(.btn, .site-nav__resume):is(:hover, :focus-visible) .btn-arrow--out {
+.btn:is(:hover, :focus-visible) .btn-arrow--out {
   transform: translate(2px, -2px);
 }
-:is(.btn, .site-nav__resume):is(:hover, :focus-visible) .btn-arrow--down {
+.btn:is(:hover, :focus-visible) .btn-arrow--down {
   transform: translateY(3px);
 }
 /* The sketch wireframe stays flat: no glow or tint bleeds onto it mid-wipe. */
@@ -623,10 +632,15 @@ samp {
   scale: var(--fit, 1);
 }
 
-/* Every panel shares one box: full width and the room below the nav (--panel-h, set by FlyStage). */
+/*
+ * Every panel shares one box: full width and the room below the nav (--panel-h, set by FlyStage).
+ * `safe`: content taller than the box starts at the top padding instead of centering out past it, where
+ * the title would ride up into the z tag. --content-fit then shrinks it toward the title.
+ */
 .fly-panel .panel-layer {
   height: var(--panel-h, 70svh);
   min-height: 0;
+  justify-content: safe center;
 }
 
 /*

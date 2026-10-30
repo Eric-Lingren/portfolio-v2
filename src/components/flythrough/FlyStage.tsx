@@ -19,8 +19,9 @@ import {
 } from "./camera";
 import { FLY_CONFIG } from "./config";
 import { attachLookAround, type LookPoint } from "./look";
-import { initialScrollTop } from "./hash-target";
+import { initialScrollTop, syncHashToActiveSection, writeSectionHash } from "./hash-target";
 import { PANELS } from "./registry";
+import { pendingScrollTop } from "./scroll-memory";
 import { divePull } from "./dive";
 import { attachPanelSnap } from "./snap";
 import { StageContext } from "./stage-context";
@@ -49,9 +50,10 @@ export function FlyStage() {
     let layout: Layout = layoutFor(window.innerWidth);
     let width = window.innerWidth;
     let lvh = window.innerHeight;
-    // A hash naming a panel starts the camera on that panel's stop. Instant: first paint stays static.
-    const hashTop = initialScrollTop(window.location.hash, COUNT, lvh);
-    if (hashTop > 0) window.scrollTo({ top: hashTop, left: 0, behavior: "instant" });
+    // A returning reader starts where they left (see scroll-memory.ts). Otherwise a hash naming a panel
+    // starts the camera on that panel's stop. Instant: first paint stays static.
+    const startTop = pendingScrollTop() ?? initialScrollTop(window.location.hash, COUNT, lvh);
+    if (startTop > 0) window.scrollTo({ top: startTop, left: 0, behavior: "instant" });
     let target = scrollProgress(window.scrollY, lvh);
     let current = target;
     let pullTarget = 0;
@@ -203,6 +205,8 @@ export function FlyStage() {
       const i = PANELS.findIndex((p) => p.id === id);
       if (i < 0) return;
       e.preventDefault();
+      // preventDefault skips the browser's hash update. Write the destination now, before the flight lands.
+      writeSectionHash(PANELS[i].id);
       snap.navigateTo(panelScrollTop(i, COUNT, lvh));
       // After navigateTo: it cancels any running flight, which clears the old destination.
       flightDest = i;
@@ -215,6 +219,7 @@ export function FlyStage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
     document.addEventListener("click", onClick);
+    const unsyncHash = syncHashToActiveSection();
     render();
 
     return () => {
@@ -225,6 +230,7 @@ export function FlyStage() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       document.removeEventListener("click", onClick);
+      unsyncHash();
     };
   }, []);
 

@@ -1,21 +1,3 @@
-/* One quiet line of the terms the toolkit uses, dot separated. */
-.ai-keywords {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
-}
-
-.ai-keywords li:not(:last-child)::after {
-  content: "·";
-  margin: 0 0.85rem;
-}
-
 .ai-stage-num {
   display: inline-block;
   min-width: 1.2em;
@@ -57,25 +39,43 @@
   pointer-events: none;
 }
 
-/* ---- flat strip: replaces the track on narrow screens ---- */
+/*
+ * ---- flat strip: replaces the track on narrow screens ----
+ * All five stages stay on one row: number above label, equal widths when they fit.
+ * Fits from a 343px viewport up; anything narrower scrolls the row sideways instead of wrapping.
+ */
 .ai-strip {
   display: none;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ai-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .ai-strip-stage {
+  display: flex;
   flex: 1 1 0;
-  min-width: 4.5rem;
-  padding: 0.4rem 0.5rem;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: max-content;
+  padding: 0.45rem 0.4rem;
   border: 1.5px solid transparent;
   border-radius: 0.4rem;
   background: transparent;
   color: inherit;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
+}
+
+.ai-strip-stage .ai-stage-num {
+  min-width: 0;
+  text-align: left;
 }
 
 /* ---- stage picker + card: one content block ---- */
@@ -169,11 +169,11 @@
   border-color: var(--po-border-strong);
 }
 
+/* Hover and focus pick the step, so the current step is the hover state: coral border, title and number, no glow. */
 .panel-layer--polished .ai-stage[aria-current="step"],
 .panel-layer--polished .ai-strip-stage[aria-current="step"] {
-  border-color: var(--accent-2);
-  color: var(--accent-2);
-  box-shadow: 0 0 24px rgba(6, 182, 212, 0.25);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .panel-layer--polished .ai-stage:not(:last-child)::after {
@@ -186,16 +186,12 @@
   color: var(--accent-2);
 }
 
+.panel-layer--polished [aria-current="step"] .ai-stage-num {
+  color: var(--accent);
+}
+
 .panel-layer--polished .ai-skill-tip {
   color: #cbd5e1;
-}
-
-.panel-layer--polished .ai-keywords {
-  color: #94a3b8;
-}
-
-.panel-layer--polished .ai-keywords li::after {
-  color: var(--accent-2);
 }
 
 .panel-layer--polished .ai-skill-model {

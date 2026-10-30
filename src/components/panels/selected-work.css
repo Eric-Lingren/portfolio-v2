@@ -43,7 +43,8 @@
 }
 
 .work-thumb-sketch,
-.work-thumb-real {
+.work-thumb-real,
+.work-thumb-tint {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -55,11 +56,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1.5px dashed var(--sk-line);
+  pointer-events: none;
 }
 
-.work-thumb-x {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 2rem;
+/* Wireframe "image goes here" mark. The frame is filled with the sketch ground so the hatching stops at its edge. */
+.work-thumb-icon {
+  width: 3.5rem;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: var(--sk-line);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* Not inherited, so set on the shapes: the stroke stays 1.5px at every icon size. */
+.work-thumb-icon > * {
+  vector-effect: non-scaling-stroke;
+}
+
+.work-thumb-icon rect {
+  fill: var(--sk-bg);
 }
 
 .work-card-title,
@@ -72,8 +90,8 @@
 .work-card-outcome {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   overflow: hidden;
 }
 
@@ -121,8 +139,9 @@
     flex-basis: 100%;
   }
 
+  /* Same gap as the stacked testimonial cards. */
   .work-grid {
-    gap: 0.6rem;
+    gap: calc(var(--block-gap) * 1.2);
   }
 
   .work-card {
@@ -148,8 +167,12 @@
     padding-bottom: 0;
   }
 
-  .work-thumb-x {
-    font-size: 1rem;
+  .work-thumb {
+    border-radius: 4px;
+  }
+
+  .work-thumb-icon {
+    width: 2rem;
   }
 }
 
@@ -159,17 +182,67 @@
   color: var(--po-muted);
 }
 .panel-layer--polished .work-card-number strong {
-  color: var(--accent-2);
+  color: var(--accent);
 }
 .panel-layer--polished .work-thumb-sketch {
   visibility: hidden;
+}
+
+/*
+ * Thumbs rest in the site palette and show their real color on hover or keyboard focus.
+ * The tinted copy (filters in WorkThumbFilters.tsx) sits over the real image and fades out.
+ */
+.panel-layer--polished .work-thumb-tint {
+  transition: opacity 0.5s ease;
+}
+.panel-layer--polished .work-thumb-tint[data-tone="light"] {
+  filter: url(#work-thumb-tint-light);
+}
+.panel-layer--polished .work-thumb-tint[data-tone="dark"] {
+  filter: url(#work-thumb-tint-dark);
+}
+.panel-layer--polished .work-card:focus-visible .work-thumb-tint {
+  opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel-layer--polished .work-card:hover .work-thumb-tint {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-layer--polished .work-thumb-tint {
+    transition: none;
+  }
+}
+
+/* Hairline between the image and the card body (a full outline on phones, where the thumb sits beside the text). */
+.panel-layer--polished .work-thumb::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: var(--po-border);
+  pointer-events: none;
+}
+@container (max-width: 559px) {
+  .panel-layer--polished .work-thumb::after {
+    inset: 0;
+    height: auto;
+    border: 1px solid var(--po-border);
+    border-radius: inherit;
+    background: none;
+  }
 }
 .panel-layer--polished .work-thumb-missing {
   background: var(--po-bg);
   border: 1px solid var(--po-border-strong);
 }
 
-/* Layer color: sketch */
-.panel-layer--sketch .work-thumb-real {
+/* Layer color: sketch. The thumb draws as a wireframe (filter in WorkThumbFilters.tsx) over the grid paper. */
+.panel-layer--sketch .work-thumb-tint,
+.panel-layer--sketch .work-thumb-missing {
   visibility: hidden;
+}
+.panel-layer--sketch img.work-thumb-real {
+  filter: url(#work-thumb-wire);
 }

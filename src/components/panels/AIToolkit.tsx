@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState, type TouchEvent } from "react";
-import { HEADING, KEYWORDS, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
+import { HEADING, REPO_URL, STAGES, fileUrl } from "@/content/ai-toolkit";
 import { Panel, type PanelLayers } from "../Panel";
 import "./ai-toolkit.css";
 
@@ -54,11 +53,6 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
     <div className="ai-root section" data-testid="ai-diagram">
       <div className="section-head">
         <h2 className="section-title">{HEADING}</h2>
-        <ul className="ai-keywords" aria-label="Skills and tooling">
-          {KEYWORDS.map((w) => (
-            <li key={w}>{w}</li>
-          ))}
-        </ul>
       </div>
       <div className="ai-body" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         {/* Wide screens show the five stages with arrows. Hover, focus or click picks the card below. */}
@@ -97,9 +91,11 @@ function Stepper({ step, setStep }: { step: number; setStep: (n: number) => void
         </div>
       </div>
       <div className="section-actions">
-        <Link className="btn btn-primary" href="/work/ai-toolkit">
+        {/* A full page load, like the work cards, so the home page saves its scroll for the way back. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a className="btn btn-primary" href="/work/ai-toolkit">
           Read the case study <span className="btn-arrow" aria-hidden="true">→</span>
-        </Link>
+        </a>
         <a className="btn btn-outline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
           Browse the toolkit on GitHub <span className="btn-arrow btn-arrow--out" aria-hidden="true">↗</span>
         </a>

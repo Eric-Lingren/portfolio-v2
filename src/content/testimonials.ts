@@ -52,7 +52,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Bryan University",
     year: 2023,
     original: "BU2",
-    highlights: ["extraordinary instructor", "very passionate and enthusiastic"],
+    highlights: ["extraordinary instructor", "consistently", "very passionate and enthusiastic"],
   },
   {
     quote:
@@ -72,6 +72,6 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     employer: "Bryan University",
     year: 2020,
     original: "BU1",
-    highlights: ["amazing instructor!", "helped boost my self confidence"],
+    highlights: ["amazing instructor!", "always available", "helped boost my self confidence"],
   },
 ];
