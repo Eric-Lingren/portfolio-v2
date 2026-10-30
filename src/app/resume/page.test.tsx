@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -6,6 +6,8 @@ import { ResumeDocument } from "@/components/ResumeDocument";
 import { RESUME } from "@/content/resume";
 import { PHONE } from "@/content/resume-contact";
 import { EMAIL } from "@/content/site";
+import alpha from "@/content/__fixtures__/resume.variants/fixture-alpha";
+import beta from "@/content/__fixtures__/resume.variants/fixture-beta";
 import ResumePage, { metadata } from "./page";
 
 const html = renderToStaticMarkup(<ResumePage />);
@@ -70,6 +72,37 @@ describe("/resume page", () => {
     const sm = RESUME.jobs[0];
     expect(html).toContain(sm.dates);
     expect(doc.querySelectorAll("section ul li").length).toBeGreaterThan(sm.bullets.length);
+  });
+});
+
+describe("Download PDF link", () => {
+  const link = [...doc.querySelectorAll("a")].find((a) => a.textContent === "Download PDF");
+
+  it("links to the PDF with the shared button classes", () => {
+    expect(link).toBeDefined();
+    expect(link!.getAttribute("href")).toBe("/eric-lingren-resume.pdf");
+    expect(link!.classList.contains("btn")).toBe(true);
+    expect(link!.classList.contains("btn-outline")).toBe(true);
+  });
+
+  it("is hidden by the print stylesheet", () => {
+    expect(link!.closest(".resume-download")).not.toBeNull();
+    const css = readFileSync(path.resolve(process.cwd(), "src/app/resume/resume-page.css"), "utf8");
+    expect(css).toMatch(/@media print\s*{[^]*\.resume-download\s*{[^}]*display:\s*none/);
+  });
+});
+
+describe("static export privacy", () => {
+  const file = ["out/resume.html", "out/resume/index.html"].map((f) => path.resolve(process.cwd(), f)).find((f) => existsSync(f));
+
+  it.skipIf(!file)("built out/resume has no phone digits and no variant text", () => {
+    const built = readFileSync(file!, "utf8");
+    const digits = PHONE.replace(/\D/g, "");
+    expect(built).not.toContain(PHONE);
+    expect(built).not.toContain(digits);
+    expect(built).not.toContain("707-7067");
+    expect(built.replace(/\D/g, "")).not.toContain(digits);
+    for (const v of [alpha, beta]) expect(built).not.toContain(v.summaryLastLine);
   });
 });
 

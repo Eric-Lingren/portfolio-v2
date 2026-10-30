@@ -1,0 +1,12 @@
+/* Screen-only chrome around the resume document. Kept out of resume.css, which the PDF hash covers. */
+.resume-download {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 0;
+}
+
+@media print {
+  .resume-download {
+    display: none;
+  }
+}
