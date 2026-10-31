@@ -89,7 +89,7 @@ const PROJECTS: readonly ResumeProject[] = [
     bullets: [
       "Built a multi-agent Claude Code pipeline that takes work from planning interview to reviewed PR, with test-first build agents and separate test and browser verification agents.",
       "Tiered models by cost of error. Haiku runs lookups and tests, Sonnet builds and reviews, Opus handles planning and debugging.",
-      "Built LLM evals with multi-judge scoring and a learning loop that turns misses into measured fixes for the skills that caused them.",
+      "Built LLM evals with multi-judge scoring and learning loops that turns misses into measured fixes for the skills that caused them.",
     ],
   },
 ];
