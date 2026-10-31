@@ -1,16 +1,17 @@
 // @vitest-environment node
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { PDFDocument } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import ResumePage from "../src/app/resume/page";
-import { PHONE } from "../src/content/resume-contact";
 import type { ResumeVariant } from "../src/content/resume-variants";
 import { RESUME } from "../src/content/resume";
-import { PATHS, buildResumeHtml, chooseVariant, computeResumeHash, generateResumePdf, readHashInputs } from "./resume-pdf";
+import { PATHS, buildResumeHtml, chooseVariant, computeResumeHash, generateResumePdf, readHashInputs, readPrivatePhone } from "./resume-pdf";
 
+const PHONE = "(555) 010-4477";
+const PHONE_PATTERN = /\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/;
 const FAKE_PDF = new TextEncoder().encode("%PDF-fake");
 const fakeRenderer = async () => FAKE_PDF;
 
@@ -23,7 +24,6 @@ describe("PDF staleness", () => {
 
   it.each([
     ["resume data", () => ({ resume: { ...RESUME, headline: "Changed headline" } })],
-    ["contact module", () => ({ contact: `${readHashInputs().contact}// changed` })],
     ["document component", () => ({ document: `${readHashInputs().document}// changed` })],
     ["css", () => ({ css: `${readHashInputs().css}/* changed */` })],
   ])("fails when %s changes without regenerating", (_name, change) => {
@@ -39,16 +39,32 @@ describe("committed PDF", () => {
 });
 
 describe("resume HTML", () => {
-  it("includes the phone for the PDF build", () => {
+  it("includes the phone only when given", () => {
     const html = buildResumeHtml(RESUME, PHONE);
     expect(html).toContain(PHONE);
     expect(html).toContain("@media print");
+    expect(buildResumeHtml(RESUME)).not.toMatch(PHONE_PATTERN);
   });
 
   it("omits the phone from the public page markup", () => {
-    const html = renderToStaticMarkup(<ResumePage />);
-    expect(html).not.toContain(PHONE);
-    expect(html).not.toContain(PHONE.replace(/\D/g, ""));
+    expect(renderToStaticMarkup(<ResumePage />)).not.toMatch(PHONE_PATTERN);
+  });
+});
+
+describe("readPrivatePhone", () => {
+  const file = (text?: string) => {
+    const path = join(mkdtempSync(join(tmpdir(), "resume-contact-")), "resume-contact.json");
+    if (text !== undefined) writeFileSync(path, text);
+    return path;
+  };
+
+  it("reads the phone from the private contact file", () => {
+    expect(readPrivatePhone(file(JSON.stringify({ phone: PHONE })))).toBe(PHONE);
+  });
+
+  it("throws with setup steps when the file is missing or has no phone", () => {
+    expect(() => readPrivatePhone(file())).toThrow(/not found/);
+    expect(() => readPrivatePhone(file("{}"))).toThrow(/non-empty "phone"/);
   });
 });
 
@@ -81,7 +97,12 @@ describe("generateResumePdf", () => {
 
   function setup() {
     const dir = mkdtempSync(join(tmpdir(), "resume-pdf-"));
-    const paths = { basePdf: join(dir, "public/base.pdf"), hash: join(dir, "base.sha256"), variantPdfDir: join(dir, "private/resume") };
+    const paths = {
+      basePdf: join(dir, "public/base.pdf"),
+      hash: join(dir, "base.sha256"),
+      variantPdfDir: join(dir, "private/resume"),
+      privateContact: join(dir, "private/resume-contact.json"),
+    };
     return { dir, paths };
   }
 
@@ -91,6 +112,7 @@ describe("generateResumePdf", () => {
     const out = await generateResumePdf({
       variant: "alpha",
       paths,
+      phone: PHONE,
       renderer: async (html) => {
         htmls.push(html);
         return FAKE_PDF;
@@ -98,6 +120,7 @@ describe("generateResumePdf", () => {
       loadVariant: async () => variant,
     });
     expect(out.path).toBe(join(paths.variantPdfDir, "alpha.pdf"));
+    expect(out.publicPath).toBeNull();
     expect(existsSync(out.path)).toBe(true);
     expect(existsSync(paths.basePdf)).toBe(false);
     expect(existsSync(paths.hash)).toBe(false);
@@ -105,18 +128,36 @@ describe("generateResumePdf", () => {
     expect(htmls[0]).toContain(PHONE);
   });
 
-  it("writes the base pdf and the hash for the base resume", async () => {
+  it("writes a private base pdf with the phone, a public one without it, and the hash", async () => {
     const { paths } = setup();
-    const out = await generateResumePdf({ variant: null, paths, renderer: fakeRenderer });
-    expect(out.path).toBe(paths.basePdf);
-    expect(readFileSync(paths.basePdf)).toEqual(Buffer.from(FAKE_PDF));
+    const rendered = new Map<string, string>();
+    const out = await generateResumePdf({
+      variant: null,
+      paths,
+      phone: PHONE,
+      renderer: async (html) => {
+        const pdf = new TextEncoder().encode(`%PDF-${rendered.size}`);
+        rendered.set(Buffer.from(pdf).toString(), html);
+        return pdf;
+      },
+    });
+    expect(out.path).toBe(join(paths.variantPdfDir, "base.pdf"));
+    expect(out.publicPath).toBe(paths.basePdf);
+    expect(rendered.get(readFileSync(out.path, "utf8"))).toContain(PHONE);
+    expect(rendered.get(readFileSync(paths.basePdf, "utf8"))).not.toMatch(PHONE_PATTERN);
     expect(readFileSync(paths.hash, "utf8").trim()).toBe(computeResumeHash());
+  });
+
+  it("reads the phone from the private contact file and fails without it", async () => {
+    const { paths } = setup();
+    await expect(generateResumePdf({ variant: null, paths, renderer: fakeRenderer })).rejects.toThrow(/not found/);
+    expect(existsSync(paths.basePdf)).toBe(false);
   });
 
   it("never touches the committed files in a variant run", async () => {
     const { paths } = setup();
     const before = [readFileSync(PATHS.basePdf), readFileSync(PATHS.hash)];
-    await generateResumePdf({ variant: "alpha", paths, renderer: fakeRenderer, loadVariant: async () => variant });
+    await generateResumePdf({ variant: "alpha", paths, phone: PHONE, renderer: fakeRenderer, loadVariant: async () => variant });
     expect([readFileSync(PATHS.basePdf), readFileSync(PATHS.hash)]).toEqual(before);
   });
 });
