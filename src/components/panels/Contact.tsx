@@ -107,7 +107,7 @@ export function Contact({ layers = "polished", z = 0, id }: Props) {
                   ↗
                 </span>
               </a>
-              <a className="btn btn-outline contact-btn" href="/resume">
+              <a className="btn btn-primary contact-btn" href="/resume">
                 <FileTextIcon />
                 Resume
                 <span className="btn-arrow" aria-hidden="true">

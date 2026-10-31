@@ -27,6 +27,16 @@ export function withProofNumbers(text: string): ReactNode[] {
   return out;
 }
 
+/** Resume link. Web links open in a new tab; mailto stays in place. */
+function Link({ href, children }: { href: string; children: ReactNode }) {
+  const external = !href.startsWith("mailto:");
+  return (
+    <a href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+      {children}
+    </a>
+  );
+}
+
 /** Server-renderable resume. Styled by resume.css (imported by the page, inlined by the PDF task). */
 export function ResumeDocument({ resume, phone }: Props) {
   return (
@@ -45,11 +55,11 @@ export function ResumeDocument({ resume, phone }: Props) {
           <li>{resume.location}</li>
           {phone ? <li>{phone}</li> : null}
           <li>
-            <a href={`mailto:${resume.email}`}>{resume.email}</a>
+            <Link href={`mailto:${resume.email}`}>{resume.email}</Link>
           </li>
           {resume.links.map((link) => (
             <li key={link.href}>
-              <a href={link.href}>{link.label}</a>
+              <Link href={link.href}>{link.label}</Link>
             </li>
           ))}
         </ul>
@@ -65,7 +75,7 @@ export function ResumeDocument({ resume, phone }: Props) {
         {resume.jobs.map((job) => (
           <div key={job.company} className="resume-item">
             <h3 className="resume-item-title">
-              <a href={job.url}>{job.company}</a>
+              <Link href={job.url}>{job.company}</Link>
             </h3>
             <p className="resume-meta">
               {job.title} &middot; <span className="resume-dates">{job.dates}</span>
@@ -84,11 +94,11 @@ export function ResumeDocument({ resume, phone }: Props) {
         {resume.projects.map((project) => (
           <div key={project.name} className="resume-item">
             <h3 className="resume-item-title">
-              <a href={project.url}>{project.name}</a>
+              <Link href={project.url}>{project.name}</Link>
             </h3>
             <p className="resume-meta">
-              {project.role} &middot; <span className="resume-dates">{project.dates}</span> &middot;{" "}
-              <a href={project.url}>{project.url.replace(/^https?:\/\//, "")}</a>
+              <span className="resume-dates">{project.dates}</span> &middot;{" "}
+              <Link href={project.url}>{project.url.replace(/^https?:\/\//, "")}</Link>
             </p>
             <ul className="resume-bullets">
               {project.bullets.map((b) => (
@@ -115,7 +125,7 @@ export function ResumeDocument({ resume, phone }: Props) {
         <ul className="resume-list">
           {resume.education.map((entry) => (
             <li key={entry.org}>
-              <a href={entry.url}>{entry.org}</a> &middot; {entry.detail}
+              <Link href={entry.url}>{entry.org}</Link> &middot; {entry.detail}
             </li>
           ))}
         </ul>

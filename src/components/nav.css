@@ -78,6 +78,16 @@
   height: 2px;
   background: var(--accent-2);
 }
+/* Resume: the one filled coral button in the bar, pinned to its right end. */
+.site-nav a.site-nav__resume {
+  flex: none;
+  padding: 0.4rem 0.85rem;
+  color: var(--on-accent-fill);
+  font-weight: 600;
+}
+.site-nav a.site-nav__resume:hover {
+  color: var(--on-accent-fill);
+}
 /* View switch: small and out of the way, pinned to the viewport's bottom-right corner. */
 .view-switch {
   position: fixed;
@@ -163,7 +173,14 @@
     justify-content: space-between;
     padding: 0.5rem 0.75rem;
   }
+  /* Phones: brand, then Resume and Menu together on the right. */
+  .site-nav a.site-nav__resume {
+    order: 1;
+    margin-left: auto;
+    padding: 0.4rem 0.75rem;
+  }
   .site-nav .site-nav__toggle {
+    order: 2;
     display: inline-flex;
     margin-right: -0.6rem;
     padding: 0.6rem;

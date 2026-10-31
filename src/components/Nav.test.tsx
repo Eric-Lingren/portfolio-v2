@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("Nav", () => {
-  it("renders all anchors and the switch, with no resume link", () => {
+  it("renders all anchors, the switch and the coral Resume button", () => {
     render(<Nav navigate={() => {}} />);
     for (const [label, id] of [
       ["What I do", "what-i-do"],
@@ -27,7 +27,14 @@ describe("Nav", () => {
     expect(screen.getByRole("radiogroup", { name: "View" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "Interactive" })).toBeChecked();
     expect(screen.getByRole("radio", { name: "Classic" })).not.toBeChecked();
-    expect(screen.queryByRole("link", { name: "Resume" })).toBeNull();
+    const resume = screen.getByRole("link", { name: "Resume" });
+    expect(resume).toHaveAttribute("href", "/resume");
+    expect(resume).toHaveClass("btn", "btn-primary");
+    // Same icon as the Contact panel's Resume button.
+    expect(resume.firstElementChild).toHaveClass("btn-icon");
+    expect(resume.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    expect(resume).not.toHaveAttribute("target");
+    expect(resume.closest("nav")).toBeNull();
   });
 
   it("switching to Classic sets ?view=classic, and back removes it", () => {
@@ -62,6 +69,7 @@ describe("Nav", () => {
       ["link", "Experience"],
       ["link", "Testimonials"],
       ["link", "Contact"],
+      ["link", "Resume"],
       ["radio", "Interactive"],
       ["radio", "Classic"],
     ];

@@ -87,6 +87,15 @@ describe("/resume page", () => {
     expect(orgs).toEqual(RESUME.education.map((e) => [e.org, e.url]));
   });
 
+  it("opens every web link in a new tab with noopener noreferrer", () => {
+    const web = [...doc.querySelectorAll("a")].filter((a) => !a.getAttribute("href")!.startsWith("mailto:"));
+    expect(web.length).toBeGreaterThan(8);
+    for (const a of web) {
+      expect(a.getAttribute("target")).toBe("_blank");
+      expect(a.getAttribute("rel")).toBe("noopener noreferrer");
+    }
+  });
+
   it("renders jobs with ul/li bullets", () => {
     expect(doc.querySelectorAll("h3").length).toBe(RESUME.jobs.length + RESUME.projects.length);
     const sm = RESUME.jobs[0];

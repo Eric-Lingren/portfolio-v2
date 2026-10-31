@@ -1,4 +1,3 @@
-import { MAILTO_URL } from "@/content/site";
 import { Panel, type PanelLayers } from "./Panel";
 
 export function Hero({ layers = "polished", z = 0, id }: { layers?: PanelLayers; z?: number; id?: string }) {
@@ -31,10 +30,10 @@ export function Hero({ layers = "polished", z = 0, id }: { layers?: PanelLayers;
               →
             </span>
           </a>
-          <a className="btn btn-outline" href={MAILTO_URL}>
-            Email me
-            <span className="btn-arrow btn-arrow--out" aria-hidden="true">
-              ↗
+          <a className="btn btn-outline" href="#contact">
+            Contact
+            <span className="btn-arrow" aria-hidden="true">
+              →
             </span>
           </a>
         </div>

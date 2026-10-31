@@ -56,8 +56,9 @@ describe("resume content", () => {
     const sm = RESUME.jobs.find((j) => j.company === "Standard Metrics")!;
     expect(sm.bullets).toHaveLength(5);
     expect(sm.bullets[0]).toMatch(/22% to 84%/);
-    expect(sm.bullets[0]).toMatch(/15-engineer/);
-    expect(sm.bullets[1]).toMatch(/KPI cadence/);
+    expect(sm.bullets[0]).toMatch(/re-architecture of our frontend platform/);
+    expect(RESUME.summary).toMatch(/15-engineer team/);
+    expect(sm.bullets[1]).toMatch(/Reporting Granularity/);
     expect(sm.bullets[2]).toMatch(/35 users across 11 firms/);
     expect(sm.bullets[3]).toMatch(/20 portfolio companies/);
     expect(sm.bullets[4]).toMatch(/AI development workflow/);
@@ -67,7 +68,7 @@ describe("resume content", () => {
     expect(RESUME.projects).toHaveLength(1);
     const p = RESUME.projects[0];
     expect(p.name).toBe("AI Development Toolkit");
-    expect(p.role).toBe("Creator");
+    expect(p).not.toHaveProperty("role");
     expect(p.dates).toBe("Nov 2025 – Present");
     expect(p.url).toBe("https://github.com/Eric-Lingren/claude-code-toolkit");
     expect(p.bullets).toHaveLength(3);
@@ -75,7 +76,7 @@ describe("resume content", () => {
 
   it("has the right bullet counts for the other jobs", () => {
     expect(RESUME.jobs.find((j) => j.company === "InsideOut Development")!.bullets).toHaveLength(2);
-    expect(RESUME.jobs.find((j) => j.company === "Bryan University")!.bullets).toHaveLength(1);
+    expect(RESUME.jobs.find((j) => j.company === "Bryan University")!.bullets).toHaveLength(2);
   });
 
   it("includes the required skills and excludes the dropped ones", () => {

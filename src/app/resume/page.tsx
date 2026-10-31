@@ -14,7 +14,7 @@ export default function ResumePage() {
   return (
     <main>
       <div className="resume-download">
-        <a className="btn btn-outline" href="/eric-lingren-resume.pdf" download>
+        <a className="btn btn-outline" href="/eric-lingren-resume.pdf" target="_blank" rel="noopener noreferrer">
           Download PDF
         </a>
       </div>

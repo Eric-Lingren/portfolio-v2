@@ -12,13 +12,11 @@ describe("Hero", () => {
     );
   });
 
-  it("links View work to #work and email to the mailto helper", () => {
+  it("links View work to #work and Contact to the contact panel", () => {
     render(<Hero />);
     expect(screen.getByRole("link", { name: "View work" })).toHaveAttribute("href", "#work");
-    expect(screen.getByRole("link", { name: /email/i })).toHaveAttribute(
-      "href",
-      "mailto:ericlingren@gmail.com?subject=Hello%20from%20ericlingren.com",
-    );
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "#contact");
+    expect(screen.queryByRole("link", { name: /email/i })).toBeNull();
   });
 
   it("gives each CTA a decorative arrow that stays out of its accessible name", () => {
@@ -26,9 +24,9 @@ describe("Hero", () => {
     const arrow = (name: string) => screen.getByRole("link", { name }).querySelector(".btn-arrow");
     expect(arrow("View work")).toHaveTextContent("→");
     expect(arrow("View work")).toHaveAttribute("aria-hidden", "true");
-    expect(arrow("Email me")).toHaveTextContent("↗");
-    expect(arrow("Email me")).toHaveClass("btn-arrow--out");
-    expect(arrow("Email me")).toHaveAttribute("aria-hidden", "true");
+    expect(arrow("Contact")).toHaveTextContent("→");
+    expect(arrow("Contact")).not.toHaveClass("btn-arrow--out");
+    expect(arrow("Contact")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("glows every button and nudges its arrow on hover and keyboard focus, and holds still for reduced motion", () => {

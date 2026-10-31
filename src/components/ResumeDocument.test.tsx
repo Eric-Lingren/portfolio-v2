@@ -27,6 +27,25 @@ describe("resume.css colors", () => {
     expect(css).toMatch(/\.resume-section-title\s*\{[^}]*border-bottom:\s*1\.5px solid var\(--resume-coral-line\)/);
   });
 
+  it("underlines links on screen in coral on hover only, and not in print", () => {
+    const screen = block(/@media screen/);
+    expect(screen).toMatch(/\.resume a\s*\{[^}]*text-decoration:\s*none/);
+    expect(screen).toMatch(/\.resume a:hover\s*\{[^}]*text-decoration:\s*underline/);
+    expect(screen).toMatch(/\.resume a:hover\s*\{[^}]*text-decoration-color:\s*var\(--resume-coral-line\)/);
+    expect(block(/@media print/)).toMatch(/\.resume a\s*\{[^}]*text-decoration:\s*none/);
+    // A later unscoped rule would override the screen underline at equal specificity.
+    const unscoped = css.replace(/@media[^{]*\{([^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
+    expect(unscoped).not.toMatch(/\.resume a\s*\{[^}]*text-decoration/);
+  });
+
+  it("colors the header contact block in the site blue, deep blue with AA contrast in print", () => {
+    expect(css).toMatch(/\.resume-reach\s*\{[^}]*color:\s*var\(--resume-blue-text\)/);
+    expect(block(/@media screen/)).toMatch(/--resume-blue-text:\s*var\(--accent-2, #06b6d4\)/);
+    const print = /--resume-blue-text:\s*(#[0-9a-f]{6})/i.exec(block(/@media print/))?.[1];
+    expect(print?.toLowerCase()).toBe("#155e75");
+    expect(contrastRatio(print!, "#ffffff")).toBeGreaterThanOrEqual(4.5);
+  });
+
   it("uses brand coral for coral text on the dark web theme", () => {
     expect(block(/@media screen/)).toMatch(/--resume-coral-text:\s*#ff6b57/i);
   });

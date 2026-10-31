@@ -101,11 +101,11 @@ describe("Contact", () => {
     }
   });
 
-  it("links GitHub, LinkedIn and Resume as shared buttons, icon then label", () => {
+  it("links GitHub, LinkedIn and Resume as shared buttons, icon then label, with Resume as the coral primary", () => {
     const { container } = render(<Contact />);
     for (const name of ["GitHub", "LinkedIn", "Resume"]) {
       const link = screen.getByRole("link", { name });
-      expect(link).toHaveClass("btn", "btn-outline", "contact-btn");
+      expect(link).toHaveClass("btn", name === "Resume" ? "btn-primary" : "btn-outline", "contact-btn");
       expect(link.parentElement).toHaveClass("contact-links");
       expect(link.firstElementChild).toHaveClass("btn-icon");
       expect(link.firstElementChild).toHaveAttribute("aria-hidden", "true");

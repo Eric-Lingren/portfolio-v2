@@ -12,7 +12,6 @@ export type ResumeJob = {
 
 export type ResumeProject = {
   name: string;
-  role: string;
   dates: string;
   url: string;
   bullets: readonly string[];
@@ -57,26 +56,27 @@ const JOB_BULLETS: readonly { company: string; url: string; bullets: readonly st
     company: "Standard Metrics",
     url: "https://standardmetrics.io",
     bullets: [
-      "Led a frontend platform re-architecture across a 15-engineer team. Design system share of new UI code rose from 22% to 84%.",
-      "Led the KPI cadence project so firms can request each KPI at its own cadence in one Information Request. One firm had needed 84 separate requests, and about half of customers now adjust cadences.",
-      "Built spreadsheet-grade keyboard navigation, in-cell editing and Excel paste for the metrics grid. The beta reached 35 users across 11 firms before launch.",
-      "Led auto-submit from proposal to release ahead of reporting season. 20 portfolio companies adopted it in week one.",
-      "Presented my AI development workflow to the engineering team. Teammates adopted parts of it, and I contributed skills to the team's shared skills marketplace.",
+      "Led a re-architecture of our frontend platform for the team. Design system share of new UI code rose from 22% to 84%.",
+      "Owned Reporting Granularity project end to end, so firms can request each KPI at its own cadence. One firm had needed 84 separate requests, and about half of customers now adjust cadences.",
+      "Built spreadsheet-grade keyboard navigation, shortcuts, in-cell editing and copy/paste for our metrics grid. The beta reached 35 users across 11 firms before launch.",
+      "Took auto-submit from proposal to release ahead of reporting season. 20 portfolio companies adopted it in week one.",
+      "Built an AI development workflow and shared with teammates, who adopted pieces. Added to our team's skills marketplace.",
     ],
   },
   {
     company: "InsideOut Development",
     url: "https://insideoutdev.com",
     bullets: [
-      "Led front-end render performance work. Largest contentful paint dropped from 5.2s to 2.0s, and Lighthouse score rose from 47 to 82.",
-      "Cut marketing tech spend by 25% by moving from SlideShare, HubSpot and UberFlip to a Strapi and Pardot stack.",
+      "Owned front-end performance for our website. Largest contentful paint dropped from 5.2s to 2.0s, and Lighthouse score rose from 47 to 82.",
+      "Cut marketing tech spend by 25% by moving from SlideShare, HubSpot and UberFlip to Strapi and Pardot.",
     ],
   },
   {
     company: "Bryan University",
     url: "https://bryanuniversity.edu",
     bullets: [
-      "Taught hundreds of students full-stack development with React, REST APIs and Python, with recorded video feedback on assignments.",
+      "Taught hundreds of students full-stack development with React, REST APIs and Python, with video feedback on assignments.",
+      "Helped shape the course curriculum, giving feedback and design input across iterations.",
     ],
   },
 ];
@@ -84,13 +84,12 @@ const JOB_BULLETS: readonly { company: string; url: string; bullets: readonly st
 const PROJECTS: readonly ResumeProject[] = [
   {
     name: "AI Development Toolkit",
-    role: "Creator",
     dates: "Nov 2025 – Present",
     url: "https://github.com/Eric-Lingren/claude-code-toolkit",
     bullets: [
       "Built a multi-agent Claude Code pipeline that takes work from planning interview to reviewed PR, with test-first build agents and separate test and browser verification agents.",
       "Tiered models by cost of error. Haiku runs lookups and tests, Sonnet builds and reviews, Opus handles planning and debugging.",
-      "Built LLM evals with multi-judge scoring, plus a learning loop that turns review misses into measured fixes to the skills that caused them. Used the pipeline to build ericlingren.com end to end.",
+      "Built LLM evals with multi-judge scoring and a learning loop that turns misses into measured fixes for the skills that caused them.",
     ],
   },
 ];
@@ -117,6 +116,8 @@ const SKILLS: readonly ResumeSkillGroup[] = [
     items: [
       "Claude Code",
       "Anthropic API/SDK",
+      "Codex",
+      "Amp",
       "multi-agent orchestration",
       "LLM evals",
       "LLM-as-judge",
@@ -146,7 +147,7 @@ export function buildResume(experience: readonly ExperienceRole[]): Resume {
     email: EMAIL,
     links: [SITE_URL, LINKEDIN_URL, GITHUB_URL].map((href) => ({ label: shortUrl(href), href })),
     summary:
-      "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I lead frontend platform work and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
+      "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I own frontend platform work on a 15-engineer team and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
     jobs: JOB_BULLETS.map(({ company, url, bullets }) => {
       const role = experience.find((r) => r.company === company);
       if (!role) throw new Error(`resume: "${company}" is missing from experience.ts`);
