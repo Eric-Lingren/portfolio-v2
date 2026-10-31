@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { getActiveSection, subscribeActiveSection } from "@/components/active-section";
 import { isFlat, resolveMode } from "@/components/flythrough/mode";
 import { BrandMark } from "@/components/BrandMark";
-import { CloseIcon, MenuIcon } from "./icons";
+import { CloseIcon, FileTextIcon, MenuIcon } from "./icons";
 import "./nav.css";
 
 export const NAV_LINKS = [
@@ -128,6 +128,13 @@ export function Nav({ navigate = (url: string) => window.location.assign(url) }:
             </a>
           ))}
         </nav>
+        <a className="btn btn-primary site-nav__resume" href="/resume" onClick={() => setOpen(false)}>
+          <FileTextIcon />
+          Resume
+          <span className="btn-arrow" aria-hidden="true">
+            →
+          </span>
+        </a>
       </header>
       {/* Outside the header: its backdrop-filter would pin a fixed child to the bar, not the viewport. */}
       <div role="radiogroup" aria-label="View" className="view-switch">

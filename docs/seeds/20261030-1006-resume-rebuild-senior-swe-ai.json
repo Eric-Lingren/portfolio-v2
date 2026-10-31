@@ -1,0 +1,134 @@
+{
+  "schema_version": "4",
+  "producer": "to-seed",
+  "source": {
+    "type": "session",
+    "ref": null
+  },
+  "title": "Resume rebuild for Senior Software Engineer, AI",
+  "slug": "resume-rebuild-senior-swe-ai",
+  "created": "2026-10-30T10:00:00-07:00",
+  "summary": "Eric's resume was last updated in 2022 and is a two-column PDF with spaced-out headings that ATS parsers read badly. A grill session settled a rebuild as a single-column, one-page resume built in HTML/CSS inside the portfolio repo and printed to PDF with headless Chrome. It targets Senior Software Engineer (AI), IC, frontend-first full stack, remote only. Content leads with Standard Metrics outcomes, adds an AI Development Toolkit project entry, trims old roles, uses visible keywords only (no hidden text), and gets a public /resume page linked from Contact. Resume data lives in src/content/resume.ts and shares company, title and dates with experience.ts.",
+  "decisions": [
+    "No decisions made outside the session override the grill. Clean slate.",
+    "Target role: Senior Software Engineer, AI. IC, not lead. Frontend-first, full stack.",
+    "Keep 'Senior' in the headline. Eric has never had a level in a title, but experience supports senior. Job entries use each role's real title from experience.ts: 'Software Engineer' at Standard Metrics, 'Software Developer' at InsideOut Development, 'Adjunct Instructor' at Bryan University. Bullets prove senior scope (ownership, architecture, mentoring).",
+    "Cut the truck driver and V School Teaching Assistant entries. Keep Bryan University (Jun 2020 to Jun 2023, ended, not current) as one bullet and InsideOut Development (Apr 2019 to Mar 2022) with 2 bullets.",
+    "Education block: V School Full Stack Web Development 2018, IBM Data Science Professional Certificate 2022, Cisco CCENT 2018. Drop Network+ and JamBox. CCENT stays because Eric wants to show a well-rounded tech background. Drop the 'references available upon request' line.",
+    "AI toolkit appears in two places: one Standard Metrics bullet (presented the workflow to the engineering team, teammates adopted parts, contributed skills to the team's shared skills marketplace) and its own 'AI Development Toolkit' project entry (Creator, Nov 2025 to Present, github.com/Eric-Lingren/claude-code-toolkit) with 3 bullets.",
+    "Standard Metrics bullet order: 1) design system re-architecture (22% to 84% of new UI code on the design system, 15-engineer team), 2) KPI cadences, 3) Metrics grid (35 beta users across 11 firms), 4) auto-submit (20 portfolio companies in week one), 5) AI bullet. Do not use file or PR counts such as the 1,853 imports or 1,046 files codemod figures.",
+    "Layout: single column, plain standard headings (Summary, Experience, Projects, Skills, Education), real text only (no tables, text boxes or icons). One page.",
+    "Build in HTML/CSS in the portfolio repo (not Canva, Figma or Google Docs). One source yields the PDF and a live /resume page.",
+    "Replace the Objective with the approved 3-sentence Summary: 'Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I lead frontend platform work and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.'",
+    "Skills in four groups. Frontend: React, TypeScript, JavaScript, Next.js, HTML, CSS, Storybook, shadcn/ui, design systems, accessibility (a11y). Backend: Node.js, Python, Django, PostgreSQL, REST APIs. AI: Claude Code, Anthropic API/SDK, multi-agent orchestration, LLM evals, LLM-as-judge, MCP, prompt engineering. Testing and tooling: Vitest, Jest, Playwright, Biome, ts-morph codemods, Git, CI/CD, AWS, Cloudflare. Python, PostgreSQL, Anthropic API/SDK and accessibility were confirmed real by Eric. Django was added at Eric's request. GraphQL is excluded because Eric did not confirm it. MQL4, Wireshark, Flutter, Salesforce, NGINX, React Native, MongoDB and MySQL are dropped.",
+    "No hidden keyword text. Tailor with visible text instead: small per-posting variant files that override only the summary's last line and the skill order. The base resume stays untouched.",
+    "Header is option D: a deep-coral mono eyebrow 'SENIOR SOFTWARE ENGINEER' with a coral accent bar at left, name 'Eric Lingren', then two stack lines ('Frontend-focused full stack · React, TypeScript, Node' and 'AI agents and LLM tooling'). Contact is stacked top right, one item per line: 'Remote · Seattle area', email, phone, ericlingren.com, linkedin.com/in/ericlingren, github.com/Eric-Lingren, all as short URLs that are also linked.",
+    "Location reads 'Remote · Seattle area'. Eric wants remote roles only and will not relocate.",
+    "Public page at ericlingren.com/resume. It shows email only and hides the phone number. The PDF includes the phone number. A 'Resume' button using the shared button style is added to the Contact panel. The existing Contact test that asserts no resume link is flipped. Nav, Experience panel and hero stay without a resume link (hero stays at two buttons).",
+    "Data model: new src/content/resume.ts imports company, title and dates from experience.ts and owns its own summary, bullets, skills and headline. Variant files (e.g. resume.variants/ai-startup.ts) override only the summary line and skill order. A test fails CI when resume companies or dates drift from experience.ts.",
+    "PDF generation: local script 'npm run resume:pdf' prints /resume with Playwright to public/eric-lingren-resume.pdf, which is committed. A test compares a hash of resume.ts against a hash stored with the PDF so CI fails when the data changed and the PDF was not regenerated. Variant PDFs go to a gitignored folder and are for Eric to upload, not for the public site.",
+    "Script variant selection is an interactive prompt (lists the base resume and each variant) and no flag. CI only checks the hash and never runs the script.",
+    "Visual direction must meet Eric's requirement that the resume 'pop and wow' and not read as a boring banking resume, since he is frontend-focused. Chosen approach: restrained brand version. Large name in the portfolio's display font (Geist). Proof numbers in coral, no bold. Thin coral rule under section headings. Everything else neutral ink on white. Web /resume follows the site theme including dark mode. The PDF is always light.",
+    "Coral usage: deep coral #c43d2b for text (numbers, eyebrow), 5.2:1 contrast. Brand coral #ff6b57 for lines (accent bar, heading rules). In web dark mode use brand #ff6b57 everywhere.",
+    "Fix two parser bugs seen in the mockup's extracted PDF text: loosen tight letter spacing on the name (it extracted as 'EricLingren') and render section headings as real text with a proper line break (small-caps 'Summary' ran into the line above).",
+    "Draft bullet copy approved for now (to be polished later against final layout). AI bullet at Standard Metrics: 'Presented my AI development workflow to the engineering team. Teammates adopted parts of it, and I contributed skills to the team's shared skills marketplace.' AI Development Toolkit bullets: multi-agent Claude Code pipeline from planning interview to reviewed PR with test-first build agents and separate test and browser verification agents; models tiered by cost of error (Haiku lookups and tests, Sonnet builds and reviews, Opus planning and debugging); LLM evals with multi-judge scoring plus a learning loop that turns review misses into measured fixes, and used to build ericlingren.com end to end. InsideOut bullets: LCP 5.2s to 2.0s and Lighthouse 47 to 82; 25% cut in marketing tech spend via moving from SlideShare, HubSpot and UberFlip to Strapi and Pardot. Bryan bullet: taught hundreds of students React, REST APIs and Python with recorded video feedback.",
+    "The cut-off thought was 'I also have a list on the work page and the navbar. but thats not true anymore.' Resume links used to live on the Work page and in the navbar, and they were removed while the resume was stale. That needs no change. The resume link goes in Contact only, as decided."
+  ],
+  "open_threads": [],
+  "deferred": [
+    {
+      "text": "Polish final resume copy (all bullets) against the built layout.",
+      "rationale": "Eric approved the drafts as good for now and said they would be polished with the final copy.",
+      "context": "Drafts live in the approved decisions. Polish happens after the HTML layout renders and fits one page.",
+      "source_seed": "resume-rebuild-senior-swe-ai"
+    },
+    {
+      "text": "Author the first per-posting variant files (e.g. an AI-startup variant).",
+      "rationale": "The mechanism is decided. Actual variants depend on real job postings.",
+      "context": "Each variant overrides only the summary's last line and the skill order.",
+      "source_seed": "resume-rebuild-senior-swe-ai"
+    }
+  ],
+  "out_of_scope": [
+    {
+      "text": "Hidden or white-text keyword stuffing, or injected instructions for AI screeners.",
+      "rationale": "Extracted by ATS as plain text, flagged by recruiters and LLM screeners as manipulation, and visible keywords match just as well."
+    },
+    {
+      "text": "Keeping the two-column layout or a second ATS-only file.",
+      "rationale": "Two files drift. Single column is parser-safe."
+    },
+    {
+      "text": "Canva, Figma or Google Docs as the build tool.",
+      "rationale": "Text-order and design-ceiling problems. HTML/CSS shows frontend craft and reuses brand tokens."
+    },
+    {
+      "text": "Generating the PDF during the Cloudflare deploy build.",
+      "rationale": "Chrome in the build image is slow and flaky. The PDF is generated locally and committed."
+    },
+    {
+      "text": "A Resume button in the hero, a Resume link in the Nav, or a resume link in the Experience panel.",
+      "rationale": "Eric chose Contact only. Nav stays focused on the 6 content anchors."
+    },
+    {
+      "text": "Two-page resume.",
+      "rationale": "One page is the norm at roughly 7 years of experience."
+    },
+    {
+      "text": "Listing GraphQL, MQL4, Wireshark, Flutter, Salesforce, NGINX, React Native, MongoDB or MySQL as skills.",
+      "rationale": "GraphQL was unconfirmed. The others are dropped as off-target or not defensible."
+    }
+  ],
+  "problem_statement": "The 2022 resume is stale, omits five years of work at Standard Metrics and all AI work, and its two-column design with spaced headings parses poorly in ATS and AI screeners.",
+  "solution": "A single-column, one-page, HTML/CSS resume in the portfolio repo with a public /resume page, a committed PDF, a staleness guard in CI, and a per-posting variant mechanism.",
+  "implementation_decisions": [
+    "resume.ts imports company, title and dates from experience.ts and owns the summary, bullets, skills and headline.",
+    "Variants are small override files that change only the summary's last line and the skill order.",
+    "Test the Contact panel for a Resume link in the shared button style (replace the current 'no resume' assertion at Contact.test.tsx). Keep Nav.test.tsx and Experience.test.tsx assertions that block resume links.",
+    "Drift test: assert resume.ts companies and dates match experience.ts.",
+    "PDF staleness test: hash of resume.ts compared to a hash stored with the committed PDF.",
+    "resume:pdf script uses Playwright, an interactive prompt to choose base or a variant, base output to public/eric-lingren-resume.pdf, variants to a gitignored folder.",
+    "Phone number renders on the PDF only, not on the public /resume page."
+  ],
+  "testing_decisions": [
+    "Drift test between resume.ts and experience.ts.",
+    "PDF hash staleness test run in CI."
+  ],
+  "risks_and_tradeoffs": [
+    "Eric said at one point that the resume is always in the nav, but the repo shows no resume link in the nav and tests that block one. The session settled on Contact only.",
+    "LCP and Lighthouse numbers for InsideOut come from test-environment lab runs, not production. Be ready to say so if asked.",
+    "Django is listed at Eric's request but whether the Standard Metrics backend is Django was never confirmed in the repo.",
+    "Eric's official job title has never included a level. The Senior headline is a target level, not a verified title.",
+    "The option D header's contact column is taller than the name side, so the header sits deeper and the stack line wraps to two lines. This is to be balanced in the build.",
+    "Brand coral #ff6b57 is 2.8:1 on white and fails WCAG AA for text, which is why deep coral #c43d2b is used for text on the PDF."
+  ],
+  "further_notes": [
+    "Header mockup options A to D were rendered in a scratch HTML file outside the repo. Option D was chosen.",
+    "Phone number in the PDF is (801) 707-7067. Email is ericlingren@gmail.com. Location in the 2022 resume was Sequim, WA.",
+    "Case-study facts come from content/work/*.mdx and src/content/experience.ts in the portfolio repo."
+  ],
+  "next_action": "Run /to-tasks to split the resume rebuild into vertical-slice tasks.",
+  "iteration": 1,
+  "disposed_threads": [
+    {
+      "id": "ot-001",
+      "text": "Eric's message was cut off at 'I also have a list on the work page and the'. He was asked to finish the thought but never did. It may affect where the resume is linked (for example the Work panel) or what the resume pulls from the work list. Ask Eric what he meant before building the link placement.",
+      "disposition": "decided",
+      "iteration": 1
+    }
+  ],
+  "status": "ready",
+  "verification": {
+    "iteration": 1,
+    "personas": [
+      "grounding",
+      "accuracy",
+      "completeness",
+      "coherence"
+    ],
+    "refutations_upheld": 5,
+    "refutations_screened": 2,
+    "clean": false,
+    "status": "verified"
+  }
+}

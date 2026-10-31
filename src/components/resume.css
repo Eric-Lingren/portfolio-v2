@@ -1,0 +1,243 @@
+/*
+ * Resume styling. Plain CSS (no modules) so the PDF task can inline this file as is.
+ *
+ * Palette: the default is the light, printable one. On screen the site is dark only, so
+ * the @media screen block maps the resume onto the site tokens from globals.css and
+ * uses brand coral for coral text. Coral text on white is the deep #c43d2b; brand
+ * #ff6b57 is for lines and the accent bar only (and for text on dark). The header
+ * contact block uses the site blue: #06b6d4 on dark, deep #155e75 on white for contrast.
+ *
+ * Layout: one set of type metrics (in pt) serves screen and print. On wide screens the
+ * sheet keeps the printed measure (see the min-width: 860px block) and
+ * is scaled with `zoom`, so lines wrap at the same words as the PDF. Narrow screens
+ * drop the fixed measure and reflow.
+ */
+
+.resume {
+  --resume-ink: #16181d;
+  --resume-body: #2c3038;
+  --resume-muted: #5b6270;
+  --resume-bg: #ffffff;
+  --resume-coral-text: #c43d2b;
+  --resume-coral-line: #ff6b57;
+  --resume-blue-text: #155e75;
+  --resume-sans: var(--font-geist-sans), "Geist", system-ui, sans-serif;
+  --resume-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 28px 20px 32px;
+  background: var(--resume-bg);
+  color: var(--resume-body);
+  font-family: var(--resume-sans);
+  font-size: 9pt;
+  line-height: 1.36;
+}
+
+/* Web: follow the site's dark theme tokens. */
+@media screen {
+  .resume {
+    --resume-ink: var(--po-ink, #f9fafb);
+    --resume-body: #d1d5db;
+    --resume-muted: var(--po-muted, #9ca3af);
+    --resume-bg: transparent;
+    --resume-coral-text: #ff6b57;
+    --resume-blue-text: var(--accent-2, #06b6d4);
+  }
+
+  /* Web links: no underline at rest, a thin brand-coral underline on hover. */
+  .resume a {
+    text-decoration: none;
+  }
+
+  .resume a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--resume-coral-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+}
+
+/*
+ * Wide screens: the printed measure, so wraps match the PDF. The PDF column is Letter
+ * minus the @page side margins (7.8in) minus the default 8px body margin on each side
+ * of the standalone HTML that scripts/resume-pdf.tsx prints.
+ */
+@media screen and (min-width: 860px) {
+  .resume {
+    box-sizing: content-box;
+    width: calc(7.8in - 16px);
+    padding: 0.4in 0.35in;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .resume {
+    zoom: 1.2;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .resume-top {
+    flex-direction: column;
+  }
+  .resume-reach {
+    text-align: left;
+    white-space: normal;
+  }
+}
+
+.resume-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.resume-id {
+  border-left: 4px solid var(--resume-coral-line);
+  padding-left: 18px;
+}
+
+.resume-eyebrow {
+  margin: 0;
+  font: 500 8.5pt var(--resume-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--resume-coral-text);
+}
+
+.resume-name {
+  margin: 6px 0 0;
+  font: 600 30pt/1.05 var(--resume-sans);
+  letter-spacing: -0.01em;
+  word-spacing: 0.05em;
+  color: var(--resume-ink);
+}
+
+.resume-stack {
+  margin: 6px 0 0;
+  font: 400 9.5pt var(--resume-sans);
+  color: var(--resume-muted);
+}
+
+.resume-stack + .resume-stack {
+  margin-top: 2px;
+}
+
+.resume-reach {
+  margin: 0;
+  padding: 2px 0 0;
+  list-style: none;
+  text-align: right;
+  white-space: nowrap;
+  font: 600 9pt/1.55 var(--resume-mono);
+  color: var(--resume-blue-text);
+}
+
+.resume-reach li {
+  margin: 0;
+}
+
+/* Underline comes from the @media screen block; print turns it off. */
+.resume a {
+  color: inherit;
+}
+
+.resume-section-title {
+  display: block;
+  margin: 8pt 0 4pt;
+  padding-bottom: 2pt;
+  border-bottom: 1.5px solid var(--resume-coral-line);
+  font: 600 13pt/1.25 var(--resume-sans);
+  letter-spacing: 0;
+  color: var(--resume-ink);
+}
+
+.resume-summary {
+  margin: 0;
+}
+
+.resume-item + .resume-item {
+  margin-top: 5pt;
+}
+
+.resume-item-title {
+  margin: 0;
+  font: 600 10pt/1.4 var(--resume-sans);
+  color: var(--resume-ink);
+}
+
+.resume-meta {
+  margin: 0;
+  font: 400 9pt var(--resume-sans);
+  color: var(--resume-muted);
+}
+
+.resume-dates {
+  font: 400 8.5pt var(--resume-mono);
+}
+
+.resume ul.resume-bullets,
+.resume ul.resume-list {
+  margin: 6px 0 0;
+  padding-left: 16px;
+}
+
+.resume ul.resume-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.resume-bullets li,
+.resume-list li {
+  margin-bottom: 1.5pt;
+  font-size: 9pt;
+  line-height: 1.33;
+}
+
+.resume-skill-label {
+  color: var(--resume-ink);
+  font-weight: 500;
+}
+
+/* Proof numbers: coral text, deliberately not bold. */
+.resume-num {
+  color: var(--resume-coral-text);
+  font-weight: 400;
+}
+
+/* Print: always the light palette, and the whole resume on one US Letter page. */
+@page {
+  size: Letter;
+  margin: 0.28in 0.35in;
+}
+
+@media print {
+  .resume {
+    --resume-ink: #16181d;
+    --resume-body: #2c3038;
+    --resume-muted: #5b6270;
+    --resume-bg: #ffffff;
+    --resume-coral-text: #c43d2b;
+    --resume-coral-line: #ff6b57;
+    --resume-blue-text: #155e75;
+
+    width: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #2c3038;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume a {
+    text-decoration: none;
+  }
+
+  .resume-item,
+  .resume-section-title {
+    break-inside: avoid;
+  }
+}

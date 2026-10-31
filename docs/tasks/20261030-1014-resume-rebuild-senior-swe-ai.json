@@ -1,0 +1,360 @@
+{
+  "schema_version": "2",
+  "producer": "to-tasks",
+  "source": {
+    "type": "seed",
+    "ref": "20261030-1006-resume-rebuild-senior-swe-ai.json"
+  },
+  "generated_at": "2026-10-30T17:18:02Z",
+  "branching": {
+    "strategy": "single",
+    "branch": "feat/resume-rebuild"
+  },
+  "tasks": [
+    {
+      "id": "T-0062",
+      "title": "Resume data module and plain /resume page",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Tracer bullet through data, drift test and a public route. Add `src/content/resume.ts`: headline ('Senior Software Engineer'), the two stack lines, the approved 3-sentence summary, the Standard Metrics bullets in the decided order (design system 22% to 84% across a 15-engineer team, KPI cadences, Metrics grid with 35 beta users across 11 firms, auto-submit with 20 portfolio companies in week one, then the AI bullet), the AI Development Toolkit project entry (Creator, Nov 2025 to Present, github.com/Eric-Lingren/claude-code-toolkit, 3 bullets), InsideOut Development (2 bullets) and Bryan University (1 bullet), the four skill groups with Django, Anthropic API/SDK and accessibility included and GraphQL excluded, and the Education block (V School 2018, IBM Data Science Professional Certificate 2022, Cisco CCENT 2018). Use the draft bullet copy in the seed at docs/seeds/20261030-1006-resume-rebuild-senior-swe-ai.json and facts from content/work/*.mdx. Copy is a draft and is polished later, so keep each bullet a plain string that is easy to edit.\n\nCompany, title and dates are imported from `src/content/experience.ts` (look each role up by company; V School is not a resume job). Convert dates for display ('Mar 2022 to present' becomes 'Mar 2022 – Present'). Each role keeps its real title: Software Engineer at Standard Metrics, Software Developer at InsideOut Development, Adjunct Instructor at Bryan University. The Toolkit entry owns its own dates because it is not in experience.ts.\n\nPhone lives in a separate module `src/content/resume-contact.ts` that the page never imports. The `ResumeDocument` component takes an optional `phone` prop and renders it only when given.\n\nAdd `src/components/ResumeDocument.tsx` (pure, server-renderable, takes the resume data as a prop) and the route `src/app/resume/page.tsx` that renders it from the base data with real semantic markup: one h1 (name), h2 section headings with plain text (Summary, Experience, Projects, Skills, Education), ul/li bullets, and the header contact items as one item per line (Remote · Seattle area, email, ericlingren.com, linkedin.com/in/ericlingren, github.com/Eric-Lingren, each short URL also linked). Export metadata (title 'Eric Lingren | Resume', description). No styling beyond a readable single column; the design task follows. Nav, Experience panel and hero get no resume link.",
+      "acceptance_criteria": [
+        "Test: for every job in resume.ts, the company, title and dates equal the matching entry in experience.ts after the display conversion. Changing a title in experience.ts changes the resume output. Drift fails the test.",
+        "Test: the resume data has Standard Metrics bullets in the decided order and the skills list contains Django, Anthropic API/SDK and accessibility and does not contain GraphQL, MQL4, Wireshark, Flutter, Salesforce, NGINX, React Native, MongoDB or MySQL.",
+        "Test: rendering the /resume page to static markup includes the email and the three short URLs, and contains no phone number digits (search the markup for the number and its digits-only form).",
+        "Test: the h1 is 'Eric Lingren' with a normal space, and each section heading is its own h2 with plain text.",
+        "Test: Nav and Experience panel still render no resume link (existing Nav.test.tsx and Experience.test.tsx assertions pass unchanged).",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "8a59aed8fb6568bdbe0e9e96d61436ff57a3ac2a",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/resume"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "css=h1",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "resume-plain"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "New /resume page: a plain single-column resume with headings, bullets and contact lines."
+      },
+      "summary": "Added the resume data module (company, title and dates looked up from experience.ts, so drift fails the test), the separate resume-contact phone module (not imported by the page), a pure ResumeDocument component and the plain semantic /resume route with metadata. Browser check skipped (verify_host not configured); GET /resume returned 200 on a dev server.",
+      "files_touched": [
+        "src/content/resume.ts",
+        "src/content/resume-contact.ts",
+        "src/content/resume.test.ts",
+        "src/components/ResumeDocument.tsx",
+        "src/app/resume/page.tsx",
+        "src/app/resume/page.test.tsx",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0062.md"
+      ],
+      "tests": {
+        "passed": 509,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0062.md"
+    },
+    {
+      "id": "T-0063",
+      "title": "Resume visual design: option D header, coral accents, one printable page",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Style the /resume page in `src/components/resume.css` (plain CSS, no CSS modules, so the PDF task can inline it). It has to pop and wow for a frontend engineer and must not read as a boring banking resume, while staying restrained and print-safe.\n\nHeader is option D: a mono eyebrow 'SENIOR SOFTWARE ENGINEER' in deep coral with a 4px brand-coral accent bar at the left, the name in Geist at about 42px, then two stack lines ('Frontend-focused full stack · React, TypeScript, Node' and 'AI agents and LLM tooling'). The contact block sits top right, one item per line, mono, right aligned. Body is neutral ink on white. Proof numbers (22%, 84%, 20, 35, 11 and similar) are coral text with no bold. Each section heading has a thin brand-coral rule under it. Use deep coral #c43d2b for all coral text and brand coral #ff6b57 for lines and the accent bar only.\n\nFix the two parser bugs seen in the header mockup: loosen the name's letter-spacing so it extracts as 'Eric Lingren' with a space, and keep section headings as real text on their own line (no small-caps or text-transform tricks that merge them with the previous line).\n\nOn the web, /resume follows the site's existing theme mechanism including dark mode, and uses brand #ff6b57 for coral text in dark mode. A `@media print` block forces the light palette and fits the whole resume on one US Letter page.",
+      "acceptance_criteria": [
+        "Test: the coral text color token (#c43d2b) has contrast of at least 4.5:1 against white, computed from the value in resume.css. Line and accent colors use #ff6b57.",
+        "Test: resume.css sets the print palette to light and defines a print rule for one Letter page. The name letter-spacing is not tighter than -0.01em.",
+        "Test: ResumeDocument wraps proof numbers in a dedicated element that is not bold, and the eyebrow text is rendered in the DOM as 'Senior Software Engineer' (CSS may uppercase it).",
+        "Test: the contact block renders one item per line in the decided order (location, email, website, LinkedIn, GitHub) and the stack text is two separate lines.",
+        "Existing Nav, Experience and Contact panel tests still pass and the home page styles are not changed.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0062"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "a576c2f28369b0ea95a416ae3e03b85c34672b9d",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/resume"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "css=h1",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "resume-designed"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "The plain resume becomes the designed option D layout: accent bar and mono eyebrow, top-right contact block, coral rules under headings and coral proof numbers."
+      },
+      "summary": "Styled /resume with the option D header (mono eyebrow, 4px coral bar, 42px name at -0.01em, contact stacked top right), non-bold coral proof numbers, coral heading rules, dark web theme from site tokens, and a print block forcing light palette on one Letter page. Page fit and browser check not verified (no browser available).",
+      "files_touched": [
+        "src/components/resume.css",
+        "src/components/ResumeDocument.tsx",
+        "src/components/ResumeDocument.test.tsx",
+        "src/app/resume/page.tsx",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0063.md"
+      ],
+      "tests": {
+        "passed": 521,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0063.md"
+    },
+    {
+      "id": "T-0064",
+      "title": "Resume button in the Contact panel",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add a 'Resume' link to the Contact panel next to GitHub and LinkedIn that goes to /resume. It reuses the shared button classes (`btn btn-outline contact-btn`) and the same hover and icon pattern as its siblings, with a new document icon added to `src/components/icons.tsx` in the same style. No new button variant. The Contact panel must still fit in the 3D stage and the classic view at short viewports, so check the existing section-layout test and the layout at 1440x900 and 390x844.\n\nFlip the existing Contact test that asserts there is no resume link (Contact.test.tsx, 'links GitHub and LinkedIn as shared buttons, with no resume'): it now asserts three shared buttons including Resume with href '/resume'. Keep the 'no phone' whole-page test passing. Nav, Experience panel and hero stay without a resume link and their tests are unchanged.",
+      "acceptance_criteria": [
+        "Test: Contact renders a 'Resume' link with classes `btn btn-outline`, href '/resume', and the same structure as GitHub and LinkedIn (icon then label). The old 'no resume' assertion is replaced.",
+        "Test: Nav.test.tsx, Experience.test.tsx and the whole-page 'no phone' Contact test pass unchanged.",
+        "Test: section-layout test still passes with the third button.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0062"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "657cf5e797544456ca79d4d50831c753469f880d",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/?view=classic"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "role=link[name=\"Resume\"]",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "contact-resume-button"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "A Resume button appears in the Contact panel beside GitHub and LinkedIn, in the same style."
+      },
+      "summary": "Added a Resume link (href /resume, shared btn btn-outline contact-btn, new FileTextIcon, plain arrow) beside GitHub and LinkedIn. Flipped the 'no resume' Contact test. 1440x900 and 390x844 layouts not checked visually.",
+      "files_touched": [
+        "src/components/icons.tsx",
+        "src/components/panels/Contact.tsx",
+        "src/components/panels/Contact.test.tsx",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0064.md"
+      ],
+      "tests": {
+        "passed": 509,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0064.md"
+    },
+    {
+      "id": "T-0065",
+      "title": "Resume variant overrides",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add the per-posting variant mechanism. A variant is a small file in `src/content/resume.variants/<name>.ts` that overrides only the summary's last line and the skill order (skill groups and items reordered, nothing added or removed from the base list). Add the `ResumeVariant` type, an `applyVariant(base, variant)` pure function and `listVariants()` that returns the variant names found in that folder. The base resume stays untouched and the public /resume page never imports variants, so no variant text can reach the static export.\n\nThis task ships the mechanism with a test-only fixture variant. The real variants for actual job postings are deferred and not part of this task.",
+      "acceptance_criteria": [
+        "Test: applyVariant replaces only the summary's last line and reorders skills. Every other field is deeply equal to the base, and applyVariant does not mutate the base.",
+        "Test: a variant that adds a skill not in the base, or removes one, is rejected with a message naming the skill.",
+        "Test: listVariants returns the fixture variant names and excludes any index or helper file.",
+        "Test: the /resume page module does not import resume.variants (import graph or source check), and rendering the page markup contains no fixture variant text.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0062"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "595a9db7cd5bd4ed344df5d5809804d5e3e93327",
+      "summary": "Added src/content/resume-variants.ts: ResumeVariant type, pure applyVariant (replaces last summary sentence, reorders skills, rejects added or removed skills naming them) and listVariants(dir?) defaulting to src/content/resume.variants/. Test fixtures under src/content/__fixtures__/. Page never imports it.",
+      "files_touched": [
+        "src/content/resume-variants.ts",
+        "src/content/resume-variants.test.ts",
+        "src/content/__fixtures__/resume.variants/fixture-alpha.ts",
+        "src/content/__fixtures__/resume.variants/fixture-beta.ts",
+        "src/content/__fixtures__/resume.variants/index.ts",
+        "src/content/__fixtures__/resume.variants/_helper.ts",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0065.md"
+      ],
+      "tests": {
+        "passed": 517,
+        "failed": 0
+      },
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0065.md"
+    },
+    {
+      "id": "T-0066",
+      "title": "resume:pdf script with interactive variant prompt and PDF staleness check",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add the local PDF pipeline. `npm run resume:pdf` runs `scripts/resume-pdf.*`: it shows an interactive prompt listing the base resume and each variant from `listVariants()` and asks which to print. There is no flag. CI never runs the script.\n\nThe script prints with Playwright (add `playwright` and `tsx` as devDependencies, install chromium) at US Letter in light mode with the `@media print` rules from T-0063, and passes the phone from `src/content/resume-contact.ts` into ResumeDocument so the PDF shows it. The public page never shows it. Recommended approach: render `ResumeDocument` to standalone HTML with react-dom/server under tsx, inline `resume.css` and the Geist font files from node_modules, and print with `page.setContent`. This keeps variants and the phone out of the Next build. Another approach is fine only if it keeps both out of `out/`.\n\nSplit the logic: an exported pure/async core `generateResumePdf({ variant })` does the work and is what tests and a one-off call use. The CLI wrapper only prompts and calls it. Base output goes to `public/eric-lingren-resume.pdf` and also writes `src/content/resume-pdf.sha256`. Variant output goes to `docs/private/resume/<variant>.pdf`, which is already gitignored, and never touches the committed hash.\n\nThe hash covers everything that changes the base PDF: the resume data as resolved (including values imported from experience.ts), resume-contact.ts, ResumeDocument.tsx and resume.css. Add a vitest staleness test that recomputes it and compares it to the stored hash with a clear 'run npm run resume:pdf' message.\n\nRun the core function once for the base resume (not via a CLI flag) to produce and commit-ready the first PDF and hash, so the staleness test passes on this branch. Verify the output once with `pdftotext -raw` and record the result in the log: 'Eric Lingren' has a space, each section heading is on its own line, and the phone number is present. This is a one-off check, not a CI test.",
+      "acceptance_criteria": [
+        "Test: the staleness test passes against the committed hash and fails when resume data, contact module, document component or css is changed without regenerating (simulate with an injected input).",
+        "Test: the prompt lists 'base' plus every variant name and returns the chosen one. Choosing a variant writes to docs/private/resume/<variant>.pdf and leaves public/eric-lingren-resume.pdf and the hash file untouched. Run with an injected fake renderer, no real Chrome in unit tests.",
+        "Test: the committed public/eric-lingren-resume.pdf is exactly one page.",
+        "Test: the HTML the script builds for the base resume includes the phone, and the HTML for the public page does not.",
+        "`npm run resume:pdf` is defined in package.json, there is no variant flag, and the first PDF and hash exist and are not committed by the task.",
+        "The `pdftotext -raw` one-off check result is in the task log.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0063",
+        "T-0065"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "930865c485c513b33429344b1f1649faec3d6d5f",
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0066.md",
+      "tests": {
+        "passed": 543,
+        "failed": 0
+      },
+      "summary": "Added npm run resume:pdf (interactive, no flag; core generateResumePdf in scripts/resume-pdf.tsx, CLI in scripts/resume-pdf-cli.tsx), sha256 staleness hash and the first committed one-page PDF. First render was 2 pages, so the print block was tightened (margins 0.28in/0.35in, name 30pt, body 9pt, smaller gaps). Standalone HTML defines Geist font vars. pdftotext -raw check passed.",
+      "files_touched": [
+        "package.json",
+        "package-lock.json",
+        "vitest.config.mts",
+        "src/components/resume.css",
+        "scripts/resume-pdf.tsx",
+        "scripts/resume-pdf-cli.tsx",
+        "scripts/resume-pdf.test.tsx",
+        "public/eric-lingren-resume.pdf",
+        "src/content/resume-pdf.sha256",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0066.md"
+      ]
+    },
+    {
+      "id": "T-0067",
+      "title": "Download PDF link on /resume and static-export privacy check",
+      "type": "AFK",
+      "task_type": "code",
+      "description": "Add a plain 'Download PDF' link on the /resume page, screen only (hidden in print), pointing to /eric-lingren-resume.pdf, so a recruiter can grab the PDF in one click. Use the shared button style.\n\nThen prove nothing private leaks into the static export. Run `npm run build` once and search `out/` for the phone number (with and without punctuation) and for any variant file's text, and record the empty result in the task log. Add a vitest that fails if the built `out/resume` HTML exists and contains the phone digits, skipped when `out/` is absent.",
+      "acceptance_criteria": [
+        "Test: the /resume markup contains a link to /eric-lingren-resume.pdf with the shared button classes, and the print stylesheet hides it.",
+        "Test: when out/resume exists, its HTML contains no phone digits and no variant text. Skipped when out/ is absent.",
+        "`npm run build` has been run and a search of out/ for the phone number and for variant text finds nothing. The result is recorded in the task log.",
+        "`npm run typecheck`, `npm run lint` and `npm test` pass."
+      ],
+      "blocked_by": [
+        "T-0066"
+      ],
+      "status": "done",
+      "branch": null,
+      "pr": "https://github.com/Eric-Lingren/portfolio-v2/pull/19",
+      "commit": "c78675d94ba0948a6d731a772f3a37aa6b0a626a",
+      "browser_verify": {
+        "role": "anonymous",
+        "steps": [
+          {
+            "type": "goto",
+            "url": "/resume"
+          },
+          {
+            "type": "waitFor",
+            "condition": "networkidle"
+          },
+          {
+            "type": "expect",
+            "locator": "role=link[name=\"Download PDF\"]",
+            "assertion": "visible"
+          },
+          {
+            "type": "capture",
+            "name": "resume-download"
+          }
+        ],
+        "masks": [],
+        "expected_visual_change": "A Download PDF button appears on the resume page (screen only)."
+      },
+      "log_path": "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0067.md",
+      "tests": {
+        "passed": 546,
+        "failed": 0
+      },
+      "summary": "Added a screen-only Download PDF link (btn btn-outline) to src/app/resume/page.tsx with its own resume-page.css hiding it in print, so hashed PDF inputs are unchanged. Added link and print tests plus an out/resume.html privacy test (skips without out/). Build ran; out/ search found no phone and no fixture variant text.",
+      "files_touched": [
+        "src/app/resume/page.tsx",
+        "src/app/resume/resume-page.css",
+        "src/app/resume/page.test.tsx",
+        "docs/tasks/.logs/20261030-1014-resume-rebuild-senior-swe-ai/T-0067.md"
+      ]
+    },
+    {
+      "id": "T-0068",
+      "title": "Polish final resume copy (all bullets) against the built layout",
+      "type": "AFK",
+      "task_type": "triage",
+      "description": "Polish final resume copy (all bullets) against the built layout.\n\nDrafts live in the approved decisions. Polish happens after the HTML layout renders and fits one page.",
+      "acceptance_criteria": [
+        "Item has been exported to its destination by export-tasks"
+      ],
+      "blocked_by": [],
+      "status": "not_started",
+      "branch": null,
+      "pr": null,
+      "domain": "personal",
+      "deliverable": "code",
+      "seed_ref": "20261030-1006-resume-rebuild-senior-swe-ai.json",
+      "task_ref": "20261030-1014-resume-rebuild-senior-swe-ai.json"
+    },
+    {
+      "id": "T-0069",
+      "title": "Author the first per-posting variant files (e.g. an AI-startup variant).",
+      "type": "AFK",
+      "task_type": "triage",
+      "description": "Author the first per-posting variant files (e.g. an AI-startup variant).\n\nEach variant overrides only the summary's last line and the skill order.",
+      "acceptance_criteria": [
+        "Item has been exported to its destination by export-tasks"
+      ],
+      "blocked_by": [],
+      "status": "not_started",
+      "branch": null,
+      "pr": null,
+      "domain": "personal",
+      "deliverable": "code",
+      "seed_ref": "20261030-1006-resume-rebuild-senior-swe-ai.json",
+      "task_ref": "20261030-1014-resume-rebuild-senior-swe-ai.json"
+    }
+  ],
+  "follow_ups": []
+}
