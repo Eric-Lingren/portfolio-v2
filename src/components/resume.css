@@ -139,6 +139,14 @@
   margin: 0;
 }
 
+/* Trailing icon per contact line. Decorative, so PDF text extraction and ATS see only the text. */
+.resume-reach .resume-reach-icon {
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0 0 0 0.6em;
+  vertical-align: -0.2em;
+}
+
 /* Underline comes from the @media screen block; print turns it off. */
 .resume a {
   color: inherit;

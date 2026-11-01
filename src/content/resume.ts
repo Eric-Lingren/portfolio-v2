@@ -142,7 +142,7 @@ export function buildResume(experience: readonly ExperienceRole[]): Resume {
   return {
     name: "Eric Lingren",
     headline: "Senior Software Engineer",
-    stackLines: ["Frontend-focused full stack · React, TypeScript, Node", "AI agents and LLM tooling"],
+    stackLines: ["Frontend-focused full stack software engineer", "React, TypeScript, Node, Python/Django, AI agents and LLM tooling"],
     location: "Remote · Seattle area",
     email: EMAIL,
     links: [SITE_URL, LINKEDIN_URL, GITHUB_URL].map((href) => ({ label: shortUrl(href), href })),

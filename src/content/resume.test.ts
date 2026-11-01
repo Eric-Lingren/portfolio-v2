@@ -46,8 +46,8 @@ describe("resume content", () => {
   it("has the headline, stack lines and location", () => {
     expect(RESUME.headline).toBe("Senior Software Engineer");
     expect(RESUME.stackLines).toEqual([
-      "Frontend-focused full stack · React, TypeScript, Node",
-      "AI agents and LLM tooling",
+      "Frontend-focused full stack software engineer",
+      "React, TypeScript, Node, Python/Django, AI agents and LLM tooling",
     ]);
     expect(RESUME.location).toBe("Remote · Seattle area");
   });
