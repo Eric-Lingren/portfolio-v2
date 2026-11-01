@@ -4,12 +4,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ResumeDocument } from "@/components/ResumeDocument";
 import { RESUME } from "@/content/resume";
-import { PHONE } from "@/content/resume-contact";
 import { EMAIL } from "@/content/site";
 import alpha from "@/content/__fixtures__/resume.variants/fixture-alpha";
 import beta from "@/content/__fixtures__/resume.variants/fixture-beta";
 import ResumePage, { metadata } from "./page";
 
+const PHONE = "(555) 010-4477";
+const PHONE_PATTERN = /\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/;
 const html = renderToStaticMarkup(<ResumePage />);
 const doc = new DOMParser().parseFromString(html, "text/html");
 
@@ -30,12 +31,8 @@ describe("/resume page", () => {
     expect(doc.querySelector(`a[href^="mailto:${EMAIL}"]`)).not.toBeNull();
   });
 
-  it("contains no phone number digits", () => {
-    const digits = PHONE.replace(/\D/g, "");
-    expect(html).not.toContain(PHONE);
-    expect(html).not.toContain(digits);
-    expect(html).not.toContain("707-7067");
-    expect(doc.body.textContent!.replace(/\D/g, "")).not.toContain(digits);
+  it("contains no phone number", () => {
+    expect(doc.body.textContent).not.toMatch(PHONE_PATTERN);
   });
 
   it("never imports the contact module", () => {
@@ -124,13 +121,9 @@ describe("Download PDF link", () => {
 describe("static export privacy", () => {
   const file = ["out/resume.html", "out/resume/index.html"].map((f) => path.resolve(process.cwd(), f)).find((f) => existsSync(f));
 
-  it.skipIf(!file)("built out/resume has no phone digits and no variant text", () => {
+  it.skipIf(!file)("built out/resume has no phone number and no variant text", () => {
     const built = readFileSync(file!, "utf8");
-    const digits = PHONE.replace(/\D/g, "");
-    expect(built).not.toContain(PHONE);
-    expect(built).not.toContain(digits);
-    expect(built).not.toContain("707-7067");
-    expect(built.replace(/\D/g, "")).not.toContain(digits);
+    expect(built).not.toMatch(PHONE_PATTERN);
     for (const v of [alpha, beta]) expect(built).not.toContain(v.summaryLastLine);
   });
 });

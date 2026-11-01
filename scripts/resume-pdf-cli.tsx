@@ -9,6 +9,7 @@ async function main() {
     const variant = await chooseVariant(listVariants(), (q) => rl.question(q));
     const out = await generateResumePdf({ variant });
     console.log(`Wrote ${out.path}`);
+    if (out.publicPath) console.log(`Wrote ${out.publicPath} (no phone)`);
     if (out.hash) console.log("Updated src/content/resume-pdf.sha256");
   } finally {
     rl.close();
