@@ -11,7 +11,7 @@ import {
 
 describe("site constants", () => {
   it("exports contact constants", () => {
-    expect(EMAIL).toBe("ericlingren@gmail.com");
+    expect(EMAIL).toBe("eric@ericlingren.com");
     expect(GITHUB_URL).toBe("https://www.github.com/Eric-Lingren");
     expect(LINKEDIN_URL).toBe("https://www.linkedin.com/in/ericlingren/");
     expect(MAILTO_SUBJECT).toBe("Hello from ericlingren.com");
@@ -19,7 +19,7 @@ describe("site constants", () => {
 
   it("builds a mailto URL with the encoded subject", () => {
     expect(MAILTO_URL).toBe(
-      "mailto:ericlingren@gmail.com?subject=Hello%20from%20ericlingren.com",
+      "mailto:eric@ericlingren.com?subject=Hello%20from%20ericlingren.com",
     );
   });
 

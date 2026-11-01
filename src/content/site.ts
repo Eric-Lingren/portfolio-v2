@@ -1,7 +1,7 @@
 export const SITE_NAME = "Eric Lingren";
 export const SITE_URL = "https://www.ericlingren.com";
 
-export const EMAIL = "ericlingren@gmail.com";
+export const EMAIL = "eric@ericlingren.com";
 export const GITHUB_URL = "https://www.github.com/Eric-Lingren";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/ericlingren/";
 export const GITHUB_REPO_URL = "https://github.com/Eric-Lingren/portfolio-v2";

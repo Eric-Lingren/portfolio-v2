@@ -23,16 +23,16 @@ describe("Contact", () => {
     render(<Contact />);
     fireEvent.click(screen.getByRole("button", { name: "Copy email" }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copied"));
-    expect(writeText).toHaveBeenCalledWith("ericlingren@gmail.com");
+    expect(writeText).toHaveBeenCalledWith("eric@ericlingren.com");
   });
 
   it("copies when the address itself is clicked", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     render(<Contact />);
-    fireEvent.click(screen.getByRole("button", { name: "ericlingren@gmail.com" }));
+    fireEvent.click(screen.getByRole("button", { name: "eric@ericlingren.com" }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copied"));
-    expect(writeText).toHaveBeenCalledWith("ericlingren@gmail.com");
+    expect(writeText).toHaveBeenCalledWith("eric@ericlingren.com");
   });
 
   it("confirms a copy with the check icon only, then flips back", async () => {
@@ -61,7 +61,7 @@ describe("Contact", () => {
     render(<Contact />);
     expect(screen.getByRole("link", { name: "Send an email" })).toHaveAttribute(
       "href",
-      "mailto:ericlingren@gmail.com?subject=Hello%20from%20ericlingren.com",
+      "mailto:eric@ericlingren.com?subject=Hello%20from%20ericlingren.com",
     );
   });
 
@@ -89,7 +89,7 @@ describe("Contact", () => {
   it("puts bare icon Copy email and Send an email buttons beside the address", () => {
     const { container } = render(<Contact />);
     const row = container.querySelector(".contact-email")!;
-    expect(row.querySelector(".contact-email__address")).toHaveTextContent("ericlingren@gmail.com");
+    expect(row.querySelector(".contact-email__address")).toHaveTextContent("eric@ericlingren.com");
     for (const el of [
       screen.getByRole("button", { name: "Copy email" }),
       screen.getByRole("link", { name: "Send an email" }),
