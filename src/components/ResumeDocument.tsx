@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import type { Resume } from "@/content/resume";
+import { GITHUB_URL, LINKEDIN_URL, SITE_URL } from "@/content/site";
+import { GitHubIcon, GlobeIcon, LinkedInIcon, MailIcon, MapPinIcon, PhoneIcon } from "./icons";
 
 type Props = {
   resume: Resume;
@@ -37,6 +39,20 @@ function Link({ href, children }: { href: string; children: ReactNode }) {
   );
 }
 
+type Icon = ComponentType<{ className?: string }>;
+
+const LINK_ICONS: Record<string, Icon> = { [SITE_URL]: GlobeIcon, [LINKEDIN_URL]: LinkedInIcon, [GITHUB_URL]: GitHubIcon };
+
+/** Contact line that ends in a decorative icon, so the icons line up on the right edge. */
+function Reach({ icon: Icon, children }: { icon?: Icon; children: ReactNode }) {
+  return (
+    <li>
+      {children}
+      {Icon ? <Icon className="resume-reach-icon" /> : null}
+    </li>
+  );
+}
+
 /** Server-renderable resume. Styled by resume.css (imported by the page, inlined by the PDF task). */
 export function ResumeDocument({ resume, phone }: Props) {
   return (
@@ -52,15 +68,15 @@ export function ResumeDocument({ resume, phone }: Props) {
           ))}
         </div>
         <ul className="resume-reach">
-          <li>{resume.location}</li>
-          {phone ? <li>{phone}</li> : null}
-          <li>
+          <Reach icon={MapPinIcon}>{resume.location}</Reach>
+          {phone ? <Reach icon={PhoneIcon}>{phone}</Reach> : null}
+          <Reach icon={MailIcon}>
             <Link href={`mailto:${resume.email}`}>{resume.email}</Link>
-          </li>
+          </Reach>
           {resume.links.map((link) => (
-            <li key={link.href}>
+            <Reach key={link.href} icon={LINK_ICONS[link.href]}>
               <Link href={link.href}>{link.label}</Link>
-            </li>
+            </Reach>
           ))}
         </ul>
       </header>

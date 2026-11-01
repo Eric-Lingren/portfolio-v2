@@ -91,9 +91,23 @@ describe("ResumeDocument header", () => {
     ]);
   });
 
+  it("ends every contact line with its own decorative icon", () => {
+    const html = renderToStaticMarkup(<ResumeDocument resume={RESUME} phone="(555) 010-0000" />);
+    const withPhone = new DOMParser().parseFromString(html, "text/html");
+    const items = [...withPhone.querySelectorAll(".resume-reach li")];
+    expect(items).toHaveLength(6);
+    const icons = items.map((li) => li.lastElementChild);
+    for (const icon of icons) {
+      expect(icon?.tagName.toLowerCase()).toBe("svg");
+      expect(icon?.classList.contains("resume-reach-icon")).toBe(true);
+      expect(icon?.getAttribute("aria-hidden")).toBe("true");
+    }
+    expect(new Set(icons.map((icon) => icon?.innerHTML)).size).toBe(6);
+  });
+
   it("renders the stack as two separate lines", () => {
     const lines = [...doc.querySelectorAll(".resume-stack")].map((p) => p.textContent);
-    expect(lines).toEqual(["Frontend-focused full stack · React, TypeScript, Node", "AI agents and LLM tooling"]);
+    expect(lines).toEqual(["Frontend-focused full stack software engineer", "React, TypeScript, Node, Python/Django, AI agents and LLM tooling"]);
   });
 });
 
