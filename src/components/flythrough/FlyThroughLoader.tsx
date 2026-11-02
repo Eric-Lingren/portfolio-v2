@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { clearFirstPaint } from "./first-paint";
 import { startFrameMonitor } from "./frame-monitor";
 import { isFlat, MOBILE_QUERY, perfDebugEnabled, resolveMode, type ViewMode } from "./mode";
 import { PerfOverlay } from "./PerfOverlay";
@@ -25,8 +26,11 @@ export function FlyThroughLoader({ children }: { children: ReactNode }) {
 
   // The final tree is up: the stage swapped in, or a flat mode that never loads it. Child effects (the
   // restore in FlatStack or FlyStage) have already run, so later remounts fall back to the hash rules.
+  // The first-paint stage geometry goes too, so a downgrade back to the flat stack gets the classic layout.
   useEffect(() => {
-    if (Stage || (mode && isFlat(mode))) settleScroll();
+    if (!Stage && !(mode && isFlat(mode))) return;
+    settleScroll();
+    clearFirstPaint();
   }, [Stage, mode]);
 
   useEffect(() => {
