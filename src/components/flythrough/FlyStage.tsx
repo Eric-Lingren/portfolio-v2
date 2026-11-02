@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { setActiveSection } from "../active-section";
 import {
   clamp01,
@@ -18,6 +18,7 @@ import {
   type Layout,
 } from "./camera";
 import { FLY_CONFIG } from "./config";
+import { firstPaintNavHeight } from "./first-paint";
 import { attachLookAround, type LookPoint } from "./look";
 import { initialScrollTop, syncHashToActiveSection, writeSectionHash } from "./hash-target";
 import { PANELS } from "./registry";
@@ -41,7 +42,9 @@ export function FlyStage() {
   const worldRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
+  // Layout effect: the fit and transforms land before the stage's first paint, so the swap from the
+  // flat stack shows the hero already at rest (see first-paint.ts), never an unscaled card for a frame.
+  useLayoutEffect(() => {
     const world = worldRef.current;
     if (!world) return;
     const wipes: (WipeTargets | null)[] = panelRefs.current.map((el) => (el ? findWipe(el) : null));
@@ -62,7 +65,9 @@ export function FlyStage() {
     const bodyHeights: number[] = PANELS.map(() => 0);
     const roomHeights: number[] = PANELS.map(() => 0);
     let fitHeight = window.innerHeight;
-    let navHeight: number = FLY_CONFIG.navClearance;
+    // Starts from the nav height the first-paint script measured (see first-paint.ts), so the first frame
+    // centers where the flat hero already sits. The ResizeObserver keeps it current.
+    let navHeight: number = firstPaintNavHeight() ?? FLY_CONFIG.navClearance;
     const nav = document.querySelector(".site-nav");
     // The page footer follows the scroll spacer. The last panel fits above it and the stage lifts as it scrolls in.
     let footerHeight = 0;
@@ -220,6 +225,7 @@ export function FlyStage() {
     window.addEventListener("resize", onResize, { passive: true });
     document.addEventListener("click", onClick);
     const unsyncHash = syncHashToActiveSection();
+    applyFit();
     render();
 
     return () => {

@@ -66,6 +66,8 @@ export function Panel({ name, z = 0, id, layers = "polished", children }: PanelP
           key={kind}
           className={`panel-layer panel-layer--${kind}`}
           data-layer={kind}
+          // Read by the first-paint card (globals.css) so the flat hero shows the stage's z tag before the swap.
+          data-tag={tag}
           style={
             // Only the dual-layer view needs 3D offsets; flat renders carry no transform.
             layers === "both"
