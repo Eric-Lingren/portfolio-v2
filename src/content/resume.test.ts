@@ -57,7 +57,7 @@ describe("resume content", () => {
     expect(sm.bullets).toHaveLength(5);
     expect(sm.bullets[0]).toMatch(/22% to 84%/);
     expect(sm.bullets[0]).toMatch(/re-architecture of our frontend platform/);
-    expect(RESUME.summary).toMatch(/15-engineer team/);
+    expect(RESUME.summary).toMatch(/25-engineer team/);
     expect(sm.bullets[1]).toMatch(/Reporting Granularity/);
     expect(sm.bullets[2]).toMatch(/35 users across 11 firms/);
     expect(sm.bullets[3]).toMatch(/20 portfolio companies/);
