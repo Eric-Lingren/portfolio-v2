@@ -147,7 +147,7 @@ export function buildResume(experience: readonly ExperienceRole[]): Resume {
     email: EMAIL,
     links: [SITE_URL, LINKEDIN_URL, GITHUB_URL].map((href) => ({ label: shortUrl(href), href })),
     summary:
-      "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I own frontend platform work on a 15-engineer team and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
+      "Frontend-first full-stack engineer with 7 years building React and TypeScript products. At Standard Metrics, I own frontend platform work on a 25-engineer team and ship data-heavy features for investment firms. I also build multi-agent AI tooling with Claude Code, including orchestration, evals, and model tiering.",
     jobs: JOB_BULLETS.map(({ company, url, bullets }) => {
       const role = experience.find((r) => r.company === company);
       if (!role) throw new Error(`resume: "${company}" is missing from experience.ts`);
